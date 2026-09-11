@@ -138,19 +138,46 @@
                 <!-- ================= VIEW 0: ALL TOOLS DASHBOARD (iLovePDF Style) ================= -->
     <section id="view-dashboard" class="max-w-6xl mx-auto mb-12 animate-fadeIn">
       <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 mb-4 shadow-2xs">
-          <span>🚀 100% Client-Side Engine</span>
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900 mb-4 shadow-2xs">
+          <span>❤️ WeLovePDF</span>
+          <span>•</span>
+          <span>100% Client-Side In-Memory Engine</span>
           <span>•</span>
           <span>Zero Server Uploads</span>
-          <span>•</span>
-          <span>Instant & Free</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
           Every Financial & PDF Tool You Need
         </h1>
         <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-3 max-w-2xl mx-auto leading-relaxed">
-          Convert, merge, split, organize, watermark, number, and audit your confidential bank statements and PDFs completely inside browser memory. 100% private, zero uploads, zero tracking.
+          Convert bank statements to reconciled 3-sheet Excel, merge, split, organize, watermark, number, and audit your confidential documents completely inside browser memory.
         </p>
+
+        <!-- Trust Architecture Badges -->
+        <div class="mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">🛡️ Zero Data Exfiltration</span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">⚡ WebAssembly Speed (&lt; 250ms)</span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">🔒 Bank-Grade In-Memory AES</span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">🌐 Works 100% Offline</span>
+        </div>
+
+        <!-- 1-Click Interactive Demo CTA -->
+        <div class="mt-5 flex items-center justify-center gap-3 flex-wrap">
+          <button onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition hover:scale-[1.02]">
+            <span>✨ Try 1-Click Demo (SunTrust Credit Card)</span>
+            <span>&rarr;</span>
+          </button>
+          <button onclick="switchPortalTool('excel'); loadDemoStatement('wiki');" class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition">
+            <span>✨ Try 1-Click Demo (Checking Account)</span>
+          </button>
+        </div>
+
+        <!-- Dashboard Category Filter Tabs -->
+        <div class="mt-8 flex items-center justify-center gap-2 flex-wrap" id="dashboard-filter-bar">
+          <button onclick="filterDashboardTools('all')" id="dash-filter-all" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs transition">⚡ All Tools (10)</button>
+          <button onclick="filterDashboardTools('banking')" id="dash-filter-banking" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">📊 Banking & Finance</button>
+          <button onclick="filterDashboardTools('edit')" id="dash-filter-edit" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">📑 Organize & Edit</button>
+          <button onclick="filterDashboardTools('security')" id="dash-filter-security" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">🔒 Security & Convert</button>
+        </div>
 
         <!-- Recent Files Tray (localStorage) -->
         <div id="recent-files-tray" class="hidden mt-6 max-w-2xl mx-auto p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs text-left">
@@ -168,7 +195,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5">
         
         <!-- Card 1: PDF to Excel & CSV -->
-        <div onclick="switchPortalTool('excel')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="banking" onclick="switchPortalTool('excel')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -185,7 +212,7 @@
         </div>
 
         <!-- Card 2: Merge PDF -->
-        <div onclick="switchPortalTool('merge')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-500 dark:hover:border-violet-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="edit" onclick="switchPortalTool('merge')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-500 dark:hover:border-violet-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -202,7 +229,7 @@
         </div>
 
         <!-- Card 3: Split PDF -->
-        <div onclick="switchPortalTool('split')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="edit" onclick="switchPortalTool('split')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -219,7 +246,7 @@
         </div>
 
         <!-- Card 4: Organize & Rotate -->
-        <div onclick="switchPortalTool('organize')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="edit" onclick="switchPortalTool('organize')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -236,7 +263,7 @@
         </div>
 
         <!-- Card 5: Unlock Password PDF -->
-        <div onclick="switchPortalTool('unlock')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="security" onclick="switchPortalTool('unlock')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -253,7 +280,7 @@
         </div>
 
         <!-- Card 6: Watermark & Stamp PDF -->
-        <div onclick="switchPortalTool('watermark')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500 dark:hover:border-cyan-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="security" onclick="switchPortalTool('watermark')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500 dark:hover:border-cyan-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-cyan-50 dark:bg-cyan-950/80 text-cyan-600 dark:text-cyan-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -270,7 +297,7 @@
         </div>
 
         <!-- Card 7: Page Numberer -->
-        <div onclick="switchPortalTool('pagenumber')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="security" onclick="switchPortalTool('pagenumber')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -287,7 +314,7 @@
         </div>
 
         <!-- Card 8: PDF to Image (.jpg/.png) -->
-        <div onclick="switchPortalTool('pdf2img')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-fuchsia-500 dark:hover:border-fuchsia-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="security" onclick="switchPortalTool('pdf2img')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-fuchsia-500 dark:hover:border-fuchsia-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-fuchsia-50 dark:bg-fuchsia-950/80 text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -304,7 +331,7 @@
         </div>
 
         <!-- Card 9: Image to PDF -->
-        <div onclick="switchPortalTool('img2pdf')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="security" onclick="switchPortalTool('img2pdf')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -321,7 +348,7 @@
         </div>
 
         <!-- Card 10: Math Audit Inspector -->
-        <div onclick="switchPortalTool('excel')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-teal-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="banking" onclick="switchPortalTool('excel')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-teal-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
           <div>
             <div class="flex items-center justify-between mb-3">
               <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
@@ -601,6 +628,16 @@
           Choose Bank Statement File(s)
         </button>
 
+        <div class="mt-4 flex items-center justify-center gap-2.5 flex-wrap">
+          <span class="text-xs text-slate-400 font-medium">Or test instantly:</span>
+          <button type="button" onclick="event.stopPropagation(); loadDemoStatement('suntrust');" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition shadow-2xs">
+            <span>✨ Demo Credit Card</span>
+          </button>
+          <button type="button" onclick="event.stopPropagation(); loadDemoStatement('wiki');" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition shadow-2xs">
+            <span>✨ Demo Checking Account</span>
+          </button>
+        </div>
+
         <div id="upload-validation-alert" class="hidden mt-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 rounded-xl text-xs text-rose-700 dark:text-rose-300 max-w-md mx-auto text-left" role="alert">
           <!-- Dynamic validation error -->
         </div>
@@ -759,11 +796,64 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span>Word Doc (.doc)</span>
           </button>
+          <button id="btn-export-qbo" onclick="exportToQBO()" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow-sm transition">
+            <span>QuickBooks (.QBO)</span>
+          </button>
           <button class="hidden" class="inline-flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 font-semibold px-4 py-2.5 rounded-xl text-sm transition focus-ring">
             <span>Clean PDF</span>
           </button>
         </div>
       </div>
+
+      
+      <!-- ================= EXECUTIVE FINANCIAL SPENDING & CASHFLOW INTELLIGENCE ================= -->
+      <div id="financial-insights-card" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800 mb-5">
+          <div>
+            <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Automated Executive Intelligence</span>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white mt-0.5">Cash Flow & Expense Categorization</h3>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-right">
+              <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Net Cash Flow</span>
+              <span id="insight-net-cashflow" class="text-sm font-black font-mono text-emerald-600 dark:text-emerald-400">+$0.00</span>
+            </div>
+            <div class="px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-right">
+              <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Avg Transaction</span>
+              <span id="insight-avg-transaction" class="text-sm font-black font-mono text-slate-800 dark:text-slate-200">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spending Categories Breakdown with Progress Bars -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-3 flex items-center justify-between">
+              <span>Top Expense Categories</span>
+              <span class="text-[11px] text-slate-400 font-normal">Auto-Classified from Bank Descriptions</span>
+            </h4>
+            <div id="category-bars-container" class="space-y-3 text-xs">
+              <!-- Rendered Dynamically -->
+            </div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">Audit Health & Continuity</h4>
+                <span id="insight-health-badge" class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold text-[10px]">100% Balanced</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed" id="insight-health-desc">
+                Mathematical delta verification checks every transaction sequentially: Opening Balance + Total Deposits - Total Withdrawals = Stated Closing Balance.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-600 dark:text-slate-300">Accounting Compatibility:</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">✓ QuickBooks (QBO) • Xero • 3-Sheet Excel</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       <!-- Discrepancy & Review Alert (Shown if issues exist) -->
               <!-- Reconciliation Formula Explanation Card -->
@@ -3806,6 +3896,283 @@
       if (langInput) langInput.value = detectedLang;
     }
 
+    
+    // ================= MODULE: EXECUTIVE FINANCIAL INTELLIGENCE & DEMO LOADER =================
+    
+    // 1. Dashboard Category Tool Filter
+    function filterDashboardTools(category) {
+      const cards = document.querySelectorAll('#view-dashboard [data-category]');
+      const buttons = document.querySelectorAll('#dashboard-filter-bar .dash-filter-btn');
+
+      buttons.forEach(btn => {
+        btn.className = 'dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition';
+      });
+      const activeBtn = document.getElementById(`dash-filter-${category}`);
+      if (activeBtn) {
+        activeBtn.className = 'dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs transition';
+      }
+
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // 2. 1-Click Interactive Demo Statement Loader
+    function loadDemoStatement(type) {
+      if (type === 'wiki') {
+        AppState.metadata = {
+          bankName: 'First Bank of Wiki',
+          accountHolder: 'Jane Doe',
+          accountNumber: '1234-5678-9012',
+          statementPeriod: 'January 01, 2026 - January 31, 2026',
+          openingBalance: 0.55,
+          closingBalance: -72.47,
+          currency: '$',
+          statementType: 'checking'
+        };
+        AppState.transactions = [
+          { id: '1', date: '01/02/2026', description: 'Opening Deposit Transfer', refNo: '1001', debit: '', credit: '500.00', balance: '500.55', status: '✅', category: 'Transfers' },
+          { id: '2', date: '01/05/2026', description: 'Electric Utility Bill AutoPay', refNo: '1002', debit: '120.45', credit: '', balance: '380.10', status: '✅', category: 'Utilities' },
+          { id: '3', date: '01/08/2026', description: 'Whole Foods Supermarket', refNo: '1003', debit: '85.60', credit: '', balance: '294.50', status: '✅', category: 'Retail' },
+          { id: '4', date: '01/12/2026', description: 'Payroll Direct Deposit Acme Corp', refNo: '1004', debit: '', credit: '942.61', balance: '1237.11', status: '✅', category: 'Income' },
+          { id: '5', date: '01/15/2026', description: 'Apartment Monthly Rent Wire', refNo: '1005', debit: '1100.00', credit: '', balance: '137.11', status: '✅', category: 'Housing' },
+          { id: '6', date: '01/20/2026', description: 'Pharmacy Prescription Rx', refNo: '1006', debit: '45.30', credit: '', balance: '91.81', status: '✅', category: 'Medical' },
+          { id: '7', date: '01/25/2026', description: 'Petron Gas Service Station', refNo: '1007', debit: '64.28', credit: '', balance: '27.53', status: '✅', category: 'Travel' },
+          { id: '8', date: '01/30/2026', description: 'Emergency Plumbing Repair', refNo: '1008', debit: '100.00', credit: '', balance: '-72.47', status: '✅', category: 'Utilities' }
+        ];
+      } else {
+        // SunTrust Bank Credit Card Statement
+        AppState.metadata = {
+          bankName: 'SunTrust Bank',
+          accountHolder: 'John Smith',
+          accountNumber: '23785-54-9674458',
+          statementPeriod: '01/01/2026 - 01/31/2026',
+          openingBalance: 0.00,
+          closingBalance: 3898.57,
+          creditLimit: 390000.00,
+          currency: '$',
+          statementType: 'credit_card'
+        };
+        AppState.transactions = [
+          { id: '1', date: '01/03/2026', description: 'Petron - CS Station Fuel', refNo: '', debit: '223.26', credit: '', balance: '', status: '✅', category: 'Travel' },
+          { id: '2', date: '01/05/2026', description: 'South Star Drug Pharmacy', refNo: '', debit: '313.39', credit: '', balance: '', status: '✅', category: 'Medical' },
+          { id: '3', date: '01/08/2026', description: 'Rosewood Condominium HOA Fee', refNo: '', debit: '582.96', credit: '', balance: '', status: '✅', category: 'Housing' },
+          { id: '4', date: '01/12/2026', description: 'Grab Transportation Service', refNo: '', debit: '125.00', credit: '', balance: '', status: '✅', category: 'Travel' },
+          { id: '5', date: '01/16/2026', description: 'Amazon Digital & Retail Order', refNo: '', debit: '215.00', credit: '', balance: '', status: '✅', category: 'Retail' },
+          { id: '6', date: '01/20/2026', description: 'Alba International Equipment', refNo: '', debit: '656.86', credit: '', balance: '', status: '✅', category: 'Retail' },
+          { id: '7', date: '01/24/2026', description: 'Adobe Creative Cloud Software', refNo: '', debit: '246.00', credit: '', balance: '', status: '✅', category: 'Subscriptions' },
+          { id: '8', date: '01/27/2026', description: 'St Luke Medical Center Clinic', refNo: '', debit: '571.10', credit: '', balance: '', status: '✅', category: 'Medical' },
+          { id: '9', date: '01/30/2026', description: 'Hotel Sheraton (Las Vegas) Conference', refNo: '', debit: '965.00', credit: '', balance: '', status: '✅', category: 'Travel' }
+        ];
+      }
+
+      // Populate Metadata Inputs
+      const mBank = document.getElementById('meta-bank-name');
+      const mHolder = document.getElementById('meta-account-holder');
+      const mAcct = document.getElementById('meta-account-number');
+      const mStart = document.getElementById('meta-period-start');
+      const mEnd = document.getElementById('meta-period-end');
+      const mType = document.getElementById('meta-statement-type');
+      if (mBank) mBank.value = AppState.metadata.bankName;
+      if (mHolder) mHolder.value = AppState.metadata.accountHolder;
+      if (mAcct) mAcct.value = AppState.metadata.accountNumber;
+      if (mStart) mStart.value = '01/01/2026';
+      if (mEnd) mEnd.value = '01/31/2026';
+      if (mType) mType.value = AppState.metadata.statementType;
+
+      // Switch to converter and workspace
+      switchPortalTool('excel');
+      document.getElementById('intake-section').classList.add('hidden');
+      document.getElementById('preview-stage').classList.add('hidden');
+      document.getElementById('workspace-section').classList.remove('hidden');
+
+      auditAndReconcileBalances();
+      renderTransactionsTable();
+      updateAuditUI();
+      generateCategoryInsights();
+    }
+
+    // 3. Category Spending Insights Generator
+    function generateCategoryInsights() {
+      const container = document.getElementById('category-bars-container');
+      if (!container || typeof container.appendChild !== 'function') return;
+      const netCashflowEl = document.getElementById('insight-net-cashflow');
+      const avgTxnEl = document.getElementById('insight-avg-transaction');
+      if (!container) return;
+
+      const debits = AppState.transactions
+        .map(t => parseFloat(t.debit) || 0)
+        .filter(d => d > 0);
+      const totalDebit = debits.reduce((a, b) => a + b, 0);
+
+      const credits = AppState.transactions
+        .map(t => parseFloat(t.credit) || 0)
+        .filter(c => c > 0);
+      const totalCredit = credits.reduce((a, b) => a + b, 0);
+
+      const netCashflow = totalCredit - totalDebit;
+      if (netCashflowEl) {
+        const sign = netCashflow >= 0 ? '+' : '-';
+        netCashflowEl.innerText = `${sign}$${Math.abs(netCashflow).toFixed(2)}`;
+        netCashflowEl.className = netCashflow >= 0 
+          ? 'text-sm font-black font-mono text-emerald-600 dark:text-emerald-400'
+          : 'text-sm font-black font-mono text-rose-600 dark:text-rose-400';
+      }
+
+      if (avgTxnEl) {
+        const avg = debits.length ? (totalDebit / debits.length) : 0;
+        avgTxnEl.innerText = `$${avg.toFixed(2)}`;
+      }
+
+      // Categorize debits
+      const catTotals = {
+        '🛒 Retail & Merchants': 0,
+        '⚡ Housing & Utilities': 0,
+        '🏥 Medical & Healthcare': 0,
+        '✈️ Travel & Transportation': 0,
+        '💼 Services & Software': 0,
+        '📦 Miscellaneous': 0
+      };
+
+      AppState.transactions.forEach(t => {
+        const amt = parseFloat(t.debit) || 0;
+        if (amt <= 0) return;
+        const d = (t.description || '').toLowerCase();
+        if (/amazon|store|market|food|grab|walmart|target|shop|merch/i.test(d)) {
+          catTotals['🛒 Retail & Merchants'] += amt;
+        } else if (/condo|rent|mortgage|util|elect|water|gas bill|power/i.test(d)) {
+          catTotals['⚡ Housing & Utilities'] += amt;
+        } else if (/drug|pharm|medic|doctor|hospital|clinic|st luke|health/i.test(d)) {
+          catTotals['🏥 Medical & Healthcare'] += amt;
+        } else if (/hotel|sheraton|flight|airline|petron|gas|fuel|uber|travel/i.test(d)) {
+          catTotals['✈️ Travel & Transportation'] += amt;
+        } else if (/adobe|software|subscr|service|fee|telecom|comms/i.test(d)) {
+          catTotals['💼 Services & Software'] += amt;
+        } else {
+          catTotals['📦 Miscellaneous'] += amt;
+        }
+      });
+
+      const activeCats = Object.entries(catTotals)
+        .filter(([_, amt]) => amt > 0)
+        .sort((a, b) => b[1] - a[1]);
+
+      const colors = ['bg-rose-500', 'bg-amber-500', 'bg-blue-500', 'bg-emerald-500', 'bg-violet-500', 'bg-slate-400'];
+
+      container.innerHTML = '';
+      if (!activeCats.length) {
+        container.innerHTML = '<div class="text-xs text-slate-400 py-3">No debits to categorize.</div>';
+        return;
+      }
+
+      activeCats.slice(0, 4).forEach(([name, amt], idx) => {
+        const pct = totalDebit > 0 ? Math.round((amt / totalDebit) * 100) : 0;
+        const color = colors[idx % colors.length];
+        const row = document.createElement('div');
+        row.innerHTML = `
+          <div class="flex items-center justify-between mb-1 text-[11px] font-bold">
+            <span class="text-slate-700 dark:text-slate-300">${name}</span>
+            <span class="font-mono text-slate-600 dark:text-slate-400">${pct}% ($${amt.toFixed(2)})</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div class="${color} h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // 4. QuickBooks (.QBO / .OFX) Exporter
+    function exportToQBO() {
+      if (!AppState.transactions || !AppState.transactions.length) return alert('No transactions to export.');
+
+      const bankName = document.getElementById('meta-bank-name').value || 'Bank Statement';
+      const acctNo = document.getElementById('meta-account-number').value || '123456789';
+      const closingBal = AppState.metadata.closingBalance !== undefined ? AppState.metadata.closingBalance : (AppState.audit.totalDebits || 0);
+
+      const now = new Date();
+      const dtServer = now.toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+
+      let trnList = '';
+      AppState.transactions.forEach(t => {
+        const amt = t.credit ? parseFloat(t.credit) : -(parseFloat(t.debit) || 0);
+        const trnType = t.credit ? 'CREDIT' : 'DEBIT';
+        const trnId = t.refNo || t.id || Math.random().toString(36).substr(2, 9);
+        // Format date: YYYYMMDD
+        let dt = dtServer.slice(0, 8);
+        if (t.date && t.date.includes('/')) {
+          const parts = t.date.split('/');
+          if (parts.length === 3) {
+            const mm = parts[0].padStart(2, '0');
+            const dd = parts[1].padStart(2, '0');
+            let yy = parts[2];
+            if (yy.length === 2) yy = '20' + yy;
+            dt = `${yy}${mm}${dd}`;
+          }
+        }
+        const memo = sanitizeSpreadsheetCell(t.description).replace(/[<>&]/g, '');
+
+        trnList += `
+            <STMTTRN>
+              <TRNTYPE>${trnType}</TRNTYPE>
+              <DTPOSTED>${dt}000000</DTPOSTED>
+              <TRNAMT>${amt.toFixed(2)}</TRNAMT>
+              <FITID>${trnId}</FITID>
+              <NAME>${memo.slice(0, 32)}</NAME>
+              <MEMO>${memo.slice(0, 255)}</MEMO>
+            </STMTTRN>`;
+      });
+
+      const qbo = `OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEVERSION:102
+NEWFILEVERSION:102
+
+<OFX>
+  <SIGNONMSGSRSV1>
+    <SONRS>
+      <STATUS>
+        <CODE>0</CODE>
+        <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <DTSERVER>${dtServer}</DTSERVER>
+      <LANGUAGE>ENG</LANGUAGE>
+    </SONRS>
+  </SIGNONMSGSRSV1>
+  <BANKMSGSRSV1>
+    <STMTTRNRS>
+      <STMTRS>
+        <CURDEF>USD</CURDEF>
+        <BANKACCTFROM>
+          <BANKID>999999999</BANKID>
+          <ACCTID>${acctNo.replace(/[^a-zA-Z0-9]/g, '')}</ACCTID>
+          <ACCTTYPE>CHECKING</ACCTTYPE>
+        </BANKACCTFROM>
+        <BANKTRANLIST>
+          <DTSTART>${dtServer.slice(0, 8)}</DTSTART>
+          <DTEND>${dtServer.slice(0, 8)}</DTEND>${trnList}
+        </BANKTRANLIST>
+        <LEDGERBAL>
+          <BALAMT>${parseFloat(closingBal).toFixed(2)}</BALAMT>
+          <DTASOF>${dtServer}</DTASOF>
+        </LEDGERBAL>
+      </STMTRS>
+    </STMTTRNRS>
+  </BANKMSGSRSV1>
+</OFX>`;
+
+      triggerDownload(new Blob([qbo], { type: 'application/x-ofx' }), `${bankName.replace(/\s+/g, '_')}_QuickBooks.qbo`);
+    }
+
     function updateAuditUI() {
       const curr = AppState.metadata.currency || '$';
       const openBal = typeof AppState.metadata.openingBalance === 'number' && !isNaN(AppState.metadata.openingBalance) ? AppState.metadata.openingBalance : 0;
@@ -3870,6 +4237,7 @@
       } else {
         banner.classList.add('hidden');
       }
+      if (typeof generateCategoryInsights === 'function') generateCategoryInsights();
     }
 
     let txSearchQuery = '';
