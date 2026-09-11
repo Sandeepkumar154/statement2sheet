@@ -1,0 +1,68 @@
+/* Statement2Sheet Stylesheet */
+
+[contenteditable="true"]:focus {
+      outline: 2px solid #10b981;
+      background-color: rgba(16, 185, 129, 0.1);
+      border-radius: 4px;
+    }
+    svg {
+      max-width: 100%;
+    }
+    .focus-ring:focus-visible, .focus-ring:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5), 0 0 0 4px rgba(16, 185, 129, 0.2);
+    }
+    @keyframes slideDownFade {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -16px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes slideBackFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .animate-mega-slide-down {
+      animation: slideDownFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-view-slide-in {
+      animation: slideInFromRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-view-slide-back {
+      animation: slideBackFromLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+/* ----------------------------- */
+
+.report-doc { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1e293b; margin: 30px; }
+.report-doc h1 { font-size: 18pt; color: #0f172a; margin-bottom: 4px; }
+.report-doc h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
+.meta-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
+.meta-table td { padding: 4px 8px; font-size: 10pt; }
+.meta-label { font-weight: bold; color: #64748b; width: 180px; }
+.tx-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.tx-table th { background-color: #f1f5f9; border: 1px solid #cbd5e1; padding: 6px 8px; font-size: 10pt; text-align: left; font-weight: bold; }
+.tx-table td { border: 1px solid #e2e8f0; padding: 5px 8px; font-size: 9.5pt; }
+.tx-table tr:nth-child(even) { background-color: #f8fafc; }
+.amount { text-align: right; font-family: Consolas, monospace; }
+.kpi-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; }

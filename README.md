@@ -1,11 +1,11 @@
-# ❤️ WeLovePDF — Every Financial & PDF Tool in One Place
+# 📊 Statement2Sheet — Every Financial & PDF Tool in One Place
 
 > **The 100% in-browser, privacy-first PDF and Bank Statement suite. Zero server uploads, zero data exfiltration, $0 hosting cost forever.**
 
 ---
 
-## 🌟 What is WeLovePDF?
-WeLovePDF combines all standard PDF tools (Merge, Split, Organize, Rotate, Unlock, Watermark, Page Numbers, Compress, PDF to JPG) with an **enterprise-grade bank statement extraction and balance reconciliation engine** that converts bank statements from any country, currency, or layout into audited 3-sheet Excel and CSV files.
+## 🌟 What is Statement2Sheet?
+Statement2Sheet combines all standard PDF tools (Merge, Split, Organize, Rotate, Unlock, Watermark, Page Numbers, Compress, PDF to JPG) with an **enterprise-grade bank statement extraction and balance reconciliation engine** that converts bank statements from any country, currency, or layout into audited 3-sheet Excel and CSV files.
 
 ---
 
@@ -31,6 +31,6 @@ WeLovePDF combines all standard PDF tools (Merge, Split, Organize, Rotate, Unloc
 ---
 
 ## 🚀 Live Public Deployment
-* **Live Website**: [https://statement2sheet-lake.vercel.app](https://statement2sheet-lake.vercel.app)
-* **GitHub Repository**: [https://github.com/Sandeepkumar154/statement2sheet](https://github.com/Sandeepkumar154/statement2sheet)
-* **GitHub Pages**: [https://sandeepkumar154.github.io/statement2sheet/](https://sandeepkumar154.github.io/statement2sheet/)
+* **Live Website (Vercel)**: [https://statement2sheet.vercel.app](https://statement2sheet.vercel.app)
+* **GitHub Repository**: [https://github.com/sandy96321/statement2sheet](https://github.com/sandy96321/statement2sheet)
+* **GitHub Pages**: [https://sandy96321.github.io/statement2sheet/](https://sandy96321.github.io/statement2sheet/)

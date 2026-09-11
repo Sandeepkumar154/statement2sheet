@@ -1,0 +1,37 @@
+name: Security & Architecture Regression CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  security-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Ensure Chromium / Chrome is available
+        run: |
+          if [ -x "/usr/bin/google-chrome" ]; then
+            echo "Google Chrome already installed at /usr/bin/google-chrome"
+          elif which chromium > /dev/null 2>&1; then
+            echo "Chromium already installed at $(which chromium)"
+          else
+            sudo apt-get update
+            sudo apt-get install -y chromium || sudo apt-get install -y chromium-browser || true
+          fi
+
+      - name: Run Security Regression Test Suite
+        run: npm test

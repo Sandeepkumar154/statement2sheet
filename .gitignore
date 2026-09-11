@@ -4,3 +4,5 @@ node_modules/
 *.log
 
 .vercel
+tests/.test_browser_profile/
+.test_browser_profile/
