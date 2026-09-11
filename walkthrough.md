@@ -100,13 +100,13 @@ The automated test suite in [`tests/security-regression.test.js`](tests/security
   User-agent: *
   Allow: /
 
-  Sitemap: https://sandeepkumar154.github.io/statement2sheet/sitemap.xml
+  Sitemap: https://sandeepkumar1549.github.io/statement2sheet/sitemap.xml
   ```
-- [`sitemap.xml`](sitemap.xml): Formatted per the standard Sitemaps 0.9 XML schema referencing canonical origin `https://sandeepkumar154.github.io/statement2sheet/` with `changefreq: weekly` and `priority: 1.0`.
+- [`sitemap.xml`](sitemap.xml): Formatted per the standard Sitemaps 0.9 XML schema referencing canonical origin `https://sandeepkumar1549.github.io/statement2sheet/` with `changefreq: weekly` and `priority: 1.0`.
 
 ### B. Canonical & Social Graph Metadata
-- **Canonical URL**: `<link rel="canonical" href="https://sandeepkumar154.github.io/statement2sheet/" />` in `<head>` preventing duplicate content indexing across protocol or query variants.
-- **Open Graph**: Formatted with `og:type: website`, `og:site_name`, `og:title`, `og:description`, `og:url`, and `og:image` pointing to `https://sandeepkumar154.github.io/statement2sheet/icon.svg`.
+- **Canonical URL**: `<link rel="canonical" href="https://sandeepkumar1549.github.io/statement2sheet/" />` in `<head>` preventing duplicate content indexing across protocol or query variants.
+- **Open Graph**: Formatted with `og:type: website`, `og:site_name`, `og:title`, `og:description`, `og:url`, and `og:image` pointing to `https://sandeepkumar1549.github.io/statement2sheet/icon.svg`.
 - **Twitter Card**: Formatted with `twitter:card: summary`, `twitter:title`, `twitter:description`, and `twitter:image`.
 
 ### C. JSON-LD Structured Data Schema
@@ -130,13 +130,13 @@ To submit the newly deployed sitemap and request homepage indexing:
 
 1. **Access Google Search Console**:
    - Navigate to [Google Search Console](https://search.google.com/search-console).
-   - Select the property: `https://sandeepkumar154.github.io/statement2sheet/` (or add as URL prefix property).
+   - Select the property: `https://sandeepkumar1549.github.io/statement2sheet/` (or add as URL prefix property).
 2. **Submit Sitemap**:
    - Go to **Indexing > Sitemaps** in the left navigation.
    - Enter `sitemap.xml` under "Add a new sitemap".
    - Click **Submit** and confirm status changes to **Success**.
 3. **Request Homepage Indexing**:
-   - Paste `https://sandeepkumar154.github.io/statement2sheet/` into the top **URL Inspection** search bar.
+   - Paste `https://sandeepkumar1549.github.io/statement2sheet/` into the top **URL Inspection** search bar.
    - Click **Test Live URL** to verify Googlebot fetches the page and validates the JSON-LD structured data without errors.
    - Click **Request Indexing**.
 4. **Rich Results Validation**:
@@ -153,16 +153,18 @@ To submit the newly deployed sitemap and request homepage indexing:
   - `efad1e3`: Added functional assertions for demo ingestion, financial exports, PDF tools, and Object URL registry lifecycle.
   - `e49b484`: Added `--disable-dev-shm-usage` and CDP timeout expansion for Linux CI runner stability.
   - `f459c44`: Synchronized walkthrough with 12-suite assertions.
+  - `84000d5`: Added SEO metadata, JSON-LD schema, guides & FAQ sections.
+  - `d57afe3`: Configured Vercel static build (`framework: null`, npm build script).
 - **Pushed Branches**: `origin/main` and `origin/master` (both kept strictly in sync)
 - **Live Endpoint Verification**:
-  - `https://sandeepkumar154.github.io/statement2sheet/` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/robots.txt` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/sitemap.xml` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/manifest.webmanifest` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/sw.js` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/app.js` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/styles.css` ➔ `HTTP 200 OK`
-  - `https://sandeepkumar154.github.io/statement2sheet/icon.svg` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/robots.txt` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/sitemap.xml` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/manifest.webmanifest` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/sw.js` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/app.js` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/styles.css` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar1549.github.io/statement2sheet/icon.svg` ➔ `HTTP 200 OK`
 
 ---
 

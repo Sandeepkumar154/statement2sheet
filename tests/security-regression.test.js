@@ -264,7 +264,7 @@ async function runTests() {
     return { canonical, ogTitle, ogUrl, twitterCard, jsonLdValid, hasWebApp, hasFaq, hasGuidesSection, hasFaqSection };
   })()`);
   console.log('✓ SEO & Metadata Verification:', seoCheck);
-  if (seoCheck.canonical !== 'https://sandeepkumar154.github.io/statement2sheet/') throw new Error('Invalid canonical URL: ' + seoCheck.canonical);
+  if (seoCheck.canonical !== 'https://sandeepkumar1549.github.io/statement2sheet/') throw new Error('Invalid canonical URL: ' + seoCheck.canonical);
   if (!seoCheck.ogTitle || !seoCheck.ogUrl || !seoCheck.twitterCard) throw new Error('Missing Open Graph / Twitter Card meta tags');
   if (!seoCheck.jsonLdValid || !seoCheck.hasWebApp || !seoCheck.hasFaq) throw new Error('JSON-LD schema incomplete or invalid');
   if (!seoCheck.hasGuidesSection || !seoCheck.hasFaqSection) throw new Error('Missing guides or FAQ content section in DOM');
