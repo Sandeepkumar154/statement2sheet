@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; img-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net blob:; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:; connect-src blob: data: https:; object-src 'none';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.sheetjs.com blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src blob: data: https:; object-src 'none';" />
 
   
   <title>WeLovePDF — Every Financial & PDF Tool You Need (100% Private)</title>
@@ -29,25 +29,20 @@
     };
   </script>
   
-  <!-- PDF.js for Client-Side PDF Parsing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- PDF.js for Client-Side PDF Parsing (SRI pinned) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
   
-  <!-- SheetJS for Multi-Sheet Excel (.xlsx) Generation -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <!-- SheetJS for Multi-Sheet Excel (.xlsx) Generation (SRI pinned) -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js" integrity="sha384-QCIdq2UMVEoSRhR3ZWZwdz2/pivLowr+eokFMdYyukq7qI26VYRxFa4Nl6FKetmL" crossorigin="anonymous"></script>
 
-  <!-- Tesseract.js for Scanned / Photographed Bank Statements -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- Tesseract.js for Scanned / Photographed Bank Statements (SRI pinned) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" integrity="sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F" crossorigin="anonymous"></script>
 
-  <!-- jsPDF for Clean PDF / Searchable Export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- jsPDF for Clean PDF / Searchable Export (SRI pinned) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
 
-  <!-- PDF-Lib for Client-Side Merge, Split, Rotate, and Unlock -->
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  <script>
-    if (typeof PDFLib === 'undefined') {
-      document.write('<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
-    }
-  </script>
+  <!-- PDF-Lib for Client-Side Merge, Split, Rotate, and Unlock (SRI pinned) -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
 
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -69,8 +64,9 @@
     svg {
       max-width: 100%;
     }
-    .focus-ring {
-      @apply focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900;
+    .focus-ring:focus-visible, .focus-ring:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5), 0 0 0 4px rgba(16, 185, 129, 0.2);
     }
     @keyframes slideDownFade {
       from {
@@ -212,6 +208,11 @@
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span>100% Free · No Sign Up Required</span>
         </div>
+
+        <!-- Clear Session Data Button -->
+        <button id="btn-purge-session" onclick="purgeAllSessionData()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800/60 transition shadow-2xs focus-ring" title="Clear all loaded statements, memory buffers, and session data">
+          <span>🧹</span> <span class="hidden sm:inline">Clear Data</span>
+        </button>
 
         <!-- Dark Mode Toggle Button -->
         <button id="theme-toggle" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" aria-label="Toggle dark mode" title="Toggle light/dark theme">
@@ -1085,6 +1086,9 @@
           <button onclick="resetConverterToIntake()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs transition">
             <span>↻</span> <span>Convert Another Statement</span>
           </button>
+          <button onclick="purgeAllSessionData()" class="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 px-3.5 py-2 rounded-xl border border-rose-200 dark:border-rose-800 shadow-2xs transition" title="Clear all loaded statements, memory buffers, and session data">
+            <span>🧹</span> <span>Clear Data &amp; Reset</span>
+          </button>
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
@@ -1590,6 +1594,7 @@
             Generate & Download PDF &rarr;
           </button>
         </div>
+      </div>
     </section>
 
     <!-- ================= VIEW 10: COMPRESS PDF WORKSPACE ================= -->
@@ -1834,8 +1839,8 @@
           <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3 shadow-inner">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">ISO 27001 Ready</span>
-          <span class="text-[11px] text-slate-400 mt-0.5">Information Security</span>
+          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">Ephemeral RAM</span>
+          <span class="text-[11px] text-slate-400 mt-0.5">Cleared on Window Close</span>
         </div>
 
         <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col items-center text-center shadow-2xs">
@@ -1850,8 +1855,8 @@
           <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3 shadow-inner">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </div>
-          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">PDF Association</span>
-          <span class="text-[11px] text-slate-400 mt-0.5">ISO Standards Compliant</span>
+          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">Standard Spec</span>
+          <span class="text-[11px] text-slate-400 mt-0.5">ISO 32000 PDF Compliant</span>
         </div>
 
         <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col items-center text-center shadow-2xs">
@@ -1996,6 +2001,133 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    // ================= MEMORY SAFEGUARDS & OBJECT URL REGISTRY =================
+    const activeObjectUrls = new Set();
+
+    function createTrackedObjectURL(blob) {
+      if (!blob) return '';
+      const url = URL.createObjectURL(blob);
+      activeObjectUrls.add(url);
+      return url;
+    }
+
+    function revokeTrackedObjectURL(url) {
+      if (!url) return;
+      try {
+        URL.revokeObjectURL(url);
+      } catch (e) {}
+      activeObjectUrls.delete(url);
+    }
+
+    function revokeAllObjectURLs() {
+      activeObjectUrls.forEach(url => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {}
+      });
+      activeObjectUrls.clear();
+    }
+
+    // Memory Safeguard: Release 2D Canvas Memory Buffers
+    function disposeCanvas(canvas) {
+      if (!canvas) return;
+      try {
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = 0;
+        canvas.height = 0;
+      } catch (e) {}
+    }
+
+    // ================= BINARY MAGIC-BYTE VALIDATION =================
+    async function validateFileMagicBytes(file) {
+      if (!file || !(file instanceof Blob)) {
+        return { valid: false, format: 'unknown', error: 'Invalid file object' };
+      }
+      try {
+        const headerSlice = file.slice(0, 32);
+        const buffer = await headerSlice.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+
+        if (bytes.length < 4) {
+          return { valid: false, format: 'unknown', error: 'File is too small or empty.' };
+        }
+
+        // PDF signature: %PDF- (0x25, 0x50, 0x44, 0x46)
+        if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) {
+          return { valid: true, format: 'pdf' };
+        }
+
+        // PNG signature: 89 50 4E 47 0D 0A 1A 0A
+        if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+          return { valid: true, format: 'png' };
+        }
+
+        // JPEG signature: FF D8 FF
+        if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) {
+          return { valid: true, format: 'jpeg' };
+        }
+
+        // WEBP signature: RIFF .... WEBP
+        if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes.length >= 12) {
+          if (bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+            return { valid: true, format: 'webp' };
+          }
+        }
+
+        // BMP signature: 42 4D (BM)
+        if (bytes[0] === 0x42 && bytes[1] === 0x4D) {
+          return { valid: true, format: 'bmp' };
+        }
+
+        return { valid: false, format: 'unknown', error: 'File content does not match expected PDF or image format (magic-byte check failed).' };
+      } catch (err) {
+        return { valid: false, format: 'unknown', error: 'Error reading file header: ' + err.message };
+      }
+    }
+
+    async function validateSinglePdfFile(file, toolName = 'PDF') {
+      if (!file) {
+        alert('Please select a file.');
+        return false;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        alert('File exceeds the 50MB limit (' + (file.size / (1024 * 1024)).toFixed(1) + 'MB).');
+        return false;
+      }
+      const magic = await validateFileMagicBytes(file);
+      if (!magic.valid || magic.format !== 'pdf') {
+        alert('The selected file is not a valid PDF document (magic-byte validation failed).');
+        return false;
+      }
+      return true;
+    }
+
+    // ================= NOTIFICATION TOAST SYSTEM =================
+    function showNotificationToast(msg, type = 'success') {
+      let toast = document.getElementById('app-notification-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-notification-toast';
+        toast.className = 'fixed bottom-6 right-6 z-50 max-w-md px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all duration-300 transform translate-y-12 opacity-0 flex items-center gap-2.5 pointer-events-none';
+        document.body.appendChild(toast);
+      }
+
+      const bgClass = type === 'error' 
+        ? 'bg-rose-900 text-rose-100 border border-rose-700' 
+        : type === 'warning'
+        ? 'bg-amber-900 text-amber-100 border border-amber-700'
+        : 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border border-slate-700 dark:border-slate-200';
+
+      toast.className = 'fixed bottom-6 right-6 z-50 max-w-md px-4 py-3 rounded-2xl shadow-xl text-xs font-bold transition-all duration-300 transform translate-y-0 opacity-100 flex items-center gap-2.5 pointer-events-auto ' + bgClass;
+      toast.textContent = msg;
+
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.className = toast.className.replace('translate-y-0 opacity-100', 'translate-y-12 opacity-0 pointer-events-none');
+      }, 3500);
     }
 
     const AppState = {
@@ -2386,18 +2518,33 @@
     }
 
     async function addMergeFiles(files) {
-      const pdfs = files.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
-      if (!pdfs.length) return alert('Please select valid PDF files to merge.');
+      if (!files || !files.length) return;
+      if (mergeItems.length + files.length > 25) {
+        return alert('Maximum 25 files can be merged in a single batch.');
+      }
 
-      const container = document.getElementById('merge-files-container');
-      if (container) container.classList.remove('hidden');
+      for (const file of files) {
+        if (file.size > 50 * 1024 * 1024) {
+          alert('File "' + file.name + '" exceeds the 50MB limit.');
+          continue;
+        }
 
-      for (const file of pdfs) {
+        const magic = await validateFileMagicBytes(file);
+        if (!magic.valid || magic.format !== 'pdf') {
+          alert('File "' + file.name + '" is not a valid PDF document (magic-byte check failed).');
+          continue;
+        }
+
         const id = Math.random().toString(36).substr(2, 9);
         try {
           const buffer = await file.arrayBuffer();
           const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
           const numPages = pdf.numPages;
+
+          if (numPages > 300) {
+            alert('File "' + file.name + '" has ' + numPages + ' pages. Maximum limit is 300 pages.');
+            continue;
+          }
 
           // Render Page 1 Cover with high resolution
           const page1 = await pdf.getPage(1);
@@ -2408,6 +2555,7 @@
           const ctx = canvas.getContext('2d');
           await page1.render({ canvasContext: ctx, viewport }).promise;
           const coverDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          disposeCanvas(canvas);
 
           mergeItems.push({
             id,
@@ -2430,7 +2578,11 @@
         }
       }
 
-      renderMergeList();
+      if (mergeItems.length > 0) {
+        const container = document.getElementById('merge-files-container');
+        if (container) container.classList.remove('hidden');
+        renderMergeList();
+      }
     }
 
     async function toggleMergeItemPages(index) {
@@ -2454,6 +2606,7 @@
               pageNum: i,
               dataUrl: canvas.toDataURL('image/jpeg', 0.88)
             });
+            disposeCanvas(canvas);
           }
         } catch (e) {
           console.error('Error rendering all pages for merge:', e);
@@ -2472,13 +2625,14 @@
 
       if (mergeItems.length === 0) {
         container.classList.add('hidden');
+        listEl.innerHTML = '';
         return;
       }
 
       container.classList.remove('hidden');
       const totalPages = mergeItems.reduce((sum, item) => sum + item.numPages, 0);
-      if (summaryEl) summaryEl.innerText = `${mergeItems.length} Document${mergeItems.length === 1 ? '' : 's'} • ${totalPages} Pages Total`;
-      if (btnRun) btnRun.innerHTML = `<span>Merge All Documents (${totalPages} Pages)</span> <span>&rarr;</span>`;
+      if (summaryEl) summaryEl.innerText = mergeItems.length + ' Document' + (mergeItems.length === 1 ? '' : 's') + ' • ' + totalPages + ' Pages Total';
+      if (btnRun) btnRun.innerHTML = '<span>Merge All Documents (' + totalPages + ' Pages)</span> <span>&rarr;</span>';
 
       listEl.innerHTML = '';
 
@@ -2488,11 +2642,11 @@
 
         const hasCover = item.coverDataUrl;
         const coverHtml = hasCover
-          ? `<div class="relative group cursor-pointer" onclick="openPageZoomModal('${item.coverDataUrl}', '${escapeHtml(item.file.name)} - Page 1')">
-               <img src="${item.coverDataUrl}" alt="${escapeHtml(item.file.name)}" class="w-16 h-22 sm:w-20 sm:h-26 object-contain rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs bg-white flex-shrink-0" />
-               <span class="absolute inset-0 bg-slate-900/40 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-lg">🔍 Zoom</span>
-             </div>`
-          : `<div class="w-16 h-22 sm:w-20 sm:h-26 rounded-lg border border-slate-200 dark:border-slate-700 bg-violet-50 dark:bg-violet-950/60 text-violet-600 flex items-center justify-center font-bold text-xs flex-shrink-0">PDF</div>`;
+          ? '<div class="relative group cursor-pointer" data-action="zoom-cover" data-index="' + index + '">' +
+               '<img src="' + item.coverDataUrl + '" alt="' + escapeHtml(item.file.name) + '" class="w-16 h-22 sm:w-20 sm:h-26 object-contain rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs bg-white flex-shrink-0 pointer-events-none" />' +
+               '<span class="absolute inset-0 bg-slate-900/40 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-lg pointer-events-none">🔍 Zoom</span>' +
+             '</div>'
+          : '<div class="w-16 h-22 sm:w-20 sm:h-26 rounded-lg border border-slate-200 dark:border-slate-700 bg-violet-50 dark:bg-violet-950/60 text-violet-600 flex items-center justify-center font-bold text-xs flex-shrink-0">PDF</div>';
 
         card.innerHTML = `
           <div class="flex items-center justify-between gap-3">
@@ -2509,12 +2663,12 @@
             </div>
 
             <div class="flex items-center gap-1.5 shrink-0">
-              <button onclick="toggleMergeItemPages(${index})" class="px-3 py-1.5 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-600 transition shadow-2xs flex items-center gap-1">
+              <button data-action="toggle-pages" data-index="${index}" class="px-3 py-1.5 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-600 transition shadow-2xs flex items-center gap-1">
                 <span>${item.expanded ? '▲ Hide Pages' : '👁️ View Pages'}</span>
               </button>
-              ${index > 0 ? `<button onclick="moveMergeFile(${index}, -1)" class="p-1.5 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 shadow-2xs" title="Move Up">↑</button>` : ''}
-              ${index < mergeItems.length - 1 ? `<button onclick="moveMergeFile(${index}, 1)" class="p-1.5 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 shadow-2xs" title="Move Down">↓</button>` : ''}
-              <button onclick="removeMergeFile(${index})" class="p-1.5 bg-white dark:bg-slate-700 hover:bg-rose-50 text-rose-500 hover:text-rose-700 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 shadow-2xs" title="Remove">✕</button>
+              ${index > 0 ? `<button data-action="move-up" data-index="${index}" class="p-1.5 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 shadow-2xs" title="Move Up">↑</button>` : ''}
+              ${index < mergeItems.length - 1 ? `<button data-action="move-down" data-index="${index}" class="p-1.5 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 shadow-2xs" title="Move Down">↓</button>` : ''}
+              <button data-action="remove" data-index="${index}" class="p-1.5 bg-white dark:bg-slate-700 hover:bg-rose-50 text-rose-500 hover:text-rose-700 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-600 shadow-2xs" title="Remove">✕</button>
             </div>
           </div>
 
@@ -2524,13 +2678,13 @@
               <span class="text-xs font-bold text-slate-600 dark:text-slate-300 mb-2.5 block">Document Pages (${item.numPages} Pages) — Click any page to inspect full resolution:</span>
               <div class="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
                 ${item.allPages && item.allPages.length 
-                  ? item.allPages.map(p => `
-                    <div onclick="openPageZoomModal('${p.dataUrl}', '${escapeHtml(item.file.name)} - Page ${p.pageNum}')" class="group shrink-0 w-32 sm:w-36 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-center shadow-2xs cursor-pointer hover:border-violet-500 transition">
-                      <div class="relative w-full aspect-[3/4] bg-slate-50 dark:bg-slate-950 rounded-lg overflow-hidden mb-1.5 border border-slate-100 dark:border-slate-800">
+                  ? item.allPages.map((p, pIdx) => `
+                    <div data-action="zoom-page" data-doc-index="${index}" data-page-index="${pIdx}" class="group shrink-0 w-32 sm:w-36 p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-center shadow-2xs cursor-pointer hover:border-violet-500 transition">
+                      <div class="relative w-full aspect-[3/4] bg-slate-50 dark:bg-slate-950 rounded-lg overflow-hidden mb-1.5 border border-slate-100 dark:border-slate-800 pointer-events-none">
                         <img src="${p.dataUrl}" alt="Page ${p.pageNum}" class="w-full h-full object-contain" />
                         <span class="absolute inset-0 bg-slate-900/40 text-white text-[11px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-lg">🔍 Zoom</span>
                       </div>
-                      <span class="text-[11px] text-slate-600 dark:text-slate-300 font-bold">Page ${p.pageNum}</span>
+                      <span class="text-[11px] text-slate-600 dark:text-slate-300 font-bold pointer-events-none">Page ${p.pageNum}</span>
                     </div>
                   `).join('')
                   : '<div class="text-xs text-slate-400 py-3">Rendering high-resolution pages in memory...</div>'
@@ -2539,8 +2693,39 @@
             </div>
           ` : ''}
         `;
+
         listEl.appendChild(card);
       });
+
+      if (!listEl._hasListener) {
+        listEl._hasListener = true;
+        listEl.addEventListener('click', (e) => {
+          const target = e.target.closest('[data-action]');
+          if (!target) return;
+          const action = target.dataset.action;
+          const idx = parseInt(target.dataset.index, 10);
+          if (action === 'zoom-cover') {
+            const it = mergeItems[idx];
+            if (it && it.coverDataUrl) openPageZoomModal(it.coverDataUrl, escapeHtml(it.file.name) + ' - Page 1');
+          } else if (action === 'toggle-pages') {
+            toggleMergeItemPages(idx);
+          } else if (action === 'move-up') {
+            moveMergeFile(idx, -1);
+          } else if (action === 'move-down') {
+            moveMergeFile(idx, 1);
+          } else if (action === 'remove') {
+            removeMergeFile(idx);
+          } else if (action === 'zoom-page') {
+            const docIdx = parseInt(target.dataset.docIndex, 10);
+            const pageIdx = parseInt(target.dataset.pageIndex, 10);
+            const it = mergeItems[docIdx];
+            if (it && it.allPages && it.allPages[pageIdx]) {
+              const p = it.allPages[pageIdx];
+              openPageZoomModal(p.dataUrl, escapeHtml(it.file.name) + ' - Page ' + p.pageNum);
+            }
+          }
+        });
+      }
     }
 
     function moveMergeFile(index, dir) {
@@ -2642,7 +2827,7 @@
     }
 
     async function handleSplitFileSelection(file) {
-      if (!file || !file.name.toLowerCase().endsWith('.pdf')) return alert('Please upload a valid PDF file.');
+      if (!await validateSinglePdfFile(file, 'Split')) return;
       splitFile = file;
 
       const card = document.getElementById('split-controls-card');
@@ -2655,22 +2840,29 @@
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
         splitTotalPages = pdf.numPages;
-        document.getElementById('split-doc-pages').innerText = `${splitTotalPages} Pages`;
+
+        if (splitTotalPages > 300) {
+          alert('File has ' + splitTotalPages + ' pages. Maximum allowed is 300 pages.');
+          card.classList.add('hidden');
+          return;
+        }
+
+        document.getElementById('split-doc-pages').innerText = splitTotalPages + ' Pages';
 
         splitPagesState = [];
         grid.innerHTML = '';
 
         for (let i = 1; i <= splitTotalPages; i++) {
           const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 0.75 }); // Ultra-crisp resolution so statement text & numbers are sharp
+          const viewport = page.getViewport({ scale: 0.75 });
           const canvas = document.createElement('canvas');
           canvas.width = viewport.width;
           canvas.height = viewport.height;
           const ctx = canvas.getContext('2d');
           await page.render({ canvasContext: ctx, viewport }).promise;
           const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          disposeCanvas(canvas);
 
-          // Default: select first page or all if <= 3
           const isSelected = i <= Math.min(splitTotalPages, 3);
           splitPagesState.push({ pageNum: i, selected: isSelected, dataUrl });
         }
@@ -2679,7 +2871,7 @@
         syncSplitRangeInputFromState();
       } catch (e) {
         console.error('Split render error:', e);
-        grid.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Failed to load pages: ${escapeHtml(e.message)}</div>`;
+        grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Failed to load pages: ' + escapeHtml(e.message) + '</div>';
       }
     }
 
@@ -2690,28 +2882,55 @@
 
       splitPagesState.forEach(p => {
         const card = document.createElement('div');
-        card.id = `split-card-${p.pageNum}`;
-        card.onclick = () => toggleSplitPage(p.pageNum);
-        card.className = `group relative cursor-pointer p-3 rounded-2xl border-2 transition-all duration-150 flex flex-col items-center bg-white dark:bg-slate-900 ${
+        card.id = 'split-card-' + p.pageNum;
+        card.dataset.action = 'toggle-card';
+        card.dataset.pageNum = p.pageNum;
+        card.className = 'group relative cursor-pointer p-3 rounded-2xl border-2 transition-all duration-150 flex flex-col items-center bg-white dark:bg-slate-900 ' + (
           p.selected 
             ? 'border-blue-500 shadow-md ring-2 ring-blue-500/20 bg-blue-50/20 dark:bg-blue-950/20' 
             : 'border-slate-200 dark:border-slate-800 opacity-65 hover:opacity-95 hover:border-slate-300 dark:hover:border-slate-700'
-        }`;
+        );
 
         card.innerHTML = `
           <div class="flex items-center justify-between w-full mb-2 px-1">
             <div class="flex items-center gap-2">
-              <input type="checkbox" ${p.selected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSplitPage(${p.pageNum})" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer" />
+              <input type="checkbox" ${p.selected ? 'checked' : ''} data-action="checkbox" data-page-num="${p.pageNum}" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer" />
               <span class="text-xs font-bold ${p.selected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}">Page ${p.pageNum}</span>
             </div>
-            <button onclick="event.stopPropagation(); openPageZoomModal('${p.dataUrl}', 'Page ${p.pageNum} Inspection (${escapeHtml(splitFile.name)})')" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition shadow-2xs" title="Inspect page full screen">🔍 Zoom</button>
+            <button data-action="zoom" data-page-num="${p.pageNum}" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition shadow-2xs" title="Inspect page full screen">🔍 Zoom</button>
           </div>
-          <div class="w-full aspect-[3/4] bg-white rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-2xs">
+          <div class="w-full aspect-[3/4] bg-white rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-2xs pointer-events-none">
             <img src="${p.dataUrl}" alt="Page ${p.pageNum}" class="w-full h-full object-contain pointer-events-none" />
           </div>
         `;
         grid.appendChild(card);
       });
+
+      if (!grid._hasListener) {
+        grid._hasListener = true;
+        grid.addEventListener('click', (e) => {
+          const zoomBtn = e.target.closest('[data-action="zoom"]');
+          if (zoomBtn) {
+            e.stopPropagation();
+            const pageNum = parseInt(zoomBtn.dataset.pageNum, 10);
+            const p = splitPagesState.find(x => x.pageNum === pageNum);
+            if (p) openPageZoomModal(p.dataUrl, 'Page ' + pageNum + ' Inspection (' + (splitFile ? escapeHtml(splitFile.name) : 'Document') + ')');
+            return;
+          }
+          const chk = e.target.closest('[data-action="checkbox"]');
+          if (chk) {
+            e.stopPropagation();
+            const pageNum = parseInt(chk.dataset.pageNum, 10);
+            toggleSplitPage(pageNum);
+            return;
+          }
+          const card = e.target.closest('[data-action="toggle-card"]');
+          if (card) {
+            const pageNum = parseInt(card.dataset.pageNum, 10);
+            toggleSplitPage(pageNum);
+          }
+        });
+      }
 
       updateSplitSummary();
     }
@@ -2897,7 +3116,7 @@
     }
 
     async function handleOrganizeFileSelection(file) {
-      if (!file || !file.name.toLowerCase().endsWith('.pdf')) return alert('Please upload a valid PDF file.');
+      if (!await validateSinglePdfFile(file, 'Organize')) return;
       organizeFile = file;
 
       const card = document.getElementById('organize-workspace-card');
@@ -2909,47 +3128,77 @@
       try {
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
+        const numPages = pdf.numPages;
+
+        if (numPages > 300) {
+          alert('File has ' + numPages + ' pages. Maximum allowed is 300 pages.');
+          card.classList.add('hidden');
+          return;
+        }
+
         organizePages = [];
         grid.innerHTML = '';
 
-        for (let i = 1; i <= pdf.numPages; i++) {
+        for (let i = 1; i <= numPages; i++) {
           const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 0.75 }); // Crisp resolution for statement text
+          const viewport = page.getViewport({ scale: 0.75 });
 
           const canvas = document.createElement('canvas');
           canvas.width = viewport.width;
           canvas.height = viewport.height;
           await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
           const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          disposeCanvas(canvas);
 
           organizePages.push({ pageNum: i, rotation: 0, deleted: false, origIndex: i - 1, dataUrl });
 
           const cell = document.createElement('div');
-          cell.id = `org-page-card-${i}`;
+          cell.id = 'org-page-card-' + i;
           cell.className = 'bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col items-center gap-2.5 shadow-2xs transition';
 
           cell.innerHTML = `
             <div class="flex items-center justify-between w-full text-xs font-bold text-slate-700 dark:text-slate-300">
               <span class="font-mono">Page ${i}</span>
               <div class="flex items-center gap-2">
-                <button onclick="openPageZoomModal('${dataUrl}', 'Page ${i} Inspection (${escapeHtml(organizeFile.name)})')" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition shadow-2xs" title="Inspect full screen">🔍 Zoom</button>
-                <button onclick="deleteOrganizePage(${i})" class="text-rose-500 hover:text-rose-700 font-bold text-xs" title="Delete Page">🗑️</button>
+                <button data-action="zoom" data-page="${i}" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition shadow-2xs" title="Inspect full screen">🔍 Zoom</button>
+                <button data-action="delete" data-page="${i}" class="text-rose-500 hover:text-rose-700 font-bold text-xs" title="Delete Page">🗑️</button>
               </div>
             </div>
-            <div class="w-full aspect-[3/4] bg-slate-50 dark:bg-slate-950 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-2xs">
+            <div class="w-full aspect-[3/4] bg-slate-50 dark:bg-slate-950 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-2xs pointer-events-none">
               <img id="org-img-${i}" src="${dataUrl}" alt="Page ${i}" class="w-full h-full object-contain transition-transform duration-200 pointer-events-none" />
             </div>
             <div class="flex items-center justify-center gap-2 w-full pt-1">
-              <button onclick="rotateOrganizePage(${i}, -90)" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate -90°">⟲ -90°</button>
-              <button onclick="rotateOrganizePage(${i}, 90)" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate +90°">⟳ +90°</button>
+              <button data-action="rotate-left" data-page="${i}" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate -90°">⟲ -90°</button>
+              <button data-action="rotate-right" data-page="${i}" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate +90°">⟳ +90°</button>
             </div>
           `;
           grid.appendChild(cell);
         }
+
+        if (!grid._hasListener) {
+          grid._hasListener = true;
+          grid.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            const action = btn.dataset.action;
+            const pageNum = parseInt(btn.dataset.page, 10);
+            if (action === 'zoom') {
+              const p = organizePages.find(x => x.pageNum === pageNum);
+              if (p) openPageZoomModal(p.dataUrl, 'Page ' + pageNum + ' Inspection (' + (organizeFile ? escapeHtml(organizeFile.name) : 'Document') + ')');
+            } else if (action === 'delete') {
+              deleteOrganizePage(pageNum);
+            } else if (action === 'rotate-left') {
+              rotateOrganizePage(pageNum, -90);
+            } else if (action === 'rotate-right') {
+              rotateOrganizePage(pageNum, 90);
+            }
+          });
+        }
+
         updateOrganizeActiveCount();
       } catch (e) {
         console.error('Organize render error:', e);
-        grid.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Could not render thumbnails: ${escapeHtml(e.message)}</div>`;
+        grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Could not render thumbnails: ' + escapeHtml(e.message) + '</div>';
       }
     }
 
@@ -3117,8 +3366,8 @@
       });
     }
 
-    function handleUnlockFileSelection(file) {
-      if (!file || !file.name.toLowerCase().endsWith('.pdf')) return alert('Please upload a PDF file.');
+    async function handleUnlockFileSelection(file) {
+      if (!await validateSinglePdfFile(file, 'Unlock')) return;
       unlockFile = file;
       document.getElementById('unlock-doc-name').innerText = file.name;
       document.getElementById('unlock-password-input').value = '';
@@ -3175,8 +3424,8 @@
       });
     }
 
-    function handleWatermarkFileSelection(file) {
-      if (!file || !file.name.toLowerCase().endsWith('.pdf')) return alert('Please upload a valid PDF file.');
+    async function handleWatermarkFileSelection(file) {
+      if (!await validateSinglePdfFile(file, 'Watermark')) return;
       watermarkFile = file;
       document.getElementById('watermark-doc-name').innerText = file.name;
       document.getElementById('watermark-controls-card').classList.remove('hidden');
@@ -3285,12 +3534,14 @@
           await page.render({ canvasContext: ctx, viewport: viewport }).promise;
           const jpgUrl = canvas.toDataURL('image/jpeg', 0.92);
           const pngUrl = canvas.toDataURL('image/png');
+          disposeCanvas(canvas);
 
+          const safeCleanName = (file.name || 'document').replace(/\.pdf$/i, '').replace(/[^a-zA-Z0-9_-]/g, '_');
           const card = document.createElement('div');
           card.className = 'p-3 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl flex flex-col justify-between';
           card.innerHTML = `
-            <div class="aspect-[3/4] bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-2 shadow-2xs">
-              <img src="${jpgUrl}" alt="Page ${pageNum}" class="w-full h-full object-contain" />
+            <div class="aspect-[3/4] bg-white dark:bg-slate-900 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-2 shadow-2xs pointer-events-none">
+              <img src="${jpgUrl}" alt="Page ${pageNum}" class="w-full h-full object-contain pointer-events-none" />
             </div>
             <div>
               <div class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
@@ -3298,10 +3549,10 @@
                 <span class="text-[10px] text-slate-400 font-mono">${Math.round(viewport.width)}x${Math.round(viewport.height)}</span>
               </div>
               <div class="grid grid-cols-2 gap-1.5">
-                <a href="${jpgUrl}" download="${file.name.replace(/\.pdf$/i, '')}_page_${pageNum}.jpg" class="text-center text-[11px] font-bold py-1.5 px-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-lg shadow-2xs transition">
+                <a href="${jpgUrl}" download="${safeCleanName}_page_${pageNum}.jpg" class="text-center text-[11px] font-bold py-1.5 px-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-lg shadow-2xs transition">
                   JPG
                 </a>
-                <a href="${pngUrl}" download="${file.name.replace(/\.pdf$/i, '')}_page_${pageNum}.png" class="text-center text-[11px] font-bold py-1.5 px-2 bg-slate-700 hover:bg-slate-800 text-white rounded-lg shadow-2xs transition">
+                <a href="${pngUrl}" download="${safeCleanName}_page_${pageNum}.png" class="text-center text-[11px] font-bold py-1.5 px-2 bg-slate-700 hover:bg-slate-800 text-white rounded-lg shadow-2xs transition">
                   PNG
                 </a>
               </div>
@@ -3352,13 +3603,25 @@
       });
     }
 
-    function addImagesToImg2PdfList(files) {
-      const validFiles = files.filter(f => /\.(jpe?g|png)$/i.test(f.name) || (f.type && f.type.startsWith('image/')));
-      if (!validFiles.length) {
-        alert('Please select JPEG or PNG images.');
-        return;
+    async function addImagesToImg2PdfList(files) {
+      if (!files || !files.length) return;
+      if (img2pdfSelectedFiles.length + files.length > 25) {
+        return alert('Maximum 25 images can be selected at once.');
       }
-      img2pdfSelectedFiles = img2pdfSelectedFiles.concat(validFiles);
+
+      for (const file of files) {
+        if (file.size > 50 * 1024 * 1024) {
+          alert('Image "' + file.name + '" exceeds the 50MB limit.');
+          continue;
+        }
+        const magic = await validateFileMagicBytes(file);
+        if (!magic.valid || (magic.format !== 'png' && magic.format !== 'jpeg' && magic.format !== 'webp' && magic.format !== 'bmp')) {
+          alert('File "' + file.name + '" is not a supported image format (JPEG or PNG).');
+          continue;
+        }
+        img2pdfSelectedFiles.push(file);
+      }
+
       renderImg2PdfPreviews();
     }
 
@@ -3391,14 +3654,25 @@
       img2pdfSelectedFiles.forEach((file, idx) => {
         const item = document.createElement('div');
         item.className = 'relative group border border-slate-200 dark:border-slate-700 rounded-xl p-2 bg-slate-50 dark:bg-slate-800 text-center flex flex-col items-center justify-between';
-        const previewUrl = URL.createObjectURL(file);
+        const previewUrl = createTrackedObjectURL(file);
         item.innerHTML = `
-          <img src="${previewUrl}" alt="${file.name}" class="w-full h-20 object-cover rounded-lg mb-1" />
-          <span class="text-[10px] text-slate-600 dark:text-slate-400 truncate w-full block">${file.name}</span>
-          <button onclick="removeImg2PdfItem(${idx})" class="absolute top-1 right-1 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-rose-700 transition">×</button>
+          <img src="${previewUrl}" alt="${escapeHtml(file.name)}" class="w-full h-20 object-cover rounded-lg mb-1 pointer-events-none" />
+          <span class="text-[10px] text-slate-600 dark:text-slate-400 truncate w-full block" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
+          <button data-action="remove-img" data-index="${idx}" class="absolute top-1 right-1 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-rose-700 transition" title="Remove image">×</button>
         `;
         listEl.appendChild(item);
       });
+
+      if (!listEl._hasListener) {
+        listEl._hasListener = true;
+        listEl.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-action="remove-img"]');
+          if (btn) {
+            const idx = parseInt(btn.dataset.index, 10);
+            removeImg2PdfItem(idx);
+          }
+        });
+      }
     }
 
     async function executeConvertImagesToPdf() {
@@ -3472,8 +3746,8 @@
       });
     }
 
-    function handlePageNumberFileSelection(file) {
-      if (!file || !file.name.toLowerCase().endsWith('.pdf')) return alert('Please upload a valid PDF file.');
+    async function handlePageNumberFileSelection(file) {
+      if (!await validateSinglePdfFile(file, 'Page Number')) return;
       pageNumberFile = file;
       document.getElementById('pagenumber-doc-name').innerText = file.name;
       document.getElementById('pagenumber-controls-card').classList.remove('hidden');
@@ -3617,10 +3891,7 @@
     }
 
     async function handleCompressFileInput(file) {
-      if (!file || !/\.pdf$/i.test(file.name)) {
-        alert('Please select a valid PDF file to compress.');
-        return;
-      }
+      if (!await validateSinglePdfFile(file, 'Compress')) return;
       try {
         const buffer = await file.arrayBuffer();
         compressFileState = { file, buffer, preset: 'recommended' };
@@ -3791,10 +4062,7 @@
     }
 
     async function handleSignFileInput(file) {
-      if (!file || !/\.pdf$/i.test(file.name)) {
-        alert('Please select a valid PDF file to sign.');
-        return;
-      }
+      if (!await validateSinglePdfFile(file, 'Sign')) return;
       try {
         const buffer = await file.arrayBuffer();
         signFileState.file = file;
@@ -3927,10 +4195,7 @@
     }
 
     async function handleProtectFileInput(file) {
-      if (!file || !/\.pdf$/i.test(file.name)) {
-        alert('Please select a valid PDF file to protect.');
-        return;
-      }
+      if (!await validateSinglePdfFile(file, 'Protect')) return;
       try {
         const buffer = await file.arrayBuffer();
         protectFileState = { file, buffer };
@@ -4037,10 +4302,7 @@
     }
 
     async function executeConvertPdfToMarkdown(file) {
-      if (!file || !/\.pdf$/i.test(file.name)) {
-        alert('Please select a valid PDF file to extract Markdown.');
-        return;
-      }
+      if (!await validateSinglePdfFile(file, 'OCR / Markdown')) return;
       try {
         const buffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
@@ -4254,27 +4516,39 @@
       if (!files || files.length === 0) return;
       const file = files[0];
 
-      // 1. MIME & Extension Validation
-      const nameLower = (file.name || '').toLowerCase();
-      const isPdf = file.type === 'application/pdf' || nameLower.endsWith('.pdf');
-      const isImg = file.type.startsWith('image/') || /.(jpe?g|png|webp|bmp|tiff?)$/i.test(nameLower);
-
-      if (!isPdf && !isImg) {
-        if (alertBox) {
-          alertBox.classList.remove('hidden');
-          alertBox.innerHTML = `⚠️ <strong>Unsupported File:</strong> Please upload a PDF bank statement or image (JPG, PNG). Detected: <code>${file.name || 'Unknown file'}</code>`;
-        }
-        return;
-      }
-
-      // 2. File Size Validation
+      // 1. File Size Validation (50MB Limit)
       const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
       if (file.size > 50 * 1024 * 1024) {
         if (alertBox) {
           alertBox.classList.remove('hidden');
-          alertBox.innerHTML = `⚠️ <strong>File Too Large:</strong> Maximum file size is 50MB. Selected file is ${fileSizeMb}MB.`;
+          alertBox.innerHTML = '⚠️ <strong>File Too Large:</strong> Maximum file size is 50MB. Selected file is ' + fileSizeMb + 'MB.';
         }
         return;
+      }
+
+      // 2. Binary Magic-Byte Signature Validation
+      const magic = await validateFileMagicBytes(file);
+      if (!magic.valid) {
+        if (alertBox) {
+          alertBox.classList.remove('hidden');
+          alertBox.innerHTML = '⚠️ <strong>Security Validation Error:</strong> ' + escapeHtml(magic.error || 'Unsupported format.') + ' Detected file: <code>' + escapeHtml(file.name || 'Unknown file') + '</code>';
+        }
+        return;
+      }
+
+      // 3. Document Page Limit Check (Max 300 Pages)
+      if (magic.format === 'pdf') {
+        try {
+          const buffer = await file.slice(0, Math.min(file.size, 1024 * 1024 * 8)).arrayBuffer();
+          const quickPdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+          if (quickPdf.numPages > 300) {
+            if (alertBox) {
+              alertBox.classList.remove('hidden');
+              alertBox.innerHTML = '⚠️ <strong>Page Limit Exceeded:</strong> Maximum supported document size is 300 pages (Detected: ' + quickPdf.numPages + ' pages). Please split document first.';
+            }
+            return;
+          }
+        } catch (e) {}
       }
 
       AppState.pendingFile = file;
@@ -4405,7 +4679,8 @@
         // Switch to Review Workspace
         document.getElementById('processing-section').classList.add('hidden');
         document.getElementById('workspace-section').classList.remove('hidden');
-        document.getElementById('btn-header-reset').classList.remove('hidden');
+        const btnHdrReset = document.getElementById('btn-header-reset') || document.getElementById('btn-purge-session');
+        if (btnHdrReset) btnHdrReset.classList.remove('hidden');
 
         populateWorkspaceUI();
 
@@ -4849,7 +5124,7 @@
         list.forEach(item => {
           const chip = document.createElement('span');
           chip.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-slate-700 shadow-2xs';
-          chip.innerHTML = `<span>📄</span> <span class="font-semibold truncate max-w-[140px]">${item.name}</span> <span class="text-[10px] text-slate-400">(${item.count} tx)</span>`;
+          chip.innerHTML = '<span>📄</span> <span class="font-semibold truncate max-w-[140px]">' + escapeHtml(item.name) + '</span> <span class="text-[10px] text-slate-400">(' + (parseInt(item.count, 10) || 0) + ' tx)</span>';
           listEl.appendChild(chip);
         });
       } catch (e) {
@@ -5654,6 +5929,7 @@ NEWFILEVERSION:102
 
     function renderTransactionsTable() {
       const tbody = document.getElementById('master-transaction-tbody');
+      if (!tbody) return;
       tbody.innerHTML = '';
 
       let list = AppState.filterOnlyIssues 
@@ -5673,7 +5949,13 @@ NEWFILEVERSION:102
       }
 
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="py-8 text-center text-slate-400 dark:text-slate-500">No transactions to display.</td></tr>`;
+        const trEmpty = document.createElement('tr');
+        const tdEmpty = document.createElement('td');
+        tdEmpty.colSpan = 10;
+        tdEmpty.className = 'py-8 text-center text-slate-400 dark:text-slate-500';
+        tdEmpty.textContent = 'No transactions to display.';
+        trEmpty.appendChild(tdEmpty);
+        tbody.appendChild(trEmpty);
         return;
       }
 
@@ -5682,26 +5964,78 @@ NEWFILEVERSION:102
         tr.className = "hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition group";
         const isFlagged = tx.status === '⚠️';
 
-        tr.innerHTML = `
-          <td class="py-2.5 px-3 text-center">
-            <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${isFlagged ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'}" title="${tx.validationNote || 'Verified'}">
-              ${tx.status}
-            </span>
-          </td>
-          <td class="py-2.5 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap" contenteditable="true" onblur="updateTxRow('${tx.id}', 'date', this.innerText)">${tx.date}</td>
-          <td class="py-2.5 px-4 text-slate-900 dark:text-white font-medium" contenteditable="true" onblur="updateTxRow('${tx.id}', 'description', this.innerText)">${tx.description}</td>
-          <td class="py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 font-mono" contenteditable="true" onblur="updateTxRow('${tx.id}', 'refNo', this.innerText)">${tx.refNo || '-'}</td>
-          <td class="py-2.5 px-3 text-right font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap" contenteditable="true" onblur="updateTxRow('${tx.id}', 'debit', this.innerText)">${tx.debit ? '$' + tx.debit : ''}</td>
-          <td class="py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap" contenteditable="true" onblur="updateTxRow('${tx.id}', 'credit', this.innerText)">${tx.credit ? '$' + tx.credit : ''}</td>
-          <td class="py-2.5 px-3 text-right text-slate-700 dark:text-slate-300 whitespace-nowrap" contenteditable="true" onblur="updateTxRow('${tx.id}', 'balance', this.innerText)">${tx.balance ? '$' + tx.balance : ''}</td>
-          <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 text-[11px]" contenteditable="true" onblur="updateTxRow('${tx.id}', 'txnType', this.innerText)">${tx.txnType}</td>
-          <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 text-[11px]" contenteditable="true" onblur="updateTxRow('${tx.id}', 'category', this.innerText)">${tx.category}</td>
-          <td class="py-2.5 px-2 text-center">
-            <button onclick="removeTxRow('${tx.id}')" class="text-slate-300 dark:text-slate-600 group-hover:text-rose-600 dark:group-hover:text-rose-400 p-1 font-bold text-base transition leading-none focus:outline-none focus:ring-2 focus:ring-rose-500 rounded" title="Delete transaction" aria-label="Delete transaction row">×</button>
-          </td>
-        `;
+        // 1. Status Column
+        const tdStatus = document.createElement('td');
+        tdStatus.className = "py-2.5 px-3 text-center";
+        const spanStatus = document.createElement('span');
+        spanStatus.className = 'inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ' + (
+          isFlagged ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300' : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+        );
+        spanStatus.title = tx.validationNote || 'Verified';
+        spanStatus.textContent = tx.status || '✓';
+        tdStatus.appendChild(spanStatus);
+        tr.appendChild(tdStatus);
+
+        // Helper for building XSS-safe editable content cells
+        const makeCell = (field, value, className) => {
+          const td = document.createElement('td');
+          td.className = className;
+          td.contentEditable = "true";
+          td.dataset.id = tx.id;
+          td.dataset.field = field;
+          td.textContent = value || '';
+          return td;
+        };
+
+        // 2. Date
+        tr.appendChild(makeCell('date', tx.date || '', 'py-2.5 px-3 text-slate-700 dark:text-slate-300 whitespace-nowrap'));
+        // 3. Description
+        tr.appendChild(makeCell('description', tx.description || '', 'py-2.5 px-4 text-slate-900 dark:text-white font-medium'));
+        // 4. Ref No
+        tr.appendChild(makeCell('refNo', tx.refNo || '-', 'py-2.5 px-3 text-center text-slate-500 dark:text-slate-400 font-mono'));
+        // 5. Debit
+        tr.appendChild(makeCell('debit', tx.debit ? '$' + tx.debit : '', 'py-2.5 px-3 text-right font-bold text-rose-600 dark:text-rose-400 whitespace-nowrap'));
+        // 6. Credit
+        tr.appendChild(makeCell('credit', tx.credit ? '$' + tx.credit : '', 'py-2.5 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap'));
+        // 7. Balance
+        tr.appendChild(makeCell('balance', tx.balance ? '$' + tx.balance : '', 'py-2.5 px-3 text-right text-slate-700 dark:text-slate-300 whitespace-nowrap'));
+        // 8. Type
+        tr.appendChild(makeCell('txnType', tx.txnType || '', 'py-2.5 px-3 text-slate-600 dark:text-slate-400 text-[11px]'));
+        // 9. Category
+        tr.appendChild(makeCell('category', tx.category || '', 'py-2.5 px-3 text-slate-600 dark:text-slate-400 text-[11px]'));
+
+        // 10. Actions
+        const tdAction = document.createElement('td');
+        tdAction.className = "py-2.5 px-2 text-center";
+        const btnDel = document.createElement('button');
+        btnDel.className = "tx-delete-btn text-slate-300 dark:text-slate-600 group-hover:text-rose-600 dark:group-hover:text-rose-400 p-1 font-bold text-base transition leading-none focus:outline-none focus:ring-2 focus:ring-rose-500 rounded";
+        btnDel.title = "Delete transaction";
+        btnDel.setAttribute('aria-label', 'Delete transaction row');
+        btnDel.dataset.id = tx.id;
+        btnDel.textContent = '×';
+        tdAction.appendChild(btnDel);
+        tr.appendChild(tdAction);
+
         tbody.appendChild(tr);
       });
+
+      if (!tbody._hasListeners) {
+        tbody._hasListeners = true;
+        // Delegated edit listener on cell blur / focusout
+        tbody.addEventListener('focusout', (e) => {
+          const td = e.target;
+          if (td && td.isContentEditable && td.dataset.id && td.dataset.field) {
+            updateTxRow(td.dataset.id, td.dataset.field, td.textContent || '');
+          }
+        });
+        // Delegated delete listener
+        tbody.addEventListener('click', (e) => {
+          const btn = e.target.closest('.tx-delete-btn');
+          if (btn && btn.dataset.id) {
+            removeTxRow(btn.dataset.id);
+          }
+        });
+      }
     }
 
     
@@ -5788,18 +6122,112 @@ NEWFILEVERSION:102
       renderTransactionsTable();
     }
 
-    function resetApplication() {
+    function purgeAllSessionData() {
+      // 1. Revoke all active object/blob URLs
+      revokeAllObjectURLs();
+
+      // 2. Reset Core State
       AppState.files = [];
       AppState.pendingFile = null;
-      AppState.transactions = [];
       AppState.rawLines = [];
       AppState.rawText = '';
-      document.getElementById('preview-stage').classList.add('hidden');
-      document.getElementById('intake-section').classList.remove('hidden');
-      document.getElementById('processing-section').classList.add('hidden');
-      document.getElementById('workspace-section').classList.add('hidden');
-      document.getElementById('btn-header-reset').classList.add('hidden');
-      document.getElementById('universal-file-input').value = '';
+      AppState.transactions = [];
+      if (AppState.undoStack) AppState.undoStack = [];
+      if (AppState.redoStack) AppState.redoStack = [];
+      AppState.metadata = {
+        bankName: 'Universal Statement',
+        accountHolder: '',
+        accountNumber: '',
+        periodStart: '',
+        periodEnd: '',
+        openingBalance: 0,
+        closingBalance: 0,
+        currency: '$',
+        pageCount: 1
+      };
+      AppState.audit = {
+        totalCredits: 0,
+        totalDebits: 0,
+        discrepancyCount: 0,
+        isReconciled: true
+      };
+      AppState.filterOnlyIssues = false;
+
+      // 3. Reset Sub-tool states
+      mergeItems = [];
+      splitFile = null;
+      splitPagesState = [];
+      organizeFile = null;
+      organizePages = [];
+      img2pdfSelectedFiles = [];
+      pdf2imgSelectedFile = null;
+      watermarkFile = null;
+      signFile = null;
+      signPages = [];
+      compressFile = null;
+      protectFile = null;
+      unlockFile = null;
+      pageNumberFile = null;
+
+      // 4. Reset File Inputs
+      const fileInputs = [
+        'universal-file-input', 'merge-file-input', 'split-file-input',
+        'organize-file-input', 'unlock-file-input', 'watermark-file-input',
+        'pdf2img-file-input', 'img2pdf-file-input', 'pagenumber-file-input',
+        'compress-file-input', 'sign-file-input', 'protect-file-input', 'markdown-file-input'
+      ];
+      fileInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+
+      // 5. Clean DOM elements and canvases
+      const domTargets = [
+        'master-transaction-tbody', 'merge-file-list', 'split-thumbnails-grid',
+        'org-thumbnails-grid', 'pdf2img-gallery-grid', 'img2pdf-previews-list'
+      ];
+      domTargets.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+      });
+
+      const signCanvas = document.getElementById('sign-pad-canvas');
+      if (signCanvas) disposeCanvas(signCanvas);
+
+      // Hide workspace sections and return to intake/dashboard
+      const ws = document.getElementById('workspace-section');
+      const ps = document.getElementById('preview-stage');
+      const proc = document.getElementById('processing-section');
+      const is = document.getElementById('intake-section');
+      const btnReset = document.getElementById('btn-header-reset');
+      const mergeContainer = document.getElementById('merge-files-container');
+      const splitControls = document.getElementById('split-controls-card');
+      const orgControls = document.getElementById('organize-workspace-card');
+      const img2pdfControls = document.getElementById('img2pdf-controls-card');
+
+      if (ws) ws.classList.add('hidden');
+      if (ps) ps.classList.add('hidden');
+      if (proc) proc.classList.add('hidden');
+      if (is) is.classList.remove('hidden');
+      if (btnReset) btnReset.classList.add('hidden');
+      if (mergeContainer) mergeContainer.classList.add('hidden');
+      if (splitControls) splitControls.classList.add('hidden');
+      if (orgControls) orgControls.classList.add('hidden');
+      if (img2pdfControls) img2pdfControls.classList.add('hidden');
+
+      // 6. Purge recent files from localStorage
+      clearRecentFiles();
+
+      // 7. Switch back to Dashboard view
+      switchPortalTool('dashboard');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 8. Confirm purge with toast
+      showNotificationToast('🧹 All loaded files, session RAM buffers, and recent metadata have been cleared.', 'success');
+    }
+
+    function resetApplication() {
+      purgeAllSessionData();
     }
 
     // ================= MODULE 7: ENTERPRISE EXPORT ENGINE =================
@@ -5933,12 +6361,12 @@ NEWFILEVERSION:102
       if (btnDoc) {
         btnDoc.addEventListener('click', () => {
           if (!AppState.transactions.length) return;
-          const bankName = document.getElementById('meta-bank-name').value || 'BANK STATEMENT';
-          const acctHolder = document.getElementById('meta-account-holder').value || '';
-          const acctNo = document.getElementById('meta-account-number').value || '';
-          const pStart = document.getElementById('meta-period-start').value || '';
-          const pEnd = document.getElementById('meta-period-end').value || '';
-          const curr = AppState.metadata.currency || '$';
+          const bankName = escapeHtml(document.getElementById('meta-bank-name').value || 'BANK STATEMENT');
+          const acctHolder = escapeHtml(document.getElementById('meta-account-holder').value || '');
+          const acctNo = escapeHtml(document.getElementById('meta-account-number').value || '');
+          const pStart = escapeHtml(document.getElementById('meta-period-start').value || '');
+          const pEnd = escapeHtml(document.getElementById('meta-period-end').value || '');
+          const curr = escapeHtml(AppState.metadata.currency || '$');
 
           const docContent = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
@@ -5990,29 +6418,17 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
   <tbody>
     ${AppState.transactions.map(t => `
       <tr>
-        <td>${t.date}</td>
-        <td>${t.description}</td>
-        <td>${t.refNo || '-'}</td>
-        <td class="amount">${t.debit ? curr + t.debit : ''}</td>
-        <td class="amount">${t.credit ? curr + t.credit : ''}</td>
-        <td class="amount">${t.balance ? curr + t.balance : ''}</td>
+        <td>${escapeHtml(t.date || '')}</td>
+        <td>${escapeHtml(t.description || '')}</td>
+        <td>${escapeHtml(t.refNo || '-')}</td>
+        <td class="amount">${t.debit ? escapeHtml(curr) + escapeHtml(t.debit) : ''}</td>
+        <td class="amount">${t.credit ? escapeHtml(curr) + escapeHtml(t.credit) : ''}</td>
+        <td class="amount">${t.balance ? escapeHtml(curr) + escapeHtml(t.balance) : ''}</td>
       </tr>
     `).join('')}
   </tbody>
 </table>
 <p style="font-size: 9pt; color: #94a3b8; margin-top: 25px; text-align: center;">Generated locally in browser memory via Statement2Sheet. Zero cloud storage or tracking.</p>
-
-  
-      <div class="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-100 dark:bg-slate-950/60">
-        <img id="zoom-modal-img" src="" alt="Zoomed Page" class="max-h-[76vh] w-auto object-contain rounded-lg shadow-md border border-slate-200 dark:border-slate-800 bg-white" />
-      </div>
-      <div class="px-5 py-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-        <span>💡 <em>Press Esc to close, or use Left/Right arrows to flip through pages</em></span>
-        <button onclick="closePageZoomModal()" class="px-4 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg transition text-xs">Close</button>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>`;
 
