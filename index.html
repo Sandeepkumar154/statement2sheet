@@ -84,15 +84,22 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       
       <!-- Brand Logo -->
-      <a href="#" class="flex items-center space-x-2.5 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-xl" aria-label="WeLovePDF Home">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 via-red-500 to-rose-600 flex items-center justify-center text-white shadow-sm flex-shrink-0" aria-hidden="true">
-          <span class="text-xl select-none">❤️</span>
+      <a href="#" onclick="switchPortalTool('dashboard')" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-xl group transition" aria-label="WeLovePDF Home">
+        <!-- Precision Geometric Monogram Icon -->
+        <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0" aria-hidden="true">
+          <svg class="w-5 h-5 text-white dark:text-slate-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 11.8C10.8 10.3 8.5 10.8 8.5 12.5C8.5 14.3 12 17 12 17C12 17 15.5 14.3 15.5 12.5C15.5 10.8 13.2 10.3 12 11.8Z" fill="#F43F5E"/>
+          </svg>
         </div>
-        <div>
-          <span class="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center">
-            We<span class="text-rose-500">Love</span><span>PDF</span>
+        <div class="flex flex-col">
+          <span class="text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+            We<span class="text-rose-600 dark:text-rose-500">Love</span>PDF
           </span>
-          <span class="hidden sm:inline-block text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">100% In-Browser Privacy</span>
+          <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase -mt-0.5">
+            Financial &amp; PDF Intelligence
+          </span>
         </div>
       </a>
 
@@ -662,7 +669,15 @@
     </section>
 
     <!-- ================= STAGE 2: INTERACTIVE FILE PREVIEW & VALIDATION CARD ================= -->
-    <section id="preview-stage" class="hidden max-w-2xl mx-auto my-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+    <section id="preview-stage" class="hidden max-w-2xl mx-auto my-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <button onclick="resetConverterToIntake()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs transition">
+          <span>&larr;</span> <span>Back to Upload</span>
+        </button>
+        <button onclick="switchPortalTool('dashboard')" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-semibold">
+          All Tools
+        </button>
+      </div>
       <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">Document Verification & Inspection</h3>
       <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">Confirm your document details before starting the extraction engine.</p>
 
@@ -738,7 +753,25 @@
     </section>
 
     <!-- ================= STAGE 4: WORKSPACE / REVIEW & EXPORT ================= -->
-    <section id="workspace-section" class="hidden space-y-6">
+    <section id="workspace-section" class="hidden space-y-6 animate-fadeIn">
+
+      <!-- Navigation & Action Bar: Easy 1-Click Return -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3 shadow-2xs">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <button onclick="switchPortalTool('dashboard')" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs transition">
+            <span>&larr;</span> <span>All Tools</span>
+          </button>
+          <button onclick="resetConverterToIntake()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs transition">
+            <span>↻</span> <span>Convert Another Statement</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Live Statement Workspace</span>
+          </span>
+        </div>
+      </div>
 
       <!-- Header Audit Summary Bar -->
       <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6 transition-colors">
@@ -1243,18 +1276,23 @@
 
   <!-- ================= WE LOVE PDF FOOTER ================= -->
   <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <span class="text-base select-none">❤️</span>
-        <span class="font-black text-slate-900 dark:text-white text-sm tracking-tight">We<span class="text-rose-500">Love</span>PDF</span>
-        <span class="text-[11px] text-slate-400">• Every Bank Statement & PDF Tool in One Place</span>
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-6 h-6 rounded-lg bg-slate-900 dark:bg-white flex items-center justify-center shadow-2xs flex-shrink-0">
+          <svg class="w-3.5 h-3.5 text-white dark:text-slate-900" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 11.8C10.8 10.3 8.5 10.8 8.5 12.5C8.5 14.3 12 17 12 17C12 17 15.5 14.3 15.5 12.5C15.5 10.8 13.2 10.3 12 11.8Z" fill="#F43F5E"/>
+          </svg>
+        </div>
+        <span class="font-black text-slate-900 dark:text-white text-sm tracking-tight">We<span class="text-rose-600 dark:text-rose-500">Love</span>PDF</span>
+        <span class="text-[11px] text-slate-400">• Financial &amp; PDF In-Memory Platform</span>
       </div>
-      <div class="flex items-center gap-3 text-[11px] flex-wrap justify-center">
-        <span>🔒 Zero Server Uploads</span>
+      <div class="flex items-center gap-3 text-[11px] flex-wrap justify-center font-medium">
+        <span>🔒 100% Client-Side In-Memory</span>
         <span>•</span>
-        <span>⚡ 100% In-Memory Processing</span>
+        <span>Zero Server Uploads</span>
         <span>•</span>
-        <span>© 2026 WeLovePDF. Free Forever.</span>
+        <span>© 2026 WeLovePDF. All Rights Reserved.</span>
       </div>
     </div>
   </footer>
@@ -1316,6 +1354,23 @@
     
         // ================= MODULE: PORTAL VIEW SWITCHER (iLovePDF Style) =================
     let currentPortalTool = 'dashboard';
+
+    
+    // Navigation Controller: Return to Intake Screen
+    function resetConverterToIntake() {
+      AppState.transactions = [];
+      AppState.pendingFile = null;
+      const ws = document.getElementById('workspace-section');
+      const ps = document.getElementById('preview-stage');
+      const is = document.getElementById('intake-section');
+      const proc = document.getElementById('processing-section');
+      if (ws) ws.classList.add('hidden');
+      if (ps) ps.classList.add('hidden');
+      if (proc) proc.classList.add('hidden');
+      if (is) is.classList.remove('hidden');
+      switchPortalTool('excel');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     function switchPortalTool(toolName) {
       currentPortalTool = toolName;
