@@ -117,12 +117,21 @@ async function runTests() {
     '--no-default-browser-check',
     '--disable-gpu',
     '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
     `http://127.0.0.1:${SERVER_PORT}/index.html`
   ]);
 
+  browserProc.stderr.on('data', d => {
+    const s = d.toString();
+    if (!s.includes('DevTools listening') && !s.includes('Bluetooth')) {
+      // console.warn('[BROWSER_STDERR]', s.trim());
+    }
+  });
+
   let connected = false;
   let targets = [];
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 40; i++) {
     await sleep(500);
     try {
       targets = await fetchJson(`http://127.0.0.1:${CDP_PORT}/json/list`);
