@@ -66,8 +66,50 @@
       background-color: rgba(16, 185, 129, 0.1);
       border-radius: 4px;
     }
+    svg {
+      max-width: 100%;
+    }
     .focus-ring {
       @apply focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900;
+    }
+    @keyframes slideDownFade {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -16px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes slideBackFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .animate-mega-slide-down {
+      animation: slideDownFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-view-slide-in {
+      animation: slideInFromRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .animate-view-slide-back {
+      animation: slideBackFromLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
@@ -87,7 +129,7 @@
       <a href="#" onclick="switchPortalTool('dashboard')" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-xl group transition shrink-0" aria-label="WeLovePDF Home">
         <!-- Precision Geometric Monogram Icon -->
         <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0" aria-hidden="true">
-          <svg class="w-5 h-5 text-white dark:text-slate-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="w-5 h-5 text-white dark:text-slate-900" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M12 11.8C10.8 10.3 8.5 10.8 8.5 12.5C8.5 14.3 12 17 12 17C12 17 15.5 14.3 15.5 12.5C15.5 10.8 13.2 10.3 12 11.8Z" fill="#F43F5E"/>
@@ -162,17 +204,14 @@
         </button>
       </nav>
 
-      <!-- Controls, Login/Signup & Theme Toggle -->
+      <!-- Controls, Privacy Trust Badge & Theme Toggle -->
       <div class="flex items-center gap-2 sm:gap-3">
         
-        <!-- Auth Pills (iLovePDF Style) -->
-        <button onclick="openAuthModal('login')" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-rose-600 px-3 py-1.5 rounded-lg transition hidden sm:inline-block">
-          Login
-        </button>
-        <button onclick="openAuthModal('signup')" class="text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl shadow-sm transition hover:scale-[1.02] flex items-center gap-1">
-          <span>Sign up</span>
-          <span class="text-[10px] bg-rose-700/80 px-1.5 py-0.2 rounded font-extrabold">Free</span>
-        </button>
+        <!-- 100% Free & Private Trust Pill -->
+        <div class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>100% Free · No Sign Up Required</span>
+        </div>
 
         <!-- Dark Mode Toggle Button -->
         <button id="theme-toggle" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" aria-label="Toggle dark mode" title="Toggle light/dark theme">
@@ -214,8 +253,13 @@
       </div>
     </div>
 
+    <!-- Mega Menu Backdrop Overlay (Smooth Dim & Click Outside) -->
+    <div id="mega-menu-backdrop" class="fixed inset-0 top-[65px] bg-slate-950/40 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none z-40" onclick="closeMegaMenu()" aria-hidden="true"></div>
+
     <!-- ================= ALL PDF TOOLS MEGA MENU (Exact iLovePDF Architecture) ================= -->
-    <div id="mega-menu-dropdown" class="hidden absolute top-full left-1/2 -translate-x-1/2 w-[98vw] max-w-7xl mt-1 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 animate-fadeIn select-none">
+    <div id="mega-menu-dropdown" class="hidden absolute top-full left-1/2 -translate-x-1/2 w-[98vw] max-w-7xl mt-2 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 select-none transition-all duration-300 transform -translate-y-4 opacity-0 pointer-events-none">
+      <!-- Triangle Indicator Pointer matching iLovePDF -->
+      <div class="hidden lg:block absolute -top-2 right-[28%] w-4 h-4 bg-white dark:bg-slate-900 border-t border-l border-slate-200 dark:border-slate-800 rotate-45 pointer-events-none"></div>
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-5 text-xs">
         
         <!-- Col 1: Organize PDF -->
@@ -295,7 +339,7 @@
               </button>
             </li>
             <li>
-              <button onclick="switchPortalTool('excel'); loadDemoStatement('suntrust'); closeMegaMenu();" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
+              <button onclick="switchPortalTool('excel'); closeMegaMenu();" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
                 <span class="w-6 h-6 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 flex items-center justify-center text-xs">⚡</span>
                 <div>
                   <div>QuickBooks (.QBO) WebConnect</div>
@@ -333,17 +377,6 @@
         <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-3 max-w-2xl mx-auto leading-relaxed">
           Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, unlock, and watermark PDFs with just a few clicks.
         </p>
-
-        <!-- 1-Click Interactive Demo CTA -->
-        <div class="mt-5 flex items-center justify-center gap-3 flex-wrap">
-          <button onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition hover:scale-[1.02]">
-            <span>✨ Try 1-Click Demo (SunTrust Credit Card)</span>
-            <span>&rarr;</span>
-          </button>
-          <button onclick="switchPortalTool('excel'); loadDemoStatement('wiki');" class="inline-flex items-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition">
-            <span>✨ Try 1-Click Demo (Checking Account)</span>
-          </button>
-        </div>
 
         <!-- Category Filter Pills Bar (Exact Screenshot 2 Match) -->
         <div class="mt-8 flex items-center justify-center gap-2 flex-wrap" id="dashboard-filter-bar">
@@ -446,7 +479,7 @@
         </div>
 
         <!-- Card 6: QuickBooks (.QBO) Export -->
-        <div data-category="banking intelligence" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <div data-category="banking intelligence" onclick="switchPortalTool('excel');" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -600,7 +633,7 @@
         </div>
 
         <!-- Card 17: Expense Categorizer -->
-        <div data-category="banking intelligence" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <div data-category="banking intelligence" onclick="switchPortalTool('excel');" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
@@ -932,16 +965,6 @@
         <button onclick="document.getElementById('universal-file-input').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-sm transition focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
           Choose Bank Statement File(s)
         </button>
-
-        <div class="mt-4 flex items-center justify-center gap-2.5 flex-wrap">
-          <span class="text-xs text-slate-400 font-medium">Or test instantly:</span>
-          <button type="button" onclick="event.stopPropagation(); loadDemoStatement('suntrust');" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition shadow-2xs">
-            <span>✨ Demo Credit Card</span>
-          </button>
-          <button type="button" onclick="event.stopPropagation(); loadDemoStatement('wiki');" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition shadow-2xs">
-            <span>✨ Demo Checking Account</span>
-          </button>
-        </div>
 
         <div id="upload-validation-alert" class="hidden mt-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 rounded-xl text-xs text-rose-700 dark:text-rose-300 max-w-md mx-auto text-left" role="alert">
           <!-- Dynamic validation error -->
@@ -1867,9 +1890,9 @@
           <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">FINANCIAL SUITE</h4>
           <ul class="space-y-2.5 text-xs">
             <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">3-Sheet Reconciled Excel</a></li>
-            <li><a href="#" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="hover:text-white transition">QuickBooks (.QBO) Export</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">QuickBooks (.QBO) Export</a></li>
             <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">Balance Reconciliation Audit</a></li>
-            <li><a href="#" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="hover:text-white transition">Expense Categorizer</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">Expense Categorizer</a></li>
             <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">Cashflow &amp; Burn Rate KPIs</a></li>
           </ul>
         </div>
@@ -1891,9 +1914,9 @@
           <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">LEGAL</h4>
           <ul class="space-y-2.5 text-xs">
             <li><a href="#trust-section" class="hover:text-white transition">Security Architecture</a></li>
-            <li><a href="#" onclick="openAuthModal('privacy')" class="hover:text-white transition">Privacy Policy</a></li>
-            <li><a href="#" onclick="openAuthModal('terms')" class="hover:text-white transition">Terms &amp; Conditions</a></li>
-            <li><a href="#" onclick="openAuthModal('cookies')" class="hover:text-white transition">Cookies Policy</a></li>
+            <li><a href="#trust-section" class="hover:text-white transition">Privacy Policy (Zero Data Retention)</a></li>
+            <li><a href="#trust-section" class="hover:text-white transition">Terms &amp; Conditions</a></li>
+            <li><a href="#trust-section" class="hover:text-white transition">Cookies Policy (Zero Cookies)</a></li>
             <li><a href="#trust-section" class="hover:text-white transition">Zero Server Retention</a></li>
           </ul>
         </div>
@@ -1904,7 +1927,7 @@
           <ul class="space-y-2.5 text-xs mb-6">
             <li><a href="#" onclick="switchPortalTool('dashboard')" class="hover:text-white transition">About Us</a></li>
             <li><a href="https://github.com/Sandeepkumar154/statement2sheet" target="_blank" class="hover:text-white transition">GitHub Open Source</a></li>
-            <li><a href="#" onclick="openAuthModal('contact')" class="hover:text-white transition">Contact Us</a></li>
+            <li><a href="https://github.com/Sandeepkumar154/statement2sheet/issues" target="_blank" class="hover:text-white transition">Contact &amp; Issues</a></li>
             <li><span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800">● 100% Operational</span></li>
           </ul>
           
@@ -1947,52 +1970,6 @@
     </div>
   </footer>
 
-  <!-- ================= AUTH & USER PREFERENCES MODAL ================= -->
-  <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center hidden animate-fadeIn p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
-      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
-      <div class="text-center mb-6">
-        <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        </div>
-        <h3 class="text-xl font-black text-slate-900 dark:text-white" id="auth-modal-title">WeLovePDF is 100% Free!</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">No login or subscription required. All tools run client-side in your device memory with zero limits.</p>
-      </div>
-
-      <!-- Instant Setup Preferences -->
-      <div class="space-y-4 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Preferred Currency for Statement Analytics:</label>
-          <select id="pref-currency" class="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:ring-2 focus:ring-rose-500">
-            <option value="$" selected>$ USD / International ($)</option>
-            <option value="€">€ EUR (€)</option>
-            <option value="£">£ GBP (£)</option>
-            <option value="₹">₹ INR (₹)</option>
-            <option value="C$">C$ CAD ($)</option>
-            <option value="A$">A$ AUD ($)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Default Bank Export Format:</label>
-          <select id="pref-export" class="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:ring-2 focus:ring-rose-500">
-            <option value="xlsx" selected>Multi-Sheet Excel (.XLSX with Reconciliation)</option>
-            <option value="qbo">QuickBooks Web Connect (.QBO)</option>
-            <option value="csv">Standard CSV (.CSV)</option>
-          </select>
-        </div>
-
-        <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300">
-          <span class="font-bold">🔒 Zero-Knowledge Architecture:</span>
-          <span> Your preferences are saved strictly in your local browser storage. We never collect email, cookies, or track your identity.</span>
-        </div>
-
-        <button onclick="saveUserPreferences()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow transition mt-2">
-          Save Settings &amp; Start Using Tools
-        </button>
-      </div>
-    </div>
-  </div>
 
 
   <!-- ================= UNIVERSAL CONVERTER ENGINE SCRIPT ================= -->
@@ -2073,11 +2050,20 @@
     function toggleMegaMenu(event) {
       if (event) event.stopPropagation();
       const menu = document.getElementById('mega-menu-dropdown');
+      const backdrop = document.getElementById('mega-menu-backdrop');
       const chevron = document.getElementById('mega-chevron');
       if (!menu) return;
-      const isClosed = menu.classList.contains('hidden');
+      const isClosed = menu.classList.contains('hidden') || menu.classList.contains('opacity-0');
       if (isClosed) {
         menu.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          menu.classList.remove('-translate-y-4', 'opacity-0', 'pointer-events-none');
+          menu.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        });
+        if (backdrop) {
+          backdrop.classList.remove('opacity-0', 'pointer-events-none');
+          backdrop.classList.add('opacity-100', 'pointer-events-auto');
+        }
         if (chevron) chevron.classList.add('rotate-180');
         const convertMenu = document.getElementById('convert-pdf-dropdown');
         if (convertMenu) convertMenu.classList.add('hidden');
@@ -2090,9 +2076,22 @@
 
     function closeMegaMenu() {
       const menu = document.getElementById('mega-menu-dropdown');
+      const backdrop = document.getElementById('mega-menu-backdrop');
       const chevron = document.getElementById('mega-chevron');
-      if (menu) menu.classList.add('hidden');
-      if (chevron) chevron.classList.remove('rotate-180');
+      if (menu && !menu.classList.contains('hidden')) {
+        menu.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        menu.classList.add('-translate-y-4', 'opacity-0', 'pointer-events-none');
+        if (backdrop) {
+          backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+          backdrop.classList.add('opacity-0', 'pointer-events-none');
+        }
+        if (chevron) chevron.classList.remove('rotate-180');
+        setTimeout(() => {
+          if (menu.classList.contains('opacity-0')) {
+            menu.classList.add('hidden');
+          }
+        }, 280);
+      }
     }
 
     function toggleConvertDropdown(event) {
@@ -2125,51 +2124,16 @@
       }
     }
 
-    // Auth & Preferences Modal
-    function openAuthModal(mode) {
-      const modal = document.getElementById('auth-modal');
-      const title = document.getElementById('auth-modal-title');
-      if (modal) modal.classList.remove('hidden');
-      if (title) {
-        if (mode === 'login') {
-          title.textContent = 'Welcome Back to WeLovePDF!';
-        } else if (mode === 'signup') {
-          title.textContent = 'Join WeLovePDF — 100% Free!';
-        } else if (mode === 'privacy') {
-          title.textContent = 'WeLovePDF Zero-Knowledge Manifesto';
-        } else if (mode === 'terms') {
-          title.textContent = 'WeLovePDF Terms & Conditions';
-        } else {
-          title.textContent = 'WeLovePDF Free Preferences';
-        }
-      }
-      try {
-        const savedCurrency = localStorage.getItem('welovepdf_currency') || '$';
-        const savedExport = localStorage.getItem('welovepdf_export') || 'xlsx';
-        const curEl = document.getElementById('pref-currency');
-        const expEl = document.getElementById('pref-export');
-        if (curEl) curEl.value = savedCurrency;
-        if (expEl) expEl.value = savedExport;
-      } catch (e) {}
-    }
-
-    function closeAuthModal() {
-      const modal = document.getElementById('auth-modal');
-      if (modal) modal.classList.add('hidden');
-    }
-
-    function saveUserPreferences() {
-      const curEl = document.getElementById('pref-currency');
-      const expEl = document.getElementById('pref-export');
-      try {
-        if (curEl) localStorage.setItem('welovepdf_currency', curEl.value);
-        if (expEl) localStorage.setItem('welovepdf_export', expEl.value);
-      } catch (e) {}
-      closeAuthModal();
+    // User Privacy & Architecture Info Helper
+    function openAuthModal() {
+      const trustSection = document.getElementById('trust-section');
+      if (trustSection) trustSection.scrollIntoView({ behavior: 'smooth' });
       if (typeof showNotification === 'function') {
-        showNotification('✅ Preferences saved locally! All tools ready.', 'success');
+        showNotification('🛡️ WeLovePDF is 100% Free & In-Browser. No login or signup required!', 'info');
       }
     }
+    function closeAuthModal() {}
+    function saveUserPreferences() {}
 
     // Global listener for closing menus on click outside & Escape key
     if (typeof document !== 'undefined') {
@@ -2238,16 +2202,31 @@
 
       if (toolName === 'dashboard') {
         const dashboard = document.getElementById('view-dashboard');
-        if (dashboard) dashboard.classList.remove('hidden');
+        if (dashboard) {
+          dashboard.classList.remove('hidden');
+          dashboard.classList.remove('animate-view-slide-back', 'animate-view-slide-in');
+          void dashboard.offsetWidth;
+          dashboard.classList.add('animate-view-slide-back');
+        }
         if (intakeSection) intakeSection.classList.add('hidden');
         if (previewStage) previewStage.classList.add('hidden');
         if (processingSection) processingSection.classList.add('hidden');
         if (workspaceSection) workspaceSection.classList.add('hidden');
       } else if (toolName === 'excel') {
         if (!AppState.transactions || AppState.transactions.length === 0) {
-          if (intakeSection) intakeSection.classList.remove('hidden');
+          if (intakeSection) {
+            intakeSection.classList.remove('hidden');
+            intakeSection.classList.remove('animate-view-slide-in', 'animate-view-slide-back');
+            void intakeSection.offsetWidth;
+            intakeSection.classList.add('animate-view-slide-in');
+          }
         } else {
-          if (workspaceSection) workspaceSection.classList.remove('hidden');
+          if (workspaceSection) {
+            workspaceSection.classList.remove('hidden');
+            workspaceSection.classList.remove('animate-view-slide-in', 'animate-view-slide-back');
+            void workspaceSection.offsetWidth;
+            workspaceSection.classList.add('animate-view-slide-in');
+          }
         }
       } else {
         if (intakeSection) intakeSection.classList.add('hidden');
@@ -2256,7 +2235,12 @@
         if (workspaceSection) workspaceSection.classList.add('hidden');
 
         const targetView = document.getElementById(`view-${toolName}`);
-        if (targetView) targetView.classList.remove('hidden');
+        if (targetView) {
+          targetView.classList.remove('hidden');
+          targetView.classList.remove('animate-view-slide-in', 'animate-view-slide-back');
+          void targetView.offsetWidth;
+          targetView.classList.add('animate-view-slide-in');
+        }
       }
       if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') { window.scrollTo({ top: 0, behavior: 'smooth' }); }
     }
