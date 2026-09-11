@@ -1,4 +1,4 @@
 ﻿User-agent: *
 Allow: /
 
-Sitemap: https://sandy96321.github.io/statement2sheet/sitemap.xml
+Sitemap: https://sandeepkumar1549.github.io/statement2sheet/sitemap.xml
