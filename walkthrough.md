@@ -97,6 +97,9 @@ The automated test suite in [`tests/security-regression.test.js`](tests/security
 - **Commits**:
   - `3d7c590`: Strict cache-first SW, connect-src 'self', verified offline CDP suite, and accurate spec claims.
   - `3b4aebf`: Upgraded GitHub Actions CI workflow to Node.js 22 LTS (`node-version: 22`).
+  - `44a7862`: Added `walkthrough.md` to repository root and upgraded actions to v7 (`actions/checkout@v7`, `actions/setup-node@v7`).
+  - `efad1e3`: Added functional assertions for demo ingestion, financial exports, PDF tools, and Object URL registry lifecycle.
+  - `e49b484`: Added `--disable-dev-shm-usage` and CDP timeout expansion for Linux CI runner stability.
 - **Pushed Branches**: `origin/main` and `origin/master` (both in sync)
 - **Live Endpoint Verification**:
   - `https://sandeepkumar154.github.io/statement2sheet/` ➔ `HTTP 200 OK`
