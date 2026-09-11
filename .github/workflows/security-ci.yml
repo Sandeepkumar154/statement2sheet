@@ -19,13 +19,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Chromium
+      - name: Install dependencies
+        run: npm install
+
+      - name: Ensure Chromium / Chrome is available
         run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
+          if [ -x "/usr/bin/google-chrome" ]; then
+            echo "Google Chrome already installed at /usr/bin/google-chrome"
+          elif which chromium > /dev/null 2>&1; then
+            echo "Chromium already installed at $(which chromium)"
+          else
+            sudo apt-get update
+            sudo apt-get install -y chromium || sudo apt-get install -y chromium-browser || true
+          fi
 
       - name: Run Security Regression Test Suite
-        env:
-          CHROME_BIN: /usr/bin/chromium-browser
-        run: |
-          node tests/security-regression.test.js
+        run: npm test

@@ -54,9 +54,9 @@
 
 /* ----------------------------- */
 
-body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1e293b; margin: 30px; }
-h1 { font-size: 18pt; color: #0f172a; margin-bottom: 4px; }
-h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
+.report-doc { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1e293b; margin: 30px; }
+.report-doc h1 { font-size: 18pt; color: #0f172a; margin-bottom: 4px; }
+.report-doc h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
 .meta-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
 .meta-table td { padding: 4px 8px; font-size: 10pt; }
 .meta-label { font-weight: bold; color: #64748b; width: 180px; }

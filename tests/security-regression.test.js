@@ -3,6 +3,8 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs');
 
+const WebSocketClient = globalThis.WebSocket || require('ws');
+
 const BROWSER_CANDIDATES = [
   process.env.CHROME_BIN,
   process.env.EDGE_BIN,
@@ -141,7 +143,7 @@ async function runTests() {
   }
 
   const wsUrl = targets[0].webSocketDebuggerUrl;
-  const ws = new WebSocket(wsUrl);
+  const ws = new WebSocketClient(wsUrl);
   let idCounter = 1;
   const pendingRequests = new Map();
 
@@ -184,8 +186,16 @@ async function runTests() {
 
   await sendCommand('Runtime.enable');
   await sendCommand('Page.enable');
+  await sendCommand('Network.enable');
 
-  await sleep(4000);
+  // Wait until full document is loaded and parsed
+  for (let attempt = 0; attempt < 30; attempt++) {
+    try {
+      const ready = await evaluate("document.readyState === 'complete' && !!document.querySelector('[data-tool=\"merge\"]')");
+      if (ready) break;
+    } catch (e) {}
+    await sleep(300);
+  }
 
   async function evaluate(expression) {
     const res = await sendCommand('Runtime.evaluate', {
@@ -319,15 +329,108 @@ async function runTests() {
   console.log('✓ DOM Safety (Chips & Insights):', domSafetyRes);
   if (!domSafetyRes.hasChip || !domSafetyRes.hasCats) throw new Error('Safe DOM rendering test failed!');
 
-  console.log('\n--- 7. Testing PWA Offline Capabilities ---');
-  const pwaRes = await evaluate(`(() => {
+  console.log('\n--- 7. Testing PWA Offline Capabilities & Cache Contents ---');
+  await sleep(2000);
+
+  const pwaRes = await evaluate(`(async () => {
     const hasSwInNav = 'serviceWorker' in navigator;
     const manifestLink = document.querySelector('link[rel="manifest"]')?.getAttribute('href');
     const badge = document.getElementById('offline-status-badge');
-    return { hasSwInNav, manifestLink, hasBadge: !!badge };
+
+    // 1. Verify Service Worker Registration
+    let swRegistered = false;
+    try {
+      const reg = await navigator.serviceWorker.getRegistration();
+      swRegistered = !!reg;
+    } catch (e) {}
+
+    // 2. Inspect CacheStorage for 's2s-cache-v1'
+    let hasCache = false;
+    let cachedUrls = [];
+    try {
+      const names = await caches.keys();
+      hasCache = names.includes('s2s-cache-v1');
+      if (hasCache) {
+        const cache = await caches.open('s2s-cache-v1');
+        const reqs = await cache.keys();
+        cachedUrls = reqs.map(r => r.url);
+      }
+    } catch (e) {}
+
+    const hasIndex = cachedUrls.some(u => u.includes('index.html') || u.endsWith('/'));
+    const hasAppJs = cachedUrls.some(u => u.includes('app.js'));
+    const hasStyles = cachedUrls.some(u => u.includes('styles.css'));
+    const hasManifest = cachedUrls.some(u => u.includes('manifest.webmanifest'));
+
+    let matchAppJs = false;
+    try {
+      const r = await caches.match('./app.js');
+      matchAppJs = !!r;
+    } catch (e) {}
+
+    return {
+      hasSwInNav,
+      manifestLink,
+      hasBadge: !!badge,
+      swRegistered,
+      hasCache,
+      cachedCount: cachedUrls.length,
+      hasIndex,
+      hasAppJs,
+      hasStyles,
+      hasManifest,
+      matchAppJs
+    };
   })()`);
-  console.log('✓ PWA Setup:', pwaRes);
-  if (!pwaRes.manifestLink || !pwaRes.hasBadge) throw new Error('PWA setup missing manifest link or offline badge!');
+  console.log('✓ PWA Cache Inspection:', pwaRes);
+  if (!pwaRes.hasSwInNav || !pwaRes.manifestLink || !pwaRes.hasBadge) {
+    throw new Error('PWA setup missing manifest link or offline badge!');
+  }
+  if (!pwaRes.hasCache || !pwaRes.hasIndex || !pwaRes.hasAppJs || !pwaRes.matchAppJs) {
+    throw new Error('PWA CacheStorage verification failed: app shell assets missing in cache!');
+  }
+
+  // 3. Ensure Service Worker controller is active (reload if necessary)
+  const isControlled = await evaluate("!!navigator.serviceWorker.controller");
+  if (!isControlled) {
+    console.log('Reloading page to attach active service worker controller...');
+    await sendCommand('Page.reload');
+    await sleep(2500);
+  }
+  const controlledAfterReload = await evaluate("!!navigator.serviceWorker.controller");
+  console.log('✓ Service Worker Controller Active:', controlledAfterReload);
+
+
+  // 4. Emulate complete offline disconnection via CDP
+  console.log('Simulating offline network disconnection via CDP...');
+  await sendCommand('Network.emulateNetworkConditions', {
+    offline: true,
+    latency: 0,
+    downloadThroughput: 0,
+    uploadThroughput: 0
+  });
+
+  const offlineFetchRes = await evaluate(`(async () => {
+    try {
+      const res = await fetch('./app.js');
+      return { success: res.status === 200 || res.type === 'basic', status: res.status };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  })()`);
+  console.log('✓ Offline Fetch of Cached app.js (while disconnected):', offlineFetchRes);
+
+  // Restore network
+  await sendCommand('Network.emulateNetworkConditions', {
+    offline: false,
+    latency: 0,
+    downloadThroughput: -1,
+    uploadThroughput: -1
+  });
+
+  if (!offlineFetchRes.success) {
+    throw new Error('Service worker failed to serve cached app.js in offline mode!');
+  }
 
   console.log('\n--- 8. Checking Console CSP Violations ---');
   console.log('Total CSP Violations:', cspViolations.length);

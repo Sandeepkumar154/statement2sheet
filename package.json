@@ -5,5 +5,8 @@
   "scripts": {
     "test": "node tests/security-regression.test.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "ws": "^8.21.3"
+  }
 }
