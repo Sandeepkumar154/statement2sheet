@@ -1,11 +1,11 @@
-# ❤️ WeLovePDF — Every Financial & PDF Tool in One Place
+# 📊 Statement2Sheet — Every Financial & PDF Tool in One Place
 
 > **The 100% in-browser, privacy-first PDF and Bank Statement suite. Zero server uploads, zero data exfiltration, $0 hosting cost forever.**
 
 ---
 
-## 🌟 What is WeLovePDF?
-WeLovePDF combines all standard PDF tools (Merge, Split, Organize, Rotate, Unlock, Watermark, Page Numbers, Compress, PDF to JPG) with an **enterprise-grade bank statement extraction and balance reconciliation engine** that converts bank statements from any country, currency, or layout into audited 3-sheet Excel and CSV files.
+## 🌟 What is Statement2Sheet?
+Statement2Sheet combines all standard PDF tools (Merge, Split, Organize, Rotate, Unlock, Watermark, Page Numbers, Compress, PDF to JPG) with an **enterprise-grade bank statement extraction and balance reconciliation engine** that converts bank statements from any country, currency, or layout into audited 3-sheet Excel and CSV files.
 
 ---
 
