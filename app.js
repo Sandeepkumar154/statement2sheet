@@ -54,6 +54,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
     // ================= MEMORY SAFEGUARDS & OBJECT URL REGISTRY =================
     const activeObjectUrls = new Set();
+    let lastDownloadedItem = null;
 
     function createTrackedObjectURL(blob) {
       if (!blob) return '';
@@ -64,6 +65,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
     function downloadTrackedBlob(blob, filename) {
       if (!blob) return;
+      lastDownloadedItem = {
+        filename,
+        size: blob.size,
+        type: blob.type,
+        blob,
+        timestamp: Date.now()
+      };
       const url = createTrackedObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -2176,10 +2184,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
       try {
         const dataUrl = canvas.toDataURL('image/png');
-        const pngBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
-
         const pdfDoc = await PDFLib.PDFDocument.load(signFileState.buffer);
-        const sigImage = await pdfDoc.embedPng(pngBytes);
+        const sigImage = await pdfDoc.embedPng(dataUrl);
         const pages = pdfDoc.getPages();
         const pageOption = (document.getElementById('sign-page-select') || {}).value || 'last';
 
@@ -2215,6 +2221,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
           alert('Document signed successfully!');
         }
       } catch (err) {
+        window.__lastSignError = err.message || String(err);
         console.error('Sign execution error:', err);
         alert('Failed to sign PDF: ' + err.message);
       }
@@ -4459,9 +4466,9 @@ NEWFILEVERSION:102
         ];
         const wsDetails = XLSX.utils.aoa_to_sheet(detailsData);
         wsDetails['!cols'] = [{wch: 28}, {wch: 40}];
-        XLSX.utils.book_append_sheet(wb, wsDetails, "Statement_Details");
-
-        XLSX.writeFile(wb, `${bankName.replace(/\s+/g, '_')}_Statement.xlsx`);
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        downloadTrackedBlob(blob, `${bankName.replace(/\s+/g, '_')}_Statement.xlsx`);
       });
 
       // 2. Exact CSV Export (With Header Block, Transactions & Totals)
@@ -4650,7 +4657,9 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           y += 5.5;
         });
 
-        doc.save(`${AppState.metadata.bankName.replace(/\s+/g, '_')}_Clean_Statement.pdf`);
+        const blob = doc.output('blob');
+        const bName = (AppState.metadata.bankName || 'Statement').replace(/\s+/g, '_');
+        downloadTrackedBlob(blob, `${bName}_Clean_Statement.pdf`);
       });
     }
 
@@ -4782,6 +4791,9 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           break;
         case 'reset-converter':
           resetConverterToIntake();
+          break;
+        case 'load-demo':
+          loadDemoStatement(el.getAttribute('data-demo-type') || 'wiki');
           break;
         case 'export-qbo':
           exportToQBO();

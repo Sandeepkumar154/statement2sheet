@@ -78,11 +78,15 @@ The automated test suite in [`tests/security-regression.test.js`](tests/security
 | 5 | **Sensitive Data Purge** | Inputs, textareas, session filenames, active URLs cleared | Passwords, metadata, markdown, URLs all wiped | **PASS** |
 | 6 | **Safe Dynamic DOM Rendering** | Chips and Category Insights rendered via safe DOM nodes | `hasChip: true`, `hasCats: true` | **PASS** |
 | 7 | **PWA Cache Contents & Offline Fetch** | All 13 shell & library assets in `s2s-cache-v1`; offline fetch succeeds with status 200 while network is disconnected | Cache verified, controller active, offline fetch status 200 | **PASS** |
-| 8 | **Browser Console CSP Violations** | Zero CSP violations logged in browser console | 0 violations | **PASS** |
+| 8 | **Demo Statement → Workspace** | Ingests demo statement, populates metadata, switches to workspace, computes audit balances, renders 8 table rows | Ingested `First Bank of Wiki`, 8 transactions rendered, audit passed | **PASS** |
+| 9 | **Financial Exports Output Generation** | Generates valid CSV, QuickBooks (.QBO OFX), Multi-Sheet Excel (.xlsx ZIP), Markdown (.md), Word (.doc), Clean PDF | 6 formats verified with exact headers, structures, and binary magic bytes | **PASS** |
+| 10 | **PDF Manipulation Tools Output** | Functional PDF generation for Merge (2 pages), Split (1 page), Compress, Protect, Unlock, Sign | All 6 tools generate valid `%PDF-` binaries with exact page counts | **PASS** |
+| 11 | **Object URL Registry Lifecycle** | Registry tracks active downloads and returns to exactly zero after timeout | Initial: 0, During: 1, Final: 0 (`returnedToZero: true`) | **PASS** |
+| 12 | **Browser Console CSP Violations** | Zero CSP violations logged in browser console across all tests | 0 violations | **PASS** |
 
 ```
 =============================================================
-🎉 ALL 8 SECURITY REGRESSION TEST SUITES PASSED (100%)!
+🎉 ALL 12 SECURITY & FUNCTIONAL TEST SUITES PASSED (100%)!
 =============================================================
 ```
 

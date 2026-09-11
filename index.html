@@ -896,9 +896,14 @@
         <h2 class="text-lg font-bold text-slate-800 dark:text-slate-200">Drop your Bank Statement PDF or Photos here</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 mb-5">Supports digital PDFs, multi-page files, smartphone camera photos, and scans</p>
 
-        <button data-trigger-click="universal-file-input" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-sm transition focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-          Choose Bank Statement File(s)
-        </button>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button data-trigger-click="universal-file-input" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-sm transition focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+            Choose Bank Statement File(s)
+          </button>
+          <button id="btn-load-demo" data-action="load-demo" data-demo-type="wiki" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs transition flex items-center gap-2">
+            <span>✨</span> <span>Load Sample Demo</span>
+          </button>
+        </div>
 
         <div id="upload-validation-alert" class="hidden mt-4 p-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 rounded-xl text-xs text-rose-700 dark:text-rose-300 max-w-md mx-auto text-left" role="alert">
           <!-- Dynamic validation error -->

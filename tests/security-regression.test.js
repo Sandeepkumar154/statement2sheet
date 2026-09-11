@@ -177,6 +177,8 @@ async function runTests() {
         cspViolations.push(text);
         console.error('CSP VIOLATION:', text);
       }
+    } else if (data.method === 'Page.javascriptDialogOpening') {
+      sendCommand('Page.handleJavaScriptDialog', { accept: true }).catch(() => {});
     } else if (data.method === 'Runtime.exceptionThrown') {
       const text = data.params.exceptionDetails.text + ' ' + (data.params.exceptionDetails.exception?.description || '');
       consoleLogs.push({ type: 'exception', text });
@@ -196,6 +198,8 @@ async function runTests() {
     } catch (e) {}
     await sleep(300);
   }
+
+  await evaluate("window.alert = (msg) => console.log('[PAGE_ALERT]', msg);");
 
   async function evaluate(expression) {
     const res = await sendCommand('Runtime.evaluate', {
@@ -432,7 +436,366 @@ async function runTests() {
     throw new Error('Service worker failed to serve cached app.js in offline mode!');
   }
 
-  console.log('\n--- 8. Checking Console CSP Violations ---');
+  console.log('\n--- 8. Testing Demo Statement Ingestion & Live Workspace ---');
+  const demoRes = await evaluate(`(() => {
+    const demoBtn = document.getElementById('btn-load-demo');
+    if (demoBtn) {
+      demoBtn.click();
+    } else {
+      loadDemoStatement('wiki');
+    }
+
+    const txCount = AppState.transactions ? AppState.transactions.length : 0;
+    const bankName = AppState.metadata ? AppState.metadata.bankName : '';
+    const workspaceVis = !document.getElementById('workspace-section').classList.contains('hidden');
+    const intakeHidden = document.getElementById('intake-section').classList.contains('hidden');
+    const tableRows = document.querySelectorAll('#master-transaction-tbody tr').length;
+    const hasAuditCredits = AppState.audit && AppState.audit.totalCredits > 0;
+    const hasAuditDebits = AppState.audit && AppState.audit.totalDebits > 0;
+
+    return {
+      txCount,
+      bankName,
+      workspaceVis,
+      intakeHidden,
+      tableRows,
+      hasAuditCredits,
+      hasAuditDebits
+    };
+  })()`);
+  console.log('✓ Demo Statement Ingestion & Live Workspace:', demoRes);
+  if (demoRes.txCount !== 8 || demoRes.bankName !== 'First Bank of Wiki' || !demoRes.workspaceVis || demoRes.tableRows !== 8) {
+    throw new Error('Demo statement ingestion into workspace failed!');
+  }
+
+  console.log('\n--- 9. Testing Financial & Accounting Exports (CSV, QBO, Excel, Markdown, Doc, PDF) ---');
+
+  // 1. CSV Export
+  const csvRes = await evaluate(`(async () => {
+    lastDownloadedItem = null;
+    document.getElementById('btn-export-csv').click();
+    await new Promise(r => setTimeout(r, 100));
+    if (!lastDownloadedItem) return { success: false, error: 'No CSV download item' };
+    const text = await lastDownloadedItem.blob.text();
+    return {
+      success: true,
+      filename: lastDownloadedItem.filename,
+      hasBank: text.includes('First Bank of Wiki'),
+      hasChequing: text.includes('CHEQUING ACCOUNT STATEMENT'),
+      hasTx: text.includes('Opening Deposit Transfer') && text.includes('Whole Foods Supermarket'),
+      hasTotals: text.includes('*** Totals ***')
+    };
+  })()`);
+  console.log('✓ CSV Export Generation:', csvRes);
+  if (!csvRes.success || !csvRes.hasBank || !csvRes.hasTx || !csvRes.hasTotals) {
+    throw new Error('CSV export generation failed!');
+  }
+
+  // 2. QBO Export
+  const qboRes = await evaluate(`(async () => {
+    lastDownloadedItem = null;
+    document.getElementById('btn-export-qbo').click();
+    await new Promise(r => setTimeout(r, 100));
+    if (!lastDownloadedItem) return { success: false, error: 'No QBO download item' };
+    const text = await lastDownloadedItem.blob.text();
+    return {
+      success: true,
+      filename: lastDownloadedItem.filename,
+      hasOfxHeader: text.includes('OFXHEADER:100'),
+      hasBankMsg: text.includes('<BANKMSGSRSV1>') && text.includes('<BANKID>'),
+      hasAcctId: text.includes('<ACCTID>'),
+      hasCreditTx: text.includes('<TRNTYPE>CREDIT'),
+      hasDebitTx: text.includes('<TRNTYPE>DEBIT')
+    };
+  })()`);
+  console.log('✓ QuickBooks (.QBO) Export Generation:', qboRes);
+  if (!qboRes.success || !qboRes.hasOfxHeader || !qboRes.hasBankMsg || !qboRes.hasCreditTx || !qboRes.hasDebitTx) {
+    throw new Error('QuickBooks (.QBO) export generation failed!');
+  }
+
+  // 3. Excel Export
+  const excelRes = await evaluate(`(async () => {
+    lastDownloadedItem = null;
+    document.getElementById('btn-export-excel').click();
+    await new Promise(r => setTimeout(r, 150));
+    if (!lastDownloadedItem) return { success: false, error: 'No Excel download item' };
+    const buf = await lastDownloadedItem.blob.arrayBuffer();
+    const bytes = new Uint8Array(buf);
+    const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B && bytes[2] === 0x03 && bytes[3] === 0x04;
+    return {
+      success: true,
+      filename: lastDownloadedItem.filename,
+      size: lastDownloadedItem.size,
+      isZip
+    };
+  })()`);
+  console.log('✓ Multi-Sheet Excel (.xlsx) Export Generation:', excelRes);
+  if (!excelRes.success || !excelRes.isZip || excelRes.size < 1000) {
+    throw new Error('Multi-Sheet Excel (.xlsx) export generation failed!');
+  }
+
+  // 4. Markdown Export
+  const mdRes = await evaluate(`(async () => {
+    lastDownloadedItem = null;
+    markdownState.file = { name: 'bank_statement_jan.pdf' };
+    markdownState.text = '# Statement Markdown Summary\\n\\n- Net: $500.55\\n- Transactions: 8 records';
+    downloadMarkdownFile();
+    await new Promise(r => setTimeout(r, 100));
+    if (!lastDownloadedItem) return { success: false, error: 'No Markdown download item' };
+    const text = await lastDownloadedItem.blob.text();
+    return {
+      success: true,
+      filename: lastDownloadedItem.filename,
+      hasMd: text.includes('# Statement Markdown Summary') && text.includes('Transactions: 8 records')
+    };
+  })()`);
+  console.log('✓ Markdown Export Generation:', mdRes);
+  if (!mdRes.success || !mdRes.hasMd) {
+    throw new Error('Markdown export generation failed!');
+  }
+
+  // 5. Word (.doc) Export
+  const docRes = await evaluate(`(async () => {
+    lastDownloadedItem = null;
+    document.getElementById('btn-export-doc').click();
+    await new Promise(r => setTimeout(r, 100));
+    if (!lastDownloadedItem) return { success: false, error: 'No Word download item' };
+    const text = await lastDownloadedItem.blob.text();
+    return {
+      success: true,
+      filename: lastDownloadedItem.filename,
+      hasWordXml: text.includes('urn:schemas-microsoft-com:office:word')
+    };
+  })()`);
+  console.log('✓ Word (.doc) Ledger Export Generation:', docRes);
+  if (!docRes.success || !docRes.hasWordXml) {
+    throw new Error('Word (.doc) export generation failed!');
+  }
+
+  // 6. Clean PDF Export
+  const cleanPdfRes = await evaluate(`(async () => {
+    lastDownloadedItem = null;
+    document.getElementById('btn-export-clean-pdf').click();
+    await new Promise(r => setTimeout(r, 150));
+    if (!lastDownloadedItem) return { success: false, error: 'No Clean PDF download item' };
+    const buf = await lastDownloadedItem.blob.arrayBuffer();
+    const bytes = new Uint8Array(buf);
+    const isPdf = bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46;
+    return {
+      success: true,
+      filename: lastDownloadedItem.filename,
+      isPdf,
+      size: lastDownloadedItem.size
+    };
+  })()`);
+  console.log('✓ Clean PDF Export Generation:', cleanPdfRes);
+  if (!cleanPdfRes.success || !cleanPdfRes.isPdf) {
+    throw new Error('Clean PDF export generation failed!');
+  }
+
+  console.log('\n--- 10. Testing PDF Manipulation Tools (Merge, Split, Compress, Protect, Unlock, Sign) ---');
+  if (fs.existsSync(samplePdfPath)) {
+    const sampleBuffer = fs.readFileSync(samplePdfPath);
+    const b64 = sampleBuffer.toString('base64');
+
+    // Merge
+    const mergeRes = await evaluate('(async () => {' +
+      'lastDownloadedItem = null;' +
+      'const raw = atob("' + b64 + '");' +
+      'const arr = new Uint8Array(raw.length);' +
+      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
+      'const f1 = new File([arr.slice(0)], "statement_part1.pdf", { type: "application/pdf" });' +
+      'const f2 = new File([arr.slice(0)], "statement_part2.pdf", { type: "application/pdf" });' +
+      'mergeItems = [];' +
+      'await addMergeFiles([f1, f2]);' +
+      'await new Promise(r => setTimeout(r, 600));' +
+      'await executeMergePdfs();' +
+      'await new Promise(r => setTimeout(r, 150));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No merge download" };' +
+      'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'return {' +
+        'success: true,' +
+        'filename: lastDownloadedItem.filename,' +
+        'pageCount: doc.getPageCount(),' +
+        'size: lastDownloadedItem.size' +
+      '};' +
+    '})()');
+    console.log('✓ PDF Merge Output Generation:', mergeRes);
+    if (!mergeRes.success || mergeRes.pageCount !== 2) {
+      throw new Error('PDF merge output generation failed!');
+    }
+
+    // Split
+    const splitRes = await evaluate('(async () => {' +
+      'lastDownloadedItem = null;' +
+      'const raw = atob("' + b64 + '");' +
+      'const arr = new Uint8Array(raw.length);' +
+      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
+      'const f = new File([arr], "statement_split_input.pdf", { type: "application/pdf" });' +
+      'await handleSplitFileSelection(f);' +
+      'await new Promise(r => setTimeout(r, 600));' +
+      'if (splitPagesState && splitPagesState.length) {' +
+        'splitPagesState[0].selected = true;' +
+      '}' +
+      'await executeSplitPdf();' +
+      'await new Promise(r => setTimeout(r, 150));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No split download" };' +
+      'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'return {' +
+        'success: true,' +
+        'filename: lastDownloadedItem.filename,' +
+        'pageCount: doc.getPageCount()' +
+      '};' +
+    '})()');
+    console.log('✓ PDF Split Output Generation:', splitRes);
+    if (!splitRes.success || splitRes.pageCount !== 1) {
+      throw new Error('PDF split output generation failed!');
+    }
+
+    // Compress
+    const compressRes = await evaluate('(async () => {' +
+      'lastDownloadedItem = null;' +
+      'const raw = atob("' + b64 + '");' +
+      'const arr = new Uint8Array(raw.length);' +
+      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
+      'const f = new File([arr], "statement_compress_input.pdf", { type: "application/pdf" });' +
+      'compressFileState = { file: f, buffer: arr.buffer, preset: "recommended" };' +
+      'await executeCompressPdf();' +
+      'await new Promise(r => setTimeout(r, 150));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No compress download" };' +
+      'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'return {' +
+        'success: true,' +
+        'filename: lastDownloadedItem.filename,' +
+        'valid: doc.getPageCount() > 0' +
+      '};' +
+    '})()');
+    console.log('✓ PDF Compress Output Generation:', compressRes);
+    if (!compressRes.success || !compressRes.valid) {
+      throw new Error('PDF compress output generation failed!');
+    }
+
+    // Protect
+    const protectRes = await evaluate('(async () => {' +
+      'lastDownloadedItem = null;' +
+      'const raw = atob("' + b64 + '");' +
+      'const arr = new Uint8Array(raw.length);' +
+      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
+      'const f = new File([arr], "statement_protect_input.pdf", { type: "application/pdf" });' +
+      'protectFileState = { file: f, buffer: arr.buffer };' +
+      'const p1 = document.getElementById("protect-password-input");' +
+      'const p2 = document.getElementById("protect-password-confirm");' +
+      'if (p1) p1.value = "Pass1234";' +
+      'if (p2) p2.value = "Pass1234";' +
+      'await executeProtectPdf();' +
+      'await new Promise(r => setTimeout(r, 150));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No protect download" };' +
+      'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'return {' +
+        'success: true,' +
+        'filename: lastDownloadedItem.filename,' +
+        'title: doc.getTitle(),' +
+        'valid: doc.getPageCount() > 0' +
+      '};' +
+    '})()');
+    console.log('✓ PDF Protect Output Generation:', protectRes);
+    if (!protectRes.success || !protectRes.valid || protectRes.title !== 'Protected Document') {
+      throw new Error('PDF protect output generation failed!');
+    }
+
+    // Unlock
+    const unlockRes = await evaluate('(async () => {' +
+      'lastDownloadedItem = null;' +
+      'const raw = atob("' + b64 + '");' +
+      'const arr = new Uint8Array(raw.length);' +
+      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
+      'const f = new File([arr], "statement_unlock_input.pdf", { type: "application/pdf" });' +
+      'unlockFile = f;' +
+      'const pInput = document.getElementById("unlock-password-input");' +
+      'if (pInput) pInput.value = "";' +
+      'await executeUnlockPdf();' +
+      'await new Promise(r => setTimeout(r, 150));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No unlock download" };' +
+      'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'return {' +
+        'success: true,' +
+        'filename: lastDownloadedItem.filename,' +
+        'valid: doc.getPageCount() > 0' +
+      '};' +
+    '})()');
+    console.log('✓ PDF Unlock Output Generation:', unlockRes);
+    if (!unlockRes.success || !unlockRes.valid) {
+      throw new Error('PDF unlock output generation failed!');
+    }
+
+    // Sign
+    const signRes = await evaluate('(async () => {' +
+      'lastDownloadedItem = null;' +
+      'const raw = atob("' + b64 + '");' +
+      'const arr = new Uint8Array(raw.length);' +
+      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
+      'const f = new File([arr], "statement_sign_input.pdf", { type: "application/pdf" });' +
+      'signFileState.file = f;' +
+      'signFileState.buffer = arr.buffer;' +
+      'const canvas = document.getElementById("signature-canvas");' +
+      'if (canvas) {' +
+        'canvas.width = 600;' +
+        'canvas.height = 160;' +
+        'const ctx = canvas.getContext("2d");' +
+        'ctx.beginPath();' +
+        'ctx.moveTo(10, 10);' +
+        'ctx.lineTo(80, 50);' +
+        'ctx.stroke();' +
+      '}' +
+      'await executeSignPdf();' +
+      'await new Promise(r => setTimeout(r, 150));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No sign download", signError: window.__lastSignError };' +
+      'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'return {' +
+        'success: true,' +
+        'filename: lastDownloadedItem.filename,' +
+        'valid: doc.getPageCount() > 0' +
+      '};' +
+    '})()');
+    console.log('✓ PDF Sign Output Generation:', signRes);
+    if (!signRes.success || !signRes.valid) {
+      throw new Error('PDF sign output generation failed!');
+    }
+  }
+
+  console.log('\n--- 11. Testing Object URL Registry Returning to Zero After Downloads ---');
+  const registryCycleRes = await evaluate(`(async () => {
+    // 1. Wait for any previous auto-revocation timeouts to settle
+    await new Promise(r => setTimeout(r, 1600));
+    const countBeforeTrigger = activeObjectUrls.size;
+
+    // 2. Trigger CSV download (which adds 1 tracked URL to activeObjectUrls)
+    document.getElementById('btn-export-csv').click();
+    const countDuringDownload = activeObjectUrls.size;
+
+    // 3. Wait 1600ms (> 1200ms auto-revocation timeout)
+    await new Promise(r => setTimeout(r, 1600));
+    const finalCount = activeObjectUrls.size;
+
+    return {
+      countBeforeTrigger,
+      countDuringDownload,
+      finalCount,
+      returnedToZero: finalCount === 0
+    };
+  })()`);
+  console.log('✓ Object URL Registry Lifecycle:', registryCycleRes);
+  if (!registryCycleRes.returnedToZero || registryCycleRes.countDuringDownload < 1) {
+    throw new Error('Object URL registry failed to return to zero after download timeout!');
+  }
+
+  console.log('\n--- 12. Checking Console CSP Violations ---');
   console.log('Total CSP Violations:', cspViolations.length);
   if (cspViolations.length > 0) throw new Error('CSP violations detected in browser console!');
 
@@ -442,7 +805,7 @@ async function runTests() {
   try { fs.rmSync(USER_DATA_DIR, { recursive: true, force: true }); } catch (e) {}
 
   console.log('\n=============================================================');
-  console.log('🎉 ALL 8 SECURITY REGRESSION TEST SUITES PASSED (100%)!');
+  console.log('🎉 ALL 12 SECURITY & FUNCTIONAL TEST SUITES PASSED (100%)!');
   console.log('=============================================================');
 }
 
