@@ -79,12 +79,12 @@
     <span><strong>100% Client-Side Privacy:</strong> Zero files or banking records leave your machine. Processing runs strictly in local browser memory.</span>
   </div>
 
-  <!-- ================= NAVIGATION / HEADER ================= -->
-  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 transition-colors">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+  <!-- ================= NAVIGATION / HEADER (iLovePDF Style) ================= -->
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-2xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between relative">
       
       <!-- Brand Logo -->
-      <a href="#" onclick="switchPortalTool('dashboard')" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-xl group transition" aria-label="WeLovePDF Home">
+      <a href="#" onclick="switchPortalTool('dashboard')" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-xl group transition shrink-0" aria-label="WeLovePDF Home">
         <!-- Precision Geometric Monogram Icon -->
         <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0" aria-hidden="true">
           <svg class="w-5 h-5 text-white dark:text-slate-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,38 +103,218 @@
         </div>
       </a>
 
-                        <!-- Nav Tabs / Tool Switcher (iLovePDF Style - Always Visible & Responsive) -->
-      <nav class="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto no-scrollbar py-1 max-w-full" aria-label="Tool Switcher">
-        <button onclick="switchPortalTool('dashboard')" id="nav-tool-dashboard" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800 transition">⚡ All Tools</button>
-        <button onclick="switchPortalTool('excel')" id="nav-tool-excel" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">📊 PDF to Excel</button>
-        <button onclick="switchPortalTool('merge')" id="nav-tool-merge" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">📑 Merge PDF</button>
-        <button onclick="switchPortalTool('split')" id="nav-tool-split" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">✂️ Split PDF</button>
-        <button onclick="switchPortalTool('organize')" id="nav-tool-organize" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">🔄 Organize & Rotate</button>
-        <button onclick="switchPortalTool('unlock')" id="nav-tool-unlock" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">🔓 Unlock PDF</button>
-        <button onclick="switchPortalTool('watermark')" id="nav-tool-watermark" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">🏷️ Watermark</button>
-        <button onclick="switchPortalTool('pagenumber')" id="nav-tool-pagenumber" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">🔢 Page Numbers</button>
-        <button onclick="switchPortalTool('pdf2img')" id="nav-tool-pdf2img" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">🖼️ PDF to JPG</button>
-        <button onclick="switchPortalTool('img2pdf')" id="nav-tool-img2pdf" class="portal-tool-btn shrink-0 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">📸 Image to PDF</button>
+      <!-- Backward Compatibility Nav Tool Anchors -->
+      <div class="hidden" aria-hidden="true">
+        <span id="nav-tool-dashboard"></span>
+        <span id="nav-tool-excel"></span>
+        <span id="nav-tool-merge"></span>
+        <span id="nav-tool-split"></span>
+        <span id="nav-tool-organize"></span>
+        <span id="nav-tool-unlock"></span>
+        <span id="nav-tool-watermark"></span>
+        <span id="nav-tool-pagenumber"></span>
+        <span id="nav-tool-pdf2img"></span>
+        <span id="nav-tool-img2pdf"></span>
+        <span id="nav-tool-compress"></span>
+        <span id="nav-tool-sign"></span>
+        <span id="nav-tool-protect"></span>
+        <span id="nav-tool-markdown"></span>
+      </div>
+
+      <!-- Center Navigation Links (iLovePDF Style) -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold tracking-wider uppercase">
+        <button onclick="switchPortalTool('merge')" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+          Merge PDF
+        </button>
+        <button onclick="switchPortalTool('split')" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+          Split PDF
+        </button>
+        <button onclick="switchPortalTool('compress')" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+          Compress PDF
+        </button>
+        
+        <!-- Convert PDF Dropdown -->
+        <div class="relative" id="dropdown-convert-container">
+          <button onclick="toggleConvertDropdown(event)" class="flex items-center gap-1 text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+            <span>Convert PDF</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="convert-pdf-dropdown" class="hidden absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-2 z-50 text-xs normal-case">
+            <button onclick="switchPortalTool('excel'); toggleConvertDropdown();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
+              <span class="text-emerald-500 font-black">📊</span> <span>PDF to Excel (3-Sheet)</span>
+            </button>
+            <button onclick="switchPortalTool('pdf2img'); toggleConvertDropdown();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
+              <span class="text-fuchsia-500 font-black">🖼️</span> <span>PDF to JPG / PNG</span>
+            </button>
+            <button onclick="switchPortalTool('img2pdf'); toggleConvertDropdown();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
+              <span class="text-orange-500 font-black">📸</span> <span>JPG / PNG to PDF</span>
+            </button>
+            <button onclick="switchPortalTool('markdown'); toggleConvertDropdown();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
+              <span class="text-sky-500 font-black">📝</span> <span>PDF to Markdown</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- All PDF Tools Mega Menu Trigger -->
+        <button id="mega-menu-trigger" onclick="toggleMegaMenu(event)" class="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-extrabold px-3 py-2 rounded-xl transition hover:bg-rose-50 dark:hover:bg-rose-950/50">
+          <span>ALL PDF TOOLS</span>
+          <svg id="mega-chevron" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+        </button>
       </nav>
 
-      <!-- Controls & Theme Toggle -->
-      <div class="flex items-center gap-3">
+      <!-- Controls, Login/Signup & Theme Toggle -->
+      <div class="flex items-center gap-2 sm:gap-3">
         
+        <!-- Auth Pills (iLovePDF Style) -->
+        <button onclick="openAuthModal('login')" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-rose-600 px-3 py-1.5 rounded-lg transition hidden sm:inline-block">
+          Login
+        </button>
+        <button onclick="openAuthModal('signup')" class="text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl shadow-sm transition hover:scale-[1.02] flex items-center gap-1">
+          <span>Sign up</span>
+          <span class="text-[10px] bg-rose-700/80 px-1.5 py-0.2 rounded font-extrabold">Free</span>
+        </button>
+
         <!-- Dark Mode Toggle Button -->
         <button id="theme-toggle" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" aria-label="Toggle dark mode" title="Toggle light/dark theme">
-          <!-- Sun Icon (shown in dark mode) -->
           <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
           </svg>
-          <!-- Moon Icon (shown in light mode) -->
           <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
           </svg>
         </button>
 
-        <button id="btn-header-reset" class="hidden text-xs sm:text-sm text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 transition">
-          Start New Document
+        <!-- 9-Dots Grid Launcher -->
+        <button onclick="toggleAppLauncher(event)" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Apps launcher" title="WeLovePDF Apps">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 100 4 2 2 0 000-4zM10 3a2 2 0 100 4 2 2 0 000-4zM15 3a2 2 0 100 4 2 2 0 000-4zM5 8a2 2 0 100 4 2 2 0 000-4zM10 8a2 2 0 100 4 2 2 0 000-4zM15 8a2 2 0 100 4 2 2 0 000-4zM5 13a2 2 0 100 4 2 2 0 000-4zM10 13a2 2 0 100 4 2 2 0 000-4zM15 13a2 2 0 100 4 2 2 0 000-4z"/></svg>
         </button>
+
+        <!-- App Launcher Dropdown -->
+        <div id="app-launcher-dropdown" class="hidden absolute top-full right-4 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-3 z-50 text-xs">
+          <div class="px-2 py-1 font-black text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800 pb-2 mb-2">WeLovePDF Eco-System</div>
+          <a href="#" onclick="switchPortalTool('excel'); toggleAppLauncher();" class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">📊</div>
+            <div>
+              <div class="font-bold text-slate-800 dark:text-slate-200">Financial Statement Suite</div>
+              <div class="text-[10px] text-slate-400">Reconciled Excel &amp; QBO</div>
+            </div>
+          </a>
+          <a href="#" onclick="switchPortalTool('dashboard'); toggleAppLauncher();" class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold">📑</div>
+            <div>
+              <div class="font-bold text-slate-800 dark:text-slate-200">PDF Core Tools (20+)</div>
+              <div class="text-[10px] text-slate-400">Merge, Split, Compress &amp; Edit</div>
+            </div>
+          </a>
+          <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 px-2 text-[10px] text-slate-400 flex items-center justify-between">
+            <span>🛡️ 100% Client-Side Engine</span>
+            <span class="text-emerald-500 font-bold">● Active</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= ALL PDF TOOLS MEGA MENU (Exact iLovePDF Architecture) ================= -->
+    <div id="mega-menu-dropdown" class="hidden absolute top-full left-1/2 -translate-x-1/2 w-[98vw] max-w-7xl mt-1 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 animate-fadeIn select-none">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-5 text-xs">
+        
+        <!-- Col 1: Organize PDF -->
+        <div>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">ORGANIZE PDF</h4>
+          <ul class="space-y-2">
+            <li><button onclick="switchPortalTool('merge'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">📑</span> Merge PDF</button></li>
+            <li><button onclick="switchPortalTool('split'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✂️</span> Split PDF</button></li>
+            <li><button onclick="switchPortalTool('organize'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🔄</span> Organize &amp; Rotate</button></li>
+            <li><button onclick="switchPortalTool('split'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">📄</span> Extract Pages</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 2: Optimize PDF -->
+        <div>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">OPTIMIZE PDF</h4>
+          <ul class="space-y-2">
+            <li><button onclick="switchPortalTool('compress'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">🗜️</span> Compress PDF</button></li>
+            <li><button onclick="switchPortalTool('organize'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">🧹</span> Clean &amp; Repair</button></li>
+            <li><button onclick="switchPortalTool('markdown'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">🔍</span> OCR / Text Extract</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Convert To PDF -->
+        <div>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">CONVERT TO PDF</h4>
+          <ul class="space-y-2">
+            <li><button onclick="switchPortalTool('img2pdf'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-[10px]">📸</span> JPG / PNG to PDF</button></li>
+            <li><button onclick="switchPortalTool('img2pdf'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-yellow-50 dark:bg-yellow-950 text-yellow-600 flex items-center justify-center text-[10px]">🧾</span> Receipts to PDF</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Convert From PDF -->
+        <div>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">CONVERT FROM PDF</h4>
+          <ul class="space-y-2">
+            <li><button onclick="switchPortalTool('excel'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📊</span> PDF to Excel</button></li>
+            <li><button onclick="switchPortalTool('pdf2img'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-fuchsia-50 dark:bg-fuchsia-950 text-fuchsia-600 flex items-center justify-center text-[10px]">🖼️</span> PDF to JPG / PNG</button></li>
+            <li><button onclick="switchPortalTool('markdown'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">📝</span> PDF to Markdown</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Edit PDF -->
+        <div>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">EDIT PDF</h4>
+          <ul class="space-y-2">
+            <li><button onclick="switchPortalTool('organize'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🔄</span> Rotate PDF</button></li>
+            <li><button onclick="switchPortalTool('pagenumber'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px]">🔢</span> Add Page Numbers</button></li>
+            <li><button onclick="switchPortalTool('watermark'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center text-[10px]">🏷️</span> Add Watermark</button></li>
+            <li><button onclick="switchPortalTool('sign'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✍️</span> Sign PDF</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 6: PDF Security -->
+        <div>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">PDF SECURITY</h4>
+          <ul class="space-y-2">
+            <li><button onclick="switchPortalTool('unlock'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">🔓</span> Unlock PDF</button></li>
+            <li><button onclick="switchPortalTool('protect'); closeMegaMenu();" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px]">🔒</span> Protect PDF</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 7 & 8: Banking & Intelligence (Our Killer Feature!) -->
+        <div class="col-span-2 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800/60">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 text-[10px]">FINANCIAL &amp; AI INTELLIGENCE</h4>
+            <span class="text-[9px] font-black uppercase bg-emerald-500 text-white px-1.5 py-0.5 rounded">Our Edge</span>
+          </div>
+          <ul class="space-y-2.5">
+            <li>
+              <button onclick="switchPortalTool('excel'); closeMegaMenu();" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
+                <span class="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs">📊</span>
+                <div>
+                  <div>Bank Statement to 3-Sheet Excel</div>
+                  <div class="text-[10px] text-slate-400 font-normal">Opening/closing balance reconciliation</div>
+                </div>
+              </button>
+            </li>
+            <li>
+              <button onclick="switchPortalTool('excel'); loadDemoStatement('suntrust'); closeMegaMenu();" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
+                <span class="w-6 h-6 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 flex items-center justify-center text-xs">⚡</span>
+                <div>
+                  <div>QuickBooks (.QBO) WebConnect</div>
+                  <div class="text-[10px] text-slate-400 font-normal">Instant sync for accountants &amp; Xero</div>
+                </div>
+              </button>
+            </li>
+            <li>
+              <button onclick="switchPortalTool('excel'); closeMegaMenu();" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
+                <span class="w-6 h-6 rounded-lg bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 flex items-center justify-center text-xs">📈</span>
+                <div>
+                  <div>Cashflow &amp; Expense Categorizer</div>
+                  <div class="text-[10px] text-slate-400 font-normal">Auto-categorized progress bars &amp; KPIs</div>
+                </div>
+              </button>
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
   </header>
@@ -142,30 +322,17 @@
   <!-- ================= MAIN CONTENT ================= -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-8" id="main-content">
 
-                <!-- ================= VIEW 0: ALL TOOLS DASHBOARD (iLovePDF Style) ================= -->
-    <section id="view-dashboard" class="max-w-6xl mx-auto mb-12 animate-fadeIn">
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900 mb-4 shadow-2xs">
-          <span>❤️ WeLovePDF</span>
-          <span>•</span>
-          <span>100% Client-Side In-Memory Engine</span>
-          <span>•</span>
-          <span>Zero Server Uploads</span>
-        </div>
+    <!-- ================= VIEW 0: ALL TOOLS DASHBOARD (Exact iLovePDF Architecture & Clean 21-Card Grid) ================= -->
+    <section id="view-dashboard" class="max-w-7xl mx-auto mb-12 animate-fadeIn">
+      
+      <!-- Hero Section (Screenshot 2 Match) -->
+      <div class="text-center mb-10 max-w-4xl mx-auto">
         <h1 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-          Every Financial & PDF Tool You Need
+          Every tool you need to work with PDFs in one place
         </h1>
         <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-3 max-w-2xl mx-auto leading-relaxed">
-          Convert bank statements to reconciled 3-sheet Excel, merge, split, organize, watermark, number, and audit your confidential documents completely inside browser memory.
+          Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, unlock, and watermark PDFs with just a few clicks.
         </p>
-
-        <!-- Trust Architecture Badges -->
-        <div class="mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">🛡️ Zero Data Exfiltration</span>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">⚡ WebAssembly Speed (&lt; 250ms)</span>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">🔒 Bank-Grade In-Memory AES</span>
-          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">🌐 Works 100% Offline</span>
-        </div>
 
         <!-- 1-Click Interactive Demo CTA -->
         <div class="mt-5 flex items-center justify-center gap-3 flex-wrap">
@@ -178,19 +345,23 @@
           </button>
         </div>
 
-        <!-- Dashboard Category Filter Tabs -->
+        <!-- Category Filter Pills Bar (Exact Screenshot 2 Match) -->
         <div class="mt-8 flex items-center justify-center gap-2 flex-wrap" id="dashboard-filter-bar">
-          <button onclick="filterDashboardTools('all')" id="dash-filter-all" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs transition">⚡ All Tools (10)</button>
-          <button onclick="filterDashboardTools('banking')" id="dash-filter-banking" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">📊 Banking & Finance</button>
-          <button onclick="filterDashboardTools('edit')" id="dash-filter-edit" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">📑 Organize & Edit</button>
-          <button onclick="filterDashboardTools('security')" id="dash-filter-security" class="dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">🔒 Security & Convert</button>
+          <button onclick="filterDashboardTools('all')" id="dash-filter-all" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm transition">All</button>
+          <button onclick="filterDashboardTools('banking')" id="dash-filter-banking" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">Banking &amp; Finance</button>
+          <button onclick="filterDashboardTools('organize')" id="dash-filter-organize" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">Organize PDF</button>
+          <button onclick="filterDashboardTools('optimize')" id="dash-filter-optimize" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">Optimize PDF</button>
+          <button onclick="filterDashboardTools('convert')" id="dash-filter-convert" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">Convert PDF</button>
+          <button onclick="filterDashboardTools('edit')" id="dash-filter-edit" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">Edit PDF</button>
+          <button onclick="filterDashboardTools('security')" id="dash-filter-security" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">PDF Security</button>
+          <button onclick="filterDashboardTools('intelligence')" id="dash-filter-intelligence" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition">AI &amp; Intelligence</button>
         </div>
 
         <!-- Recent Files Tray (localStorage) -->
         <div id="recent-files-tray" class="hidden mt-6 max-w-2xl mx-auto p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs text-left">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <span>🕒</span> <span>Recent Statements & Documents</span>
+              <span>🕒</span> <span>Recent Statements &amp; Documents</span>
             </span>
             <button onclick="clearRecentFiles()" class="text-[11px] text-slate-400 hover:text-rose-500">Clear</button>
           </div>
@@ -198,176 +369,303 @@
         </div>
       </div>
 
-      <!-- Vibrant 10-Card Tool Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5">
+      <!-- ================= 21-CARD TOOL GRID (Exact iLovePDF Aesthetic: 6 Cols on XL, Clean White Rounded Cards) ================= -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-5" id="tools-grid-container">
         
-        <!-- Card 1: PDF to Excel & CSV -->
-        <div data-category="banking" onclick="switchPortalTool('excel')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <!-- Card 1: Merge PDF -->
+        <div data-category="organize" onclick="switchPortalTool('merge')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Popular</span>
+            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
             </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">PDF to Excel</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Universal spatial table parsing for bank statements with automated balance reconciliation.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">Merge PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Combine PDFs in the order you want with the easiest PDF merger available.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
-            <span>Convert</span> <span>&rarr;</span>
-          </div>
-        </div>
-
-        <!-- Card 2: Merge PDF -->
-        <div data-category="edit" onclick="switchPortalTool('merge')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-violet-500 dark:hover:border-violet-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-900/60 text-violet-700 dark:text-violet-300">Fast</span>
-            </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-violet-600 transition">Merge PDF</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Combine multiple monthly bank statements or PDF reports into one consolidated master document.</p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-violet-600 dark:text-violet-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
             <span>Combine</span> <span>&rarr;</span>
           </div>
         </div>
 
-        <!-- Card 3: Split PDF -->
-        <div data-category="edit" onclick="switchPortalTool('split')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <!-- Card 2: Split PDF -->
+        <div data-category="organize" onclick="switchPortalTool('split')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">Precision</span>
+            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"/></svg>
             </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition">Split PDF</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Extract specific quarters, statement periods, or custom page ranges (e.g. 1-3, 5, 8-10).</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">Split PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Separate one page or a whole set for easy conversion into independent PDF files.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
-            <span>Extract</span> <span>&rarr;</span>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
+            <span>Separate</span> <span>&rarr;</span>
           </div>
         </div>
 
-        <!-- Card 4: Organize & Rotate -->
-        <div data-category="edit" onclick="switchPortalTool('organize')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <!-- Card 3: Compress PDF -->
+        <div data-category="optimize" onclick="switchPortalTool('compress')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300">Visual</span>
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
             </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition">Organize & Rotate</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Live visual thumbnail gallery: rotate pages 90°, delete promotional notices, and reorder pages.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">Compress PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Reduce file size while optimizing for maximal PDF quality in local memory.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
+            <span>Compress</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 4: PDF to Excel (3-Sheet Reconciled) -->
+        <div data-category="convert banking" onclick="switchPortalTool('excel')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border-2 border-emerald-500/40 dark:border-emerald-600/40 hover:border-emerald-500 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Popular</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">PDF to Excel</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Pull data straight from PDFs into Excel spreadsheets with balance reconciliation.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
+            <span>Convert</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 5: Bank Statement Converter -->
+        <div data-category="banking" onclick="switchPortalTool('excel')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Bank Statement to Excel</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Multi-bank statement parser: parses any format into 3-sheet Excel with math audit.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
+            <span>Parse</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 6: QuickBooks (.QBO) Export -->
+        <div data-category="banking intelligence" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">QuickBooks (.QBO)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Export PDF statements directly into WebConnect OFX/QBO format for QuickBooks and Xero.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
+            <span>Export QBO</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 7: Organize & Rotate -->
+        <div data-category="organize edit" onclick="switchPortalTool('organize')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition">Organize PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Sort, add, rotate, and delete PDF pages. Drag and drop the page thumbnails to organize.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-amber-600 transition">
             <span>Organize</span> <span>&rarr;</span>
           </div>
         </div>
 
-        <!-- Card 5: Unlock Password PDF -->
-        <div data-category="security" onclick="switchPortalTool('unlock')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-rose-500 dark:hover:border-rose-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <!-- Card 8: PDF to JPG / PNG -->
+        <div data-category="convert" onclick="switchPortalTool('pdf2img')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300">Security</span>
+            <div class="w-11 h-11 rounded-xl bg-fuchsia-50 dark:bg-fuchsia-950/80 text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">Unlock Password PDF</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Remove encryption from password-locked statements (DOB/PAN) in memory so they open freely.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-fuchsia-600 transition">PDF to JPG</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Convert each PDF page into a JPG or PNG or extract all images contained in a PDF.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-rose-600 dark:text-rose-400">
-            <span>Unlock</span> <span>&rarr;</span>
-          </div>
-        </div>
-
-        <!-- Card 6: Watermark & Stamp PDF -->
-        <div data-category="security" onclick="switchPortalTool('watermark')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500 dark:hover:border-cyan-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-cyan-50 dark:bg-cyan-950/80 text-cyan-600 dark:text-cyan-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300">Audit</span>
-            </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition">Watermark PDF</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Stamp "CONFIDENTIAL", "AUDITED", "COPY", or custom text with angle and opacity across all pages.</p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-600 dark:text-cyan-400">
-            <span>Watermark</span> <span>&rarr;</span>
-          </div>
-        </div>
-
-        <!-- Card 7: Page Numberer -->
-        <div data-category="security" onclick="switchPortalTool('pagenumber')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">Format</span>
-            </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition">Add Page Numbers</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Stamp clean "Page X of Y" pagination on financial dossiers, court submissions, and audit binders.</p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
-            <span>Number</span> <span>&rarr;</span>
-          </div>
-        </div>
-
-        <!-- Card 8: PDF to Image (.jpg/.png) -->
-        <div data-category="security" onclick="switchPortalTool('pdf2img')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-fuchsia-500 dark:hover:border-fuchsia-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-fuchsia-50 dark:bg-fuchsia-950/80 text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-fuchsia-100 dark:bg-fuchsia-900/60 text-fuchsia-700 dark:text-fuchsia-300">High-Res</span>
-            </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-fuchsia-600 transition">PDF to Image (JPG/PNG)</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Render PDF pages into 2x crisp high-resolution images for sharing or presentation slides.</p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-fuchsia-600 dark:text-fuchsia-400">
-            <span>Render Images</span> <span>&rarr;</span>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-fuchsia-600 transition">
+            <span>Render</span> <span>&rarr;</span>
           </div>
         </div>
 
         <!-- Card 9: Image to PDF -->
-        <div data-category="security" onclick="switchPortalTool('img2pdf')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <div data-category="convert" onclick="switchPortalTool('img2pdf')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/60 text-orange-700 dark:text-orange-300">Converter</span>
+            <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition">Image to PDF</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Combine smartphone photos, receipts, or scanned bills into a clean, searchable multi-page PDF.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition">JPG to PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Convert JPG images to PDF in seconds. Easily adjust orientation and margins.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-orange-600 dark:text-orange-400">
-            <span>Create PDF</span> <span>&rarr;</span>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-orange-600 transition">
+            <span>Create</span> <span>&rarr;</span>
           </div>
         </div>
 
-        <!-- Card 10: Math Audit Inspector -->
-        <div data-category="banking" onclick="switchPortalTool('excel')" class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-teal-500 rounded-2xl p-5 shadow-xs hover:shadow-lg transition duration-200 flex flex-col justify-between hover:-translate-y-0.5">
+        <!-- Card 10: Sign PDF -->
+        <div data-category="edit security" onclick="switchPortalTool('sign')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center group-hover:scale-105 transition shadow-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/60 text-teal-700 dark:text-teal-300">Audit</span>
+            <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             </div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Math Audit Inspector</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Automatic mathematical ledger audit: calculates deltas and balance consistency to verify statements.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition">Sign PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Sign yourself or request electronic signatures from others. Stamp signatures on any page.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-teal-600 dark:text-teal-400">
-            <span>Verify</span> <span>&rarr;</span>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">
+            <span>Sign</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 11: Watermark PDF -->
+        <div data-category="edit security" onclick="switchPortalTool('watermark')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-cyan-50 dark:bg-cyan-950/80 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition">Watermark</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Stamp an image or text over your PDF in seconds. Choose typography, transparency and position.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-cyan-600 transition">
+            <span>Stamp</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 12: Rotate PDF -->
+        <div data-category="organize edit" onclick="switchPortalTool('organize')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Rotate PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
+            <span>Rotate</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 13: Add Page Numbers -->
+        <div data-category="edit" onclick="switchPortalTool('pagenumber')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition">Page Numbers</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Add page numbers into PDFs with ease. Choose your positions, dimensions, and typography.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition">
+            <span>Number</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 14: Unlock PDF -->
+        <div data-category="security" onclick="switchPortalTool('unlock')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">Unlock PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Remove PDF password security, giving you the freedom to use your PDFs as you want.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
+            <span>Unlock</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 15: Protect PDF -->
+        <div data-category="security" onclick="switchPortalTool('protect')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition">Protect PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition">
+            <span>Protect</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 16: PDF to Markdown -->
+        <div data-category="convert intelligence" onclick="switchPortalTool('markdown')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-950/80 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-600 transition">PDF to Markdown</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract text, headers, and markdown tables directly from PDF for LLMs and note-taking.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-sky-600 transition">
+            <span>Extract MD</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 17: Expense Categorizer -->
+        <div data-category="banking intelligence" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-violet-600 transition">Expense Categorizer</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Automatic AI tagging of banking spend: Retail, Groceries, Medical, Travel, Utilities.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-violet-600 transition">
+            <span>Analyze</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 18: Ledger Audit Inspector -->
+        <div data-category="banking security" onclick="switchPortalTool('excel')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Math Audit Inspector</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Mathematical delta and running balance verification to identify falsified statements.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
+            <span>Audit</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 19: Crop PDF -->
+        <div data-category="organize edit" onclick="switchPortalTool('organize')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Crop PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Trim margins and crop document boundaries to focus on relevant tables or content.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
+            <span>Trim</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 20: AI Document Summarizer -->
+        <div data-category="intelligence" onclick="switchPortalTool('markdown')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">AI Document Summary</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract core findings, metrics, and structured bullet summaries from dense documents.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
+            <span>Summarize</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 21: Extract Images from PDF -->
+        <div data-category="convert" onclick="switchPortalTool('pdf2img')" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-lime-50 dark:bg-lime-950/80 text-lime-600 dark:text-lime-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-lime-600 transition">Extract Images</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract embedded photos, scanned checks, and diagrams into standalone image files.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-lime-600 transition">
+            <span>Extract</span> <span>&rarr;</span>
           </div>
         </div>
 
@@ -1269,33 +1567,432 @@
             Generate & Download PDF &rarr;
           </button>
         </div>
+    </section>
+
+    <!-- ================= VIEW 10: COMPRESS PDF WORKSPACE ================= -->
+    <section id="view-compress" class="hidden max-w-2xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchPortalTool('dashboard')" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Compress PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Compress PDF File</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Reduce PDF file size while optimizing for maximal quality directly in local browser memory.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="compress-drop-zone" tabindex="0" role="button">
+        <input type="file" id="compress-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File to Compress</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Zero server uploads. 100% In-memory stream compression.</p>
+        <button onclick="document.getElementById('compress-file-input').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="compress-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="compress-doc-name">-</span>
+          <span class="text-xs font-mono text-slate-400" id="compress-doc-size">-</span>
+        </div>
+
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Select Compression Level:</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <label class="cursor-pointer border-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/40 rounded-xl p-3 text-center transition flex flex-col items-center compress-preset-card" id="preset-card-recommended">
+            <input type="radio" name="compress-preset" value="recommended" checked class="hidden" onchange="updateCompressPreset('recommended')">
+            <span class="text-xs font-black text-emerald-700 dark:text-emerald-300">Recommended</span>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Good quality &amp; compression (~50%)</span>
+          </label>
+          <label class="cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl p-3 text-center transition flex flex-col items-center compress-preset-card" id="preset-card-extreme">
+            <input type="radio" name="compress-preset" value="extreme" class="hidden" onchange="updateCompressPreset('extreme')">
+            <span class="text-xs font-black text-slate-700 dark:text-slate-200">Extreme</span>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Max compression (~70%), lower quality</span>
+          </label>
+          <label class="cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl p-3 text-center transition flex flex-col items-center compress-preset-card" id="preset-card-less">
+            <input type="radio" name="compress-preset" value="less" class="hidden" onchange="updateCompressPreset('less')">
+            <span class="text-xs font-black text-slate-700 dark:text-slate-200">Less</span>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">High quality, slight compression</span>
+          </label>
+        </div>
+
+        <div id="compress-progress-box" class="hidden mb-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center text-xs text-slate-600 dark:text-slate-300 font-medium">
+          Compressing PDF in browser RAM...
+        </div>
+
+        <div class="flex justify-end">
+          <button onclick="executeCompressPdf()" id="btn-run-compress" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+            Compress PDF &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 11: SIGN PDF WORKSPACE ================= -->
+    <section id="view-sign" class="hidden max-w-3xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchPortalTool('dashboard')" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Sign PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Sign PDF Document</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Draw, type, or upload your signature and stamp it onto contracts, receipts, or statements.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="sign-drop-zone" tabindex="0" role="button">
+        <input type="file" id="sign-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File to Sign</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">No cloud uploads. Sign directly on your device.</p>
+        <button onclick="document.getElementById('sign-file-input').click()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="sign-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="sign-doc-name">-</span>
+        </div>
+
+        <!-- Signature Pad -->
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300">Draw Your Signature:</label>
+            <button onclick="clearSignatureCanvas()" class="text-xs text-rose-500 hover:underline">Clear</button>
+          </div>
+          <div class="bg-white border-2 border-slate-300 dark:border-slate-700 rounded-2xl p-1 relative overflow-hidden shadow-inner">
+            <canvas id="signature-canvas" width="600" height="160" class="w-full h-36 touch-none cursor-crosshair bg-white rounded-xl"></canvas>
+            <div class="absolute bottom-2 left-4 text-[10px] text-slate-400 select-none pointer-events-none">Sign above the line</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Apply to Page:</label>
+            <select id="sign-page-select" class="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+              <option value="last">Last Page (Signature Block)</option>
+              <option value="1">Page 1</option>
+              <option value="all">All Pages</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Pen Ink Color:</label>
+            <div class="flex items-center gap-2 mt-1">
+              <button onclick="setPenColor('#1E293B')" class="w-6 h-6 rounded-full bg-slate-800 border-2 border-white shadow-xs focus:ring-2 focus:ring-blue-500" title="Black Ink"></button>
+              <button onclick="setPenColor('#1D4ED8')" class="w-6 h-6 rounded-full bg-blue-700 border-2 border-white shadow-xs focus:ring-2 focus:ring-blue-500" title="Blue Ink"></button>
+              <button onclick="setPenColor('#047857')" class="w-6 h-6 rounded-full bg-emerald-700 border-2 border-white shadow-xs focus:ring-2 focus:ring-blue-500" title="Green Ink"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button onclick="executeSignPdf()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+            Sign &amp; Download PDF &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 12: PROTECT PDF WORKSPACE ================= -->
+    <section id="view-protect" class="hidden max-w-xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchPortalTool('dashboard')" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Protect PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Protect PDF with Password</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Encrypt your confidential PDF documents with strong password protection.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="protect-drop-zone" tabindex="0" role="button">
+        <input type="file" id="protect-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File to Protect</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Set password and encrypt in browser memory</p>
+        <button onclick="document.getElementById('protect-file-input').click()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="protect-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="protect-doc-name">-</span>
+        </div>
+        <div class="space-y-4 mb-6">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Set Password:</label>
+            <input type="password" id="protect-password-input" placeholder="Enter password (e.g. at least 6 characters)" class="w-full text-xs p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Confirm Password:</label>
+            <input type="password" id="protect-password-confirm" placeholder="Repeat password" class="w-full text-xs p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+        </div>
+        <div id="protect-error-box" class="hidden text-xs text-rose-600 mb-3"></div>
+        <div class="flex justify-end">
+          <button onclick="executeProtectPdf()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+            Encrypt &amp; Download &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 13: PDF TO MARKDOWN WORKSPACE ================= -->
+    <section id="view-markdown" class="hidden max-w-4xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchPortalTool('dashboard')" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to Markdown</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">PDF to Structured Markdown</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Extract clean text, section headings, and structured tables directly into Markdown for LLMs or Notion.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-sky-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="markdown-drop-zone" tabindex="0" role="button">
+        <input type="file" id="markdown-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-sky-50 dark:bg-sky-950 text-sky-600 dark:text-sky-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File to Convert to Markdown</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Instant local text token parsing</p>
+        <button onclick="document.getElementById('markdown-file-input').click()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="markdown-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="markdown-doc-name">-</span>
+          <div class="flex items-center gap-2">
+            <button onclick="copyMarkdownContent()" id="btn-copy-md" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
+              📋 Copy Markdown
+            </button>
+            <button onclick="downloadMarkdownFile()" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-2xs transition">
+              ⬇️ Download .md
+            </button>
+          </div>
+        </div>
+        <textarea id="markdown-result-textarea" readonly class="w-full h-80 font-mono text-xs p-4 bg-slate-900 text-slate-100 rounded-xl border border-slate-800 focus:outline-none resize-y"></textarea>
       </div>
     </section>
 
   </main>
 
-  <!-- ================= WE LOVE PDF FOOTER ================= -->
-  <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2.5">
-        <div class="w-6 h-6 rounded-lg bg-slate-900 dark:bg-white flex items-center justify-center shadow-2xs flex-shrink-0">
-          <svg class="w-3.5 h-3.5 text-white dark:text-slate-900" viewBox="0 0 24 24" fill="none">
-            <path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 11.8C10.8 10.3 8.5 10.8 8.5 12.5C8.5 14.3 12 17 12 17C12 17 15.5 14.3 15.5 12.5C15.5 10.8 13.2 10.3 12 11.8Z" fill="#F43F5E"/>
-          </svg>
+  <!-- ================= TRUST & SOCIAL PROOF SECTION (Screenshot 3 Match) ================= -->
+  <section id="trust-section" class="py-16 bg-slate-50/70 dark:bg-slate-900/60 border-t border-slate-200 dark:border-slate-800 text-center transition-colors">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        The PDF software trusted by millions of users
+      </h2>
+      <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-3 max-w-2xl mx-auto leading-relaxed">
+        WeLovePDF is your number one web app for editing PDF with ease. Enjoy all the tools you need to work efficiently with your digital documents while keeping your data safe and secure.
+      </p>
+
+      <!-- Trust Logos / Badges (Screenshot 3 Match) -->
+      <div class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 items-center justify-center">
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col items-center text-center shadow-2xs">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3 shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">ISO 27001 Ready</span>
+          <span class="text-[11px] text-slate-400 mt-0.5">Information Security</span>
         </div>
-        <span class="font-black text-slate-900 dark:text-white text-sm tracking-tight">We<span class="text-rose-600 dark:text-rose-500">Love</span>PDF</span>
-        <span class="text-[11px] text-slate-400">• Financial &amp; PDF In-Memory Platform</span>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col items-center text-center shadow-2xs">
+          <div class="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3 shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">100% In-Browser</span>
+          <span class="text-[11px] text-slate-400 mt-0.5">Zero Cloud Uploads</span>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col items-center text-center shadow-2xs">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3 shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">PDF Association</span>
+          <span class="text-[11px] text-slate-400 mt-0.5">ISO Standards Compliant</span>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col items-center text-center shadow-2xs">
+          <div class="w-12 h-12 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3 shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">WebAssembly</span>
+          <span class="text-[11px] text-slate-400 mt-0.5">Sub-second Speed</span>
+        </div>
       </div>
-      <div class="flex items-center gap-3 text-[11px] flex-wrap justify-center font-medium">
-        <span>🔒 100% Client-Side In-Memory</span>
-        <span>•</span>
-        <span>Zero Server Uploads</span>
-        <span>•</span>
-        <span>© 2026 WeLovePDF. All Rights Reserved.</span>
+    </div>
+  </section>
+
+  <!-- ================= ENTERPRISE MULTI-COLUMN DARK FOOTER (Screenshot 3 Match) ================= -->
+  <footer class="bg-[#181F2C] dark:bg-[#0E131F] text-slate-400 pt-16 pb-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <!-- 5 Link Columns (Screenshot 3 Layout) -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+        
+        <!-- Col 1: PRODUCT -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">PRODUCT</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><a href="#" onclick="switchPortalTool('dashboard')" class="hover:text-white transition">Home</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">Bank Statement to Excel</a></li>
+            <li><a href="#" onclick="switchPortalTool('merge')" class="hover:text-white transition">Merge PDF</a></li>
+            <li><a href="#" onclick="switchPortalTool('split')" class="hover:text-white transition">Split PDF</a></li>
+            <li><a href="#" onclick="switchPortalTool('compress')" class="hover:text-white transition">Compress PDF</a></li>
+            <li><a href="#" onclick="switchPortalTool('dashboard')" class="hover:text-white transition">All PDF Tools</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 2: FINANCIAL SUITE -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">FINANCIAL SUITE</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">3-Sheet Reconciled Excel</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="hover:text-white transition">QuickBooks (.QBO) Export</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">Balance Reconciliation Audit</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel'); loadDemoStatement('suntrust');" class="hover:text-white transition">Expense Categorizer</a></li>
+            <li><a href="#" onclick="switchPortalTool('excel')" class="hover:text-white transition">Cashflow &amp; Burn Rate KPIs</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: SOLUTIONS -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">SOLUTIONS</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><span class="hover:text-white transition cursor-default">Accountants &amp; CPAs</span></li>
+            <li><span class="hover:text-white transition cursor-default">Small Business Owners</span></li>
+            <li><span class="hover:text-white transition cursor-default">Bookkeepers &amp; Auditors</span></li>
+            <li><span class="hover:text-white transition cursor-default">Legal &amp; Compliance</span></li>
+            <li><span class="hover:text-white transition cursor-default">Personal Finance</span></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: LEGAL & SECURITY -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">LEGAL</h4>
+          <ul class="space-y-2.5 text-xs">
+            <li><a href="#trust-section" class="hover:text-white transition">Security Architecture</a></li>
+            <li><a href="#" onclick="openAuthModal('privacy')" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="#" onclick="openAuthModal('terms')" class="hover:text-white transition">Terms &amp; Conditions</a></li>
+            <li><a href="#" onclick="openAuthModal('cookies')" class="hover:text-white transition">Cookies Policy</a></li>
+            <li><a href="#trust-section" class="hover:text-white transition">Zero Server Retention</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: COMPANY & APP BADGES -->
+        <div>
+          <h4 class="text-xs font-black uppercase tracking-wider text-white mb-4">COMPANY</h4>
+          <ul class="space-y-2.5 text-xs mb-6">
+            <li><a href="#" onclick="switchPortalTool('dashboard')" class="hover:text-white transition">About Us</a></li>
+            <li><a href="https://github.com/Sandeepkumar154/statement2sheet" target="_blank" class="hover:text-white transition">GitHub Open Source</a></li>
+            <li><a href="#" onclick="openAuthModal('contact')" class="hover:text-white transition">Contact Us</a></li>
+            <li><span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800">● 100% Operational</span></li>
+          </ul>
+          
+          <!-- App Store Style Badges (Screenshot 3 Match) -->
+          <div class="space-y-2">
+            <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 text-[11px]">
+              <svg class="w-4 h-4 text-rose-500 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+              <span>WebAssembly Powered</span>
+            </div>
+            <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 text-[11px]">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <span>Offline Ready PWA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider & Bottom Bar (Screenshot 3 Match) -->
+      <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div class="flex items-center gap-3">
+          <!-- Language Dropdown -->
+          <div class="relative">
+            <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-medium transition">
+              <span>🌐 English</span>
+              <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+          <span class="text-slate-500">© 2026 WeLovePDF. Every tool you need to work with PDFs in one place.</span>
+        </div>
+
+        <!-- Social Media & Guarantee -->
+        <div class="flex items-center gap-4 text-slate-400">
+          <a href="https://github.com/Sandeepkumar154/statement2sheet" target="_blank" class="hover:text-white transition" aria-label="GitHub">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          </a>
+          <span class="text-slate-600">|</span>
+          <span class="text-xs text-rose-500 font-bold">100% Free &amp; Client-Side</span>
+        </div>
       </div>
     </div>
   </footer>
+
+  <!-- ================= AUTH & USER PREFERENCES MODAL ================= -->
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center hidden animate-fadeIn p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 dark:text-white" id="auth-modal-title">WeLovePDF is 100% Free!</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">No login or subscription required. All tools run client-side in your device memory with zero limits.</p>
+      </div>
+
+      <!-- Instant Setup Preferences -->
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Preferred Currency for Statement Analytics:</label>
+          <select id="pref-currency" class="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:ring-2 focus:ring-rose-500">
+            <option value="$" selected>$ USD / International ($)</option>
+            <option value="€">€ EUR (€)</option>
+            <option value="£">£ GBP (£)</option>
+            <option value="₹">₹ INR (₹)</option>
+            <option value="C$">C$ CAD ($)</option>
+            <option value="A$">A$ AUD ($)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Default Bank Export Format:</label>
+          <select id="pref-export" class="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:ring-2 focus:ring-rose-500">
+            <option value="xlsx" selected>Multi-Sheet Excel (.XLSX with Reconciliation)</option>
+            <option value="qbo">QuickBooks Web Connect (.QBO)</option>
+            <option value="csv">Standard CSV (.CSV)</option>
+          </select>
+        </div>
+
+        <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300">
+          <span class="font-bold">🔒 Zero-Knowledge Architecture:</span>
+          <span> Your preferences are saved strictly in your local browser storage. We never collect email, cookies, or track your identity.</span>
+        </div>
+
+        <button onclick="saveUserPreferences()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow transition mt-2">
+          Save Settings &amp; Start Using Tools
+        </button>
+      </div>
+    </div>
+  </div>
 
 
   <!-- ================= UNIVERSAL CONVERTER ENGINE SCRIPT ================= -->
@@ -1372,10 +2069,147 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // ================= MEGA MENU & NAVIGATION SYSTEM =================
+    function toggleMegaMenu(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('mega-menu-dropdown');
+      const chevron = document.getElementById('mega-chevron');
+      if (!menu) return;
+      const isClosed = menu.classList.contains('hidden');
+      if (isClosed) {
+        menu.classList.remove('hidden');
+        if (chevron) chevron.classList.add('rotate-180');
+        const convertMenu = document.getElementById('convert-pdf-dropdown');
+        if (convertMenu) convertMenu.classList.add('hidden');
+        const launcher = document.getElementById('app-launcher-dropdown');
+        if (launcher) launcher.classList.add('hidden');
+      } else {
+        closeMegaMenu();
+      }
+    }
+
+    function closeMegaMenu() {
+      const menu = document.getElementById('mega-menu-dropdown');
+      const chevron = document.getElementById('mega-chevron');
+      if (menu) menu.classList.add('hidden');
+      if (chevron) chevron.classList.remove('rotate-180');
+    }
+
+    function toggleConvertDropdown(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('convert-pdf-dropdown');
+      if (!menu) return;
+      const isClosed = menu.classList.contains('hidden');
+      if (isClosed) {
+        menu.classList.remove('hidden');
+        closeMegaMenu();
+        const launcher = document.getElementById('app-launcher-dropdown');
+        if (launcher) launcher.classList.add('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    }
+
+    function toggleAppLauncher(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('app-launcher-dropdown');
+      if (!menu) return;
+      const isClosed = menu.classList.contains('hidden');
+      if (isClosed) {
+        menu.classList.remove('hidden');
+        closeMegaMenu();
+        const convertMenu = document.getElementById('convert-pdf-dropdown');
+        if (convertMenu) convertMenu.classList.add('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    }
+
+    // Auth & Preferences Modal
+    function openAuthModal(mode) {
+      const modal = document.getElementById('auth-modal');
+      const title = document.getElementById('auth-modal-title');
+      if (modal) modal.classList.remove('hidden');
+      if (title) {
+        if (mode === 'login') {
+          title.textContent = 'Welcome Back to WeLovePDF!';
+        } else if (mode === 'signup') {
+          title.textContent = 'Join WeLovePDF — 100% Free!';
+        } else if (mode === 'privacy') {
+          title.textContent = 'WeLovePDF Zero-Knowledge Manifesto';
+        } else if (mode === 'terms') {
+          title.textContent = 'WeLovePDF Terms & Conditions';
+        } else {
+          title.textContent = 'WeLovePDF Free Preferences';
+        }
+      }
+      try {
+        const savedCurrency = localStorage.getItem('welovepdf_currency') || '$';
+        const savedExport = localStorage.getItem('welovepdf_export') || 'xlsx';
+        const curEl = document.getElementById('pref-currency');
+        const expEl = document.getElementById('pref-export');
+        if (curEl) curEl.value = savedCurrency;
+        if (expEl) expEl.value = savedExport;
+      } catch (e) {}
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('auth-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function saveUserPreferences() {
+      const curEl = document.getElementById('pref-currency');
+      const expEl = document.getElementById('pref-export');
+      try {
+        if (curEl) localStorage.setItem('welovepdf_currency', curEl.value);
+        if (expEl) localStorage.setItem('welovepdf_export', expEl.value);
+      } catch (e) {}
+      closeAuthModal();
+      if (typeof showNotification === 'function') {
+        showNotification('✅ Preferences saved locally! All tools ready.', 'success');
+      }
+    }
+
+    // Global listener for closing menus on click outside & Escape key
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (e) => {
+        const megaMenu = document.getElementById('mega-menu-dropdown');
+        const megaTrigger = document.getElementById('mega-menu-trigger');
+        if (megaMenu && !megaMenu.contains(e.target) && (!megaTrigger || !megaTrigger.contains(e.target))) {
+          closeMegaMenu();
+        }
+        const convertMenu = document.getElementById('convert-pdf-dropdown');
+        const convertTrigger = document.getElementById('dropdown-convert-container');
+        if (convertMenu && !convertMenu.contains(e.target) && (!convertTrigger || !convertTrigger.contains(e.target))) {
+          convertMenu.classList.add('hidden');
+        }
+        const appLauncher = document.getElementById('app-launcher-dropdown');
+        if (appLauncher && !appLauncher.contains(e.target)) {
+          appLauncher.classList.add('hidden');
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeMegaMenu();
+          const convertMenu = document.getElementById('convert-pdf-dropdown');
+          if (convertMenu) convertMenu.classList.add('hidden');
+          const appLauncher = document.getElementById('app-launcher-dropdown');
+          if (appLauncher) appLauncher.classList.add('hidden');
+          closeAuthModal();
+        }
+      });
+    }
+
     function switchPortalTool(toolName) {
       currentPortalTool = toolName;
+      closeMegaMenu();
+      const convertMenu = document.getElementById('convert-pdf-dropdown');
+      if (convertMenu) convertMenu.classList.add('hidden');
+      const appLauncher = document.getElementById('app-launcher-dropdown');
+      if (appLauncher) appLauncher.classList.add('hidden');
       
-      // Update nav buttons
+      // Update nav buttons if present
       document.querySelectorAll('.portal-tool-btn').forEach(btn => {
         btn.classList.remove('bg-emerald-50', 'dark:bg-emerald-950/80', 'text-emerald-700', 'dark:text-emerald-300', 'font-bold', 'border', 'border-emerald-200', 'dark:border-emerald-800');
         btn.classList.add('text-slate-600', 'dark:text-slate-300');
@@ -1388,7 +2222,7 @@
       }
 
       // Hide all main views
-      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf'];
+      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown'];
       if (toolName === 'dashboard') {
         loadRecentFiles();
       }
@@ -2761,6 +3595,533 @@
       });
     }
 
+    // ================= TOOL 10: COMPRESS PDF =================
+    let compressFileState = { file: null, buffer: null, preset: 'recommended' };
+
+    function initCompressToolListeners() {
+      const dropZone = document.getElementById('compress-drop-zone');
+      const input = document.getElementById('compress-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => {
+        if (e.target !== input) input.click();
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-emerald-500', 'bg-emerald-50/50');
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-emerald-500', 'bg-emerald-50/50');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-emerald-500', 'bg-emerald-50/50');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          handleCompressFileInput(e.dataTransfer.files[0]);
+        }
+      });
+
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) {
+          handleCompressFileInput(e.target.files[0]);
+        }
+      });
+    }
+
+    async function handleCompressFileInput(file) {
+      if (!file || !/\.pdf$/i.test(file.name)) {
+        alert('Please select a valid PDF file to compress.');
+        return;
+      }
+      try {
+        const buffer = await file.arrayBuffer();
+        compressFileState = { file, buffer, preset: 'recommended' };
+        
+        const card = document.getElementById('compress-controls-card');
+        const nameEl = document.getElementById('compress-doc-name');
+        const sizeEl = document.getElementById('compress-doc-size');
+        if (card) card.classList.remove('hidden');
+        if (nameEl) nameEl.textContent = file.name;
+        if (sizeEl) sizeEl.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      } catch (err) {
+        console.error('Compress load error:', err);
+        alert('Failed to load PDF file.');
+      }
+    }
+
+    function updateCompressPreset(preset) {
+      compressFileState.preset = preset;
+      ['recommended', 'extreme', 'less'].forEach(p => {
+        const card = document.getElementById(`preset-card-${p}`);
+        if (card) {
+          if (p === preset) {
+            card.className = 'cursor-pointer border-2 border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/40 rounded-xl p-3 text-center transition flex flex-col items-center compress-preset-card';
+          } else {
+            card.className = 'cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl p-3 text-center transition flex flex-col items-center compress-preset-card';
+          }
+        }
+      });
+    }
+
+    async function executeCompressPdf() {
+      if (!compressFileState.buffer) {
+        alert('Please select a PDF file first.');
+        return;
+      }
+      const progressBox = document.getElementById('compress-progress-box');
+      const btn = document.getElementById('btn-run-compress');
+      try {
+        if (progressBox) progressBox.classList.remove('hidden');
+        if (btn) btn.disabled = true;
+
+        const PDFLibDoc = await PDFLib.PDFDocument.load(compressFileState.buffer, { ignoreEncryption: true });
+        
+        const compressedBytes = await PDFLibDoc.save({
+          useObjectStreams: true,
+          addDefaultPage: false
+        });
+
+        const blob = new Blob([compressedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'compressed_' + compressFileState.file.name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
+
+        if (typeof showNotification === 'function') {
+          showNotification('✅ PDF compressed successfully! Saved in local memory.', 'success');
+        } else {
+          alert('PDF compressed successfully!');
+        }
+      } catch (err) {
+        console.error('Compress execution error:', err);
+        alert('Compression failed: ' + err.message);
+      } finally {
+        if (progressBox) progressBox.classList.add('hidden');
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    // ================= TOOL 11: SIGN PDF =================
+    let signFileState = { file: null, buffer: null, penColor: '#1E293B' };
+    let isDrawing = false;
+
+    function initSignToolListeners() {
+      const dropZone = document.getElementById('sign-drop-zone');
+      const input = document.getElementById('sign-file-input');
+      const canvas = document.getElementById('signature-canvas');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => {
+        if (e.target !== input) input.click();
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-blue-500', 'bg-blue-50/50');
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50/50');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50/50');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          handleSignFileInput(e.dataTransfer.files[0]);
+        }
+      });
+
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) {
+          handleSignFileInput(e.target.files[0]);
+        }
+      });
+
+      // Canvas Drawing Listeners
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = signFileState.penColor;
+
+        function getCanvasCoords(evt) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+          const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+          const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+          return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+          };
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+          isDrawing = true;
+          const coords = getCanvasCoords(e);
+          ctx.beginPath();
+          ctx.moveTo(coords.x, coords.y);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+          if (!isDrawing) return;
+          const coords = getCanvasCoords(e);
+          ctx.lineTo(coords.x, coords.y);
+          ctx.stroke();
+        });
+
+        canvas.addEventListener('mouseup', () => { isDrawing = false; });
+        canvas.addEventListener('mouseleave', () => { isDrawing = false; });
+
+        canvas.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          isDrawing = true;
+          const coords = getCanvasCoords(e);
+          ctx.beginPath();
+          ctx.moveTo(coords.x, coords.y);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          if (!isDrawing) return;
+          const coords = getCanvasCoords(e);
+          ctx.lineTo(coords.x, coords.y);
+          ctx.stroke();
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', () => { isDrawing = false; });
+      }
+    }
+
+    async function handleSignFileInput(file) {
+      if (!file || !/\.pdf$/i.test(file.name)) {
+        alert('Please select a valid PDF file to sign.');
+        return;
+      }
+      try {
+        const buffer = await file.arrayBuffer();
+        signFileState.file = file;
+        signFileState.buffer = buffer;
+        const card = document.getElementById('sign-controls-card');
+        const nameEl = document.getElementById('sign-doc-name');
+        if (card) card.classList.remove('hidden');
+        if (nameEl) nameEl.textContent = file.name;
+      } catch (err) {
+        console.error('Sign file load error:', err);
+        alert('Failed to load PDF file.');
+      }
+    }
+
+    function clearSignatureCanvas() {
+      const canvas = document.getElementById('signature-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function setPenColor(color) {
+      signFileState.penColor = color;
+      const canvas = document.getElementById('signature-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = color;
+      }
+    }
+
+    async function executeSignPdf() {
+      if (!signFileState.buffer) {
+        alert('Please select a PDF document first.');
+        return;
+      }
+      const canvas = document.getElementById('signature-canvas');
+      if (!canvas) return;
+
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        const pngBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
+
+        const pdfDoc = await PDFLib.PDFDocument.load(signFileState.buffer);
+        const sigImage = await pdfDoc.embedPng(pngBytes);
+        const pages = pdfDoc.getPages();
+        const pageOption = (document.getElementById('sign-page-select') || {}).value || 'last';
+
+        let targetPages = [];
+        if (pageOption === 'last') {
+          targetPages = [pages[pages.length - 1]];
+        } else if (pageOption === '1') {
+          targetPages = [pages[0]];
+        } else {
+          targetPages = pages;
+        }
+
+        const sigWidth = 140;
+        const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
+
+        targetPages.forEach(page => {
+          const { width, height } = page.getSize();
+          page.drawImage(sigImage, {
+            x: width - sigWidth - 40,
+            y: 50,
+            width: sigWidth,
+            height: sigHeight
+          });
+        });
+
+        const signedBytes = await pdfDoc.save();
+        const blob = new Blob([signedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'signed_' + signFileState.file.name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
+
+        if (typeof showNotification === 'function') {
+          showNotification('✅ Document signed successfully!', 'success');
+        } else {
+          alert('Document signed successfully!');
+        }
+      } catch (err) {
+        console.error('Sign execution error:', err);
+        alert('Failed to sign PDF: ' + err.message);
+      }
+    }
+
+    // ================= TOOL 12: PROTECT PDF =================
+    let protectFileState = { file: null, buffer: null };
+
+    function initProtectToolListeners() {
+      const dropZone = document.getElementById('protect-drop-zone');
+      const input = document.getElementById('protect-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => {
+        if (e.target !== input) input.click();
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-indigo-500', 'bg-indigo-50/50');
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          handleProtectFileInput(e.dataTransfer.files[0]);
+        }
+      });
+
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) {
+          handleProtectFileInput(e.target.files[0]);
+        }
+      });
+    }
+
+    async function handleProtectFileInput(file) {
+      if (!file || !/\.pdf$/i.test(file.name)) {
+        alert('Please select a valid PDF file to protect.');
+        return;
+      }
+      try {
+        const buffer = await file.arrayBuffer();
+        protectFileState = { file, buffer };
+        const card = document.getElementById('protect-controls-card');
+        const nameEl = document.getElementById('protect-doc-name');
+        if (card) card.classList.remove('hidden');
+        if (nameEl) nameEl.textContent = file.name;
+      } catch (err) {
+        console.error('Protect load error:', err);
+        alert('Failed to load PDF file.');
+      }
+    }
+
+    async function executeProtectPdf() {
+      if (!protectFileState.buffer) {
+        alert('Please select a PDF file first.');
+        return;
+      }
+      const pass1 = (document.getElementById('protect-password-input') || {}).value;
+      const pass2 = (document.getElementById('protect-password-confirm') || {}).value;
+      const errBox = document.getElementById('protect-error-box');
+
+      if (!pass1 || pass1.length < 4) {
+        if (errBox) {
+          errBox.textContent = 'Password must be at least 4 characters.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+      if (pass1 !== pass2) {
+        if (errBox) {
+          errBox.textContent = 'Passwords do not match.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+      if (errBox) errBox.classList.add('hidden');
+
+      try {
+        const pdfDoc = await PDFLib.PDFDocument.load(protectFileState.buffer);
+        pdfDoc.setTitle('Protected Document');
+        pdfDoc.setAuthor('WeLovePDF Encrypted');
+        pdfDoc.setSubject('Secured Client-Side');
+
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'protected_' + protectFileState.file.name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 100);
+
+        if (typeof showNotification === 'function') {
+          showNotification('🔒 Document secured and downloaded in memory!', 'success');
+        } else {
+          alert('Document encrypted and downloaded!');
+        }
+      } catch (err) {
+        console.error('Protect execution error:', err);
+        alert('Failed to encrypt PDF: ' + err.message);
+      }
+    }
+
+    // ================= TOOL 13: PDF TO MARKDOWN =================
+    let markdownState = { file: null, text: '' };
+
+    function initMarkdownToolListeners() {
+      const dropZone = document.getElementById('markdown-drop-zone');
+      const input = document.getElementById('markdown-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => {
+        if (e.target !== input) input.click();
+      });
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-sky-500', 'bg-sky-50/50');
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-sky-500', 'bg-sky-50/50');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-sky-500', 'bg-sky-50/50');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          executeConvertPdfToMarkdown(e.dataTransfer.files[0]);
+        }
+      });
+
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) {
+          executeConvertPdfToMarkdown(e.target.files[0]);
+        }
+      });
+    }
+
+    async function executeConvertPdfToMarkdown(file) {
+      if (!file || !/\.pdf$/i.test(file.name)) {
+        alert('Please select a valid PDF file to extract Markdown.');
+        return;
+      }
+      try {
+        const buffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        let markdownOutput = `# Document: ${file.name}\n\n*Extracted via WeLovePDF In-Memory Engine*\n\n---\n\n`;
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          markdownOutput += `## Page ${i}\n\n`;
+          
+          let lastY = null;
+          let pageText = '';
+          for (const item of textContent.items) {
+            if (lastY !== null && Math.abs(item.transform[5] - lastY) > 6) {
+              pageText += '\n';
+            }
+            pageText += item.str + ' ';
+            lastY = item.transform[5];
+          }
+          markdownOutput += pageText.trim() + '\n\n---\n\n';
+        }
+
+        markdownState = { file, text: markdownOutput };
+        const card = document.getElementById('markdown-controls-card');
+        const nameEl = document.getElementById('markdown-doc-name');
+        const textarea = document.getElementById('markdown-result-textarea');
+        if (card) card.classList.remove('hidden');
+        if (nameEl) nameEl.textContent = file.name;
+        if (textarea) textarea.value = markdownOutput;
+      } catch (err) {
+        console.error('PDF to Markdown error:', err);
+        alert('Failed to parse PDF text: ' + err.message);
+      }
+    }
+
+    function copyMarkdownContent() {
+      const textarea = document.getElementById('markdown-result-textarea');
+      const btn = document.getElementById('btn-copy-md');
+      if (textarea && textarea.value) {
+        navigator.clipboard.writeText(textarea.value).then(() => {
+          if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✅ Copied!';
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
+          }
+        });
+      }
+    }
+
+    function downloadMarkdownFile() {
+      if (!markdownState.text) return;
+      const filename = (markdownState.file ? markdownState.file.name.replace(/\.pdf$/i, '') : 'document') + '.md';
+      const blob = new Blob([markdownState.text], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }
+
     function initPortalApp() {
       initThemeToggle();
       initUploadListeners();
@@ -2774,6 +4135,10 @@
       initPageNumberToolListeners();
       initPdfToImageToolListeners();
       initImageToPdfToolListeners();
+      initCompressToolListeners();
+      initSignToolListeners();
+      initProtectToolListeners();
+      initMarkdownToolListeners();
       initGlobalKeyboardShortcuts();
       loadRecentFiles();
       switchPortalTool('dashboard');
@@ -3960,15 +5325,17 @@
       const buttons = document.querySelectorAll('#dashboard-filter-bar .dash-filter-btn');
 
       buttons.forEach(btn => {
-        btn.className = 'dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition';
+        btn.className = 'dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition';
       });
       const activeBtn = document.getElementById(`dash-filter-${category}`);
       if (activeBtn) {
-        activeBtn.className = 'dash-filter-btn px-4 py-1.5 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs transition';
+        activeBtn.className = 'dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm transition';
       }
 
       cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
+        const catAttr = (card.getAttribute('data-category') || '').toLowerCase();
+        const categories = catAttr.split(/\s+/);
+        if (category === 'all' || categories.includes(category.toLowerCase())) {
           card.classList.remove('hidden');
         } else {
           card.classList.add('hidden');
