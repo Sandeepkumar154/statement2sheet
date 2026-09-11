@@ -32,5 +32,5 @@ Statement2Sheet combines all standard PDF tools (Merge, Split, Organize, Rotate,
 
 ## 🚀 Live Public Deployment
 * **Live Website (Vercel)**: [https://statement2sheet.vercel.app](https://statement2sheet.vercel.app)
-* **GitHub Repository**: [https://github.com/sandeepkumar1549/statement2sheet](https://github.com/sandeepkumar1549/statement2sheet)
-* **GitHub Pages**: [https://sandeepkumar1549.github.io/statement2sheet/](https://sandeepkumar1549.github.io/statement2sheet/)
+* **GitHub Repository**: [https://github.com/sandy96321/statement2sheet](https://github.com/sandy96321/statement2sheet)
+* **GitHub Pages**: [https://sandy96321.github.io/statement2sheet/](https://sandy96321.github.io/statement2sheet/)
