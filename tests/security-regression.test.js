@@ -87,11 +87,11 @@ async function runTests() {
     throw new Error(`Untracked URL.createObjectURL found! Expected 1, got ${createObjMatches.length}`);
   }
 
-  // Check 2: Zero inline scripts in index.html
-  const inlineScriptMatches = indexHtmlCode.match(/<script(?![^>]*src=)[^>]*>[\s\S]*?<\/script>/gi) || [];
-  console.log(`✓ Inline <script> blocks in index.html: ${inlineScriptMatches.length}`);
-  if (inlineScriptMatches.length > 0) {
-    throw new Error('Inline <script> blocks found in index.html!');
+  // Check 2: Zero inline executable scripts in index.html (JSON-LD structured data allowed as data block)
+  const inlineExecutableScriptMatches = indexHtmlCode.match(/<script(?![^>]*src=)(?![^>]*type=["']application\/ld\+json["'])[^>]*>[\s\S]*?<\/script>/gi) || [];
+  console.log(`✓ Inline executable <script> blocks in index.html: ${inlineExecutableScriptMatches.length}`);
+  if (inlineExecutableScriptMatches.length > 0) {
+    throw new Error('Inline executable <script> blocks found in index.html!');
   }
 
   // Check 3: Zero inline onclick/onchange/oninput in index.html
@@ -227,7 +227,7 @@ async function runTests() {
   const pageTitle = await evaluate("document.title");
   console.log('Page loaded:', pageUrl, '| Title:', pageTitle);
   const scriptsCount = await evaluate("document.querySelectorAll('script').length");
-  const inlineScriptsCount = await evaluate("Array.from(document.querySelectorAll('script')).filter(s => !s.src).length");
+  const inlineExecutableScriptsCount = await evaluate("Array.from(document.querySelectorAll('script')).filter(s => !s.src && s.type !== 'application/ld+json').length");
   const liveInlineHandlers = await evaluate(`(() => {
     let count = 0;
     for (const el of document.querySelectorAll('*')) {
@@ -237,8 +237,37 @@ async function runTests() {
     }
     return count;
   })()`);
-  console.log(`✓ Scripts: ${scriptsCount}, Inline Scripts: ${inlineScriptsCount}, Inline Handlers: ${liveInlineHandlers}`);
-  if (inlineScriptsCount !== 0 || liveInlineHandlers !== 0) throw new Error('Live DOM contains inline scripts or handlers!');
+  console.log(`✓ Scripts: ${scriptsCount}, Inline Executable Scripts: ${inlineExecutableScriptsCount}, Inline Handlers: ${liveInlineHandlers}`);
+  if (inlineExecutableScriptsCount !== 0 || liveInlineHandlers !== 0) throw new Error('Live DOM contains inline executable scripts or handlers!');
+
+  // Validate Canonical URL, Open Graph, Twitter cards, and JSON-LD structured data
+  const seoCheck = await evaluate(`(() => {
+    const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute('href');
+    const ogTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content');
+    const ogUrl = document.querySelector('meta[property="og:url"]')?.getAttribute('content');
+    const twitterCard = document.querySelector('meta[name="twitter:card"]')?.getAttribute('content');
+    const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+    let jsonLdValid = false;
+    let hasWebApp = false;
+    let hasFaq = false;
+    if (jsonLdScript) {
+      try {
+        const parsed = JSON.parse(jsonLdScript.textContent);
+        jsonLdValid = true;
+        const items = parsed['@graph'] || [parsed];
+        hasWebApp = items.some(i => i['@type'] === 'WebApplication');
+        hasFaq = items.some(i => i['@type'] === 'FAQPage');
+      } catch (e) {}
+    }
+    const hasGuidesSection = !!document.getElementById('content-guides-section');
+    const hasFaqSection = !!document.getElementById('faq-section');
+    return { canonical, ogTitle, ogUrl, twitterCard, jsonLdValid, hasWebApp, hasFaq, hasGuidesSection, hasFaqSection };
+  })()`);
+  console.log('✓ SEO & Metadata Verification:', seoCheck);
+  if (seoCheck.canonical !== 'https://sandeepkumar154.github.io/statement2sheet/') throw new Error('Invalid canonical URL: ' + seoCheck.canonical);
+  if (!seoCheck.ogTitle || !seoCheck.ogUrl || !seoCheck.twitterCard) throw new Error('Missing Open Graph / Twitter Card meta tags');
+  if (!seoCheck.jsonLdValid || !seoCheck.hasWebApp || !seoCheck.hasFaq) throw new Error('JSON-LD schema incomplete or invalid');
+  if (!seoCheck.hasGuidesSection || !seoCheck.hasFaqSection) throw new Error('Missing guides or FAQ content section in DOM');
 
   console.log('\n--- 2. Testing Centralized Event Dispatcher ---');
   const navTest = await evaluate(`(() => {

@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://sandeepkumar154.github.io/statement2sheet/sitemap.xml

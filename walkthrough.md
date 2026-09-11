@@ -70,8 +70,8 @@ The automated test suite in [`tests/security-regression.test.js`](tests/security
 
 | # | Test Suite Item | Expected | Result | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| 0 | **Static Code Hardening** | Exactly 1 `createObjectURL` in `app.js`, 0 inline `<script>`, 0 inline `on*` | 1 occurrence, 0 inline scripts, 0 handlers | **PASS** |
-| 1 | **Live DOM Script Separation** | 0 inline scripts or event attributes in live DOM | 0 inline scripts, 0 inline handlers | **PASS** |
+| 0 | **Static Code Hardening** | Exactly 1 `createObjectURL` in `app.js`, 0 inline executable `<script>`, 0 inline `on*` | 1 occurrence, 0 executable inline scripts, 0 handlers | **PASS** |
+| 1 | **Live DOM Script Separation & SEO Metadata** | 0 inline executable scripts, valid canonical tag, OG/Twitter tags, JSON-LD schema, guides & FAQ sections in DOM | 0 inline executable scripts, canonical verified, OG/Twitter verified, WebApp & FAQPage schema valid, guides & FAQ rendered | **PASS** |
 | 2 | **Centralized Event Dispatcher** | Navigation via `data-tool` toggles views | Switched `view-merge` and `view-dashboard` cleanly | **PASS** |
 | 3 | **Magic-Byte Binary Inspection** | Accepts `%PDF-`, rejects spoofed HTML / binaries | Valid PDF: true, Fake HTML: rejected | **PASS** |
 | 4 | **PDF Intake & Thumbnail** | Parses page count and renders preview canvas | `1 Page(s)` detected, `300x400` canvas rendered | **PASS** |
@@ -92,7 +92,59 @@ The automated test suite in [`tests/security-regression.test.js`](tests/security
 
 ---
 
-## 4. Remote Deployment & CI Modernization
+## 4. SEO, Discoverability & Structured Data Architecture
+
+### A. Robots Exclusion & XML Sitemap
+- [`robots.txt`](robots.txt): Configured to allow all crawlers (`User-agent: *`, `Allow: /`) and points directly to the canonical XML sitemap:
+  ```txt
+  User-agent: *
+  Allow: /
+
+  Sitemap: https://sandeepkumar154.github.io/statement2sheet/sitemap.xml
+  ```
+- [`sitemap.xml`](sitemap.xml): Formatted per the standard Sitemaps 0.9 XML schema referencing canonical origin `https://sandeepkumar154.github.io/statement2sheet/` with `changefreq: weekly` and `priority: 1.0`.
+
+### B. Canonical & Social Graph Metadata
+- **Canonical URL**: `<link rel="canonical" href="https://sandeepkumar154.github.io/statement2sheet/" />` in `<head>` preventing duplicate content indexing across protocol or query variants.
+- **Open Graph**: Formatted with `og:type: website`, `og:site_name`, `og:title`, `og:description`, `og:url`, and `og:image` pointing to `https://sandeepkumar154.github.io/statement2sheet/icon.svg`.
+- **Twitter Card**: Formatted with `twitter:card: summary`, `twitter:title`, `twitter:description`, and `twitter:image`.
+
+### C. JSON-LD Structured Data Schema
+- Formatted as `<script type="application/ld+json">` utilizing Schema.org `@graph` syntax:
+  - **`WebApplication`**: Categorized as `FinanceApplication`, declaring browser requirements (Canvas, Web Workers, WebAssembly), free pricing tier (`Offer: price 0`), and complete feature listings.
+  - **`FAQPage`**: Rich-results eligible Q&A schema answering statement parsing mechanics, CSV compliance, QuickBooks OFX export, and zero-knowledge privacy.
+
+### D. Semantic Content & FAQ Sections
+- Added `#content-guides-section` containing comprehensive educational content articles:
+  1. **Bank Statement to Excel (.xlsx)**: Detailing the 3-sheet workbook architecture (Sheet 1: Master Ledger, Sheet 2: Mathematical Reconciliation Audit, Sheet 3: Monthly Breakdown & Category Analytics).
+  2. **PDF to Clean CSV**: Explaining RFC 4180 normalization, table extraction, and accounting software compatibility.
+  3. **QuickBooks (.QBO / WebConnect) Export**: Detailing OFX 1.02 envelopes, FITID deduplication, and bank feeds integration.
+  4. **Privacy, Client-Side Security & Offline Mode**: Emphasizing zero server roundtrips, memory-safe TypedArrays, and PWA offline availability.
+- Added `#faq-section` utilizing native HTML5 `<details class="group">` and `<summary>` elements for zero-script, fully accessible accordion interaction.
+
+---
+
+## 5. Google Search Console & Indexing Submission Guide
+
+To submit the newly deployed sitemap and request homepage indexing:
+
+1. **Access Google Search Console**:
+   - Navigate to [Google Search Console](https://search.google.com/search-console).
+   - Select the property: `https://sandeepkumar154.github.io/statement2sheet/` (or add as URL prefix property).
+2. **Submit Sitemap**:
+   - Go to **Indexing > Sitemaps** in the left navigation.
+   - Enter `sitemap.xml` under "Add a new sitemap".
+   - Click **Submit** and confirm status changes to **Success**.
+3. **Request Homepage Indexing**:
+   - Paste `https://sandeepkumar154.github.io/statement2sheet/` into the top **URL Inspection** search bar.
+   - Click **Test Live URL** to verify Googlebot fetches the page and validates the JSON-LD structured data without errors.
+   - Click **Request Indexing**.
+4. **Rich Results Validation**:
+   - Test the URL in the [Google Rich Results Test](https://search.google.com/test/rich-results) to confirm valid detection of the `WebApplication` and `FAQPage` structured data items.
+
+---
+
+## 6. Remote Deployment & CI Modernization
 
 - **Commits**:
   - `3d7c590`: Strict cache-first SW, connect-src 'self', verified offline CDP suite, and accurate spec claims.
@@ -100,12 +152,24 @@ The automated test suite in [`tests/security-regression.test.js`](tests/security
   - `44a7862`: Added `walkthrough.md` to repository root and upgraded actions to v7 (`actions/checkout@v7`, `actions/setup-node@v7`).
   - `efad1e3`: Added functional assertions for demo ingestion, financial exports, PDF tools, and Object URL registry lifecycle.
   - `e49b484`: Added `--disable-dev-shm-usage` and CDP timeout expansion for Linux CI runner stability.
-- **Pushed Branches**: `origin/main` and `origin/master` (both in sync)
+  - `f459c44`: Synchronized walkthrough with 12-suite assertions.
+- **Pushed Branches**: `origin/main` and `origin/master` (both kept strictly in sync)
 - **Live Endpoint Verification**:
   - `https://sandeepkumar154.github.io/statement2sheet/` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar154.github.io/statement2sheet/robots.txt` ➔ `HTTP 200 OK`
+  - `https://sandeepkumar154.github.io/statement2sheet/sitemap.xml` ➔ `HTTP 200 OK`
   - `https://sandeepkumar154.github.io/statement2sheet/manifest.webmanifest` ➔ `HTTP 200 OK`
   - `https://sandeepkumar154.github.io/statement2sheet/sw.js` ➔ `HTTP 200 OK`
   - `https://sandeepkumar154.github.io/statement2sheet/app.js` ➔ `HTTP 200 OK`
   - `https://sandeepkumar154.github.io/statement2sheet/styles.css` ➔ `HTTP 200 OK`
   - `https://sandeepkumar154.github.io/statement2sheet/icon.svg` ➔ `HTTP 200 OK`
+
+---
+
+## 7. Next Milestone: Performance Testing with Large PDFs & Scanned Statements
+
+- **Objectives**:
+  - Benchmark client-side parsing speed and RAM consumption across 50-page, 100-page, and 300-page bank statements.
+  - Test memory stability during high-resolution multi-page PDF thumbnail rendering.
+  - Evaluate Tesseract.js Web Worker background thread offloading to prevent main thread frame drops during heavy OCR passes.
 
