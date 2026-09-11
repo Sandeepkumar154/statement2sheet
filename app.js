@@ -706,7 +706,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         const hasCover = item.coverDataUrl;
         const coverHtml = hasCover
           ? '<div class="relative group cursor-pointer" data-action="zoom-cover" data-index="' + index + '">' +
-               '<img src="' + item.coverDataUrl + '" alt="' + escapeHtml(item.file.name) + '" class="w-16 h-22 sm:w-20 sm:h-26 object-contain rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs bg-white flex-shrink-0 pointer-events-none" />' +
+               '<img src="' + item.coverDataUrl + '" alt="Document cover preview" class="w-16 h-22 sm:w-20 sm:h-26 object-contain rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs bg-white flex-shrink-0 pointer-events-none" />' +
                '<span class="absolute inset-0 bg-slate-900/40 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-lg pointer-events-none">🔍 Zoom</span>' +
              '</div>'
           : '<div class="w-16 h-22 sm:w-20 sm:h-26 rounded-lg border border-slate-200 dark:border-slate-700 bg-violet-50 dark:bg-violet-950/60 text-violet-600 flex items-center justify-center font-bold text-xs flex-shrink-0">PDF</div>';
@@ -717,7 +717,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
               <span class="font-bold text-violet-600 dark:text-violet-400 text-sm w-6 text-center">${index + 1}.</span>
               ${coverHtml}
               <div class="truncate min-w-0">
-                <h5 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 truncate" title="${escapeHtml(item.file.name)}">${escapeHtml(item.file.name)}</h5>
+                <h5 class="merge-file-title text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 truncate"></h5>
                 <div class="flex items-center gap-2 mt-1.5">
                   <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-violet-100 dark:bg-violet-950 text-violet-800 dark:text-violet-300 font-mono">${item.numPages} Page${item.numPages > 1 ? 's' : ''}</span>
                   <span class="text-[10px] text-slate-400 font-mono">${(item.file.size / 1024).toFixed(1)} KB</span>
@@ -757,6 +757,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
           ` : ''}
         `;
 
+        const titleEl = card.querySelector('.merge-file-title');
+        if (titleEl) {
+          titleEl.textContent = item.file.name;
+          titleEl.title = item.file.name;
+        }
+
         listEl.appendChild(card);
       });
 
@@ -769,7 +775,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
           const idx = parseInt(target.dataset.index, 10);
           if (action === 'zoom-cover') {
             const it = mergeItems[idx];
-            if (it && it.coverDataUrl) openPageZoomModal(it.coverDataUrl, escapeHtml(it.file.name) + ' - Page 1');
+            if (it && it.coverDataUrl) openPageZoomModal(it.coverDataUrl, it.file.name + ' - Page 1');
           } else if (action === 'toggle-pages') {
             toggleMergeItemPages(idx);
           } else if (action === 'move-up') {
@@ -784,7 +790,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
             const it = mergeItems[docIdx];
             if (it && it.allPages && it.allPages[pageIdx]) {
               const p = it.allPages[pageIdx];
-              openPageZoomModal(p.dataUrl, escapeHtml(it.file.name) + ' - Page ' + p.pageNum);
+              openPageZoomModal(p.dataUrl, it.file.name + ' - Page ' + p.pageNum);
             }
           }
         });
@@ -934,7 +940,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         syncSplitRangeInputFromState();
       } catch (e) {
         console.error('Split render error:', e);
-        grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Failed to load pages: ' + escapeHtml(e.message) + '</div>';
+        grid.replaceChildren();
+        const errDiv = document.createElement('div');
+        errDiv.className = 'col-span-full py-8 text-center text-xs text-rose-500 font-bold';
+        errDiv.textContent = 'Failed to load pages: ' + (e.message || String(e));
+        grid.appendChild(errDiv);
       }
     }
 
@@ -977,7 +987,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
             e.stopPropagation();
             const pageNum = parseInt(zoomBtn.dataset.pageNum, 10);
             const p = splitPagesState.find(x => x.pageNum === pageNum);
-            if (p) openPageZoomModal(p.dataUrl, 'Page ' + pageNum + ' Inspection (' + (splitFile ? escapeHtml(splitFile.name) : 'Document') + ')');
+            if (p) openPageZoomModal(p.dataUrl, 'Page ' + pageNum + ' Inspection (' + (splitFile ? splitFile.name : 'Document') + ')');
             return;
           }
           const chk = e.target.closest('[data-action="checkbox"]');
@@ -1247,7 +1257,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
             const pageNum = parseInt(btn.dataset.page, 10);
             if (action === 'zoom') {
               const p = organizePages.find(x => x.pageNum === pageNum);
-              if (p) openPageZoomModal(p.dataUrl, 'Page ' + pageNum + ' Inspection (' + (organizeFile ? escapeHtml(organizeFile.name) : 'Document') + ')');
+              if (p) openPageZoomModal(p.dataUrl, 'Page ' + pageNum + ' Inspection (' + (organizeFile ? organizeFile.name : 'Document') + ')');
             } else if (action === 'delete') {
               deleteOrganizePage(pageNum);
             } else if (action === 'rotate-left') {
@@ -1261,7 +1271,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         updateOrganizeActiveCount();
       } catch (e) {
         console.error('Organize render error:', e);
-        grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Could not render thumbnails: ' + escapeHtml(e.message) + '</div>';
+        grid.replaceChildren();
+        const errDiv = document.createElement('div');
+        errDiv.className = 'col-span-full py-8 text-center text-xs text-rose-500 font-bold';
+        errDiv.textContent = 'Could not render thumbnails: ' + (e.message || String(e));
+        grid.appendChild(errDiv);
       }
     }
 
@@ -1625,7 +1639,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         }
       } catch (err) {
         console.error('PDF to Image error:', err);
-        if (gallery) gallery.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-rose-500 font-bold">Failed to render PDF: ${err.message}</div>`;
+        if (gallery) {
+          gallery.replaceChildren();
+          const errDiv = document.createElement('div');
+          errDiv.className = 'col-span-full py-8 text-center text-xs text-rose-500 font-bold';
+          errDiv.textContent = 'Failed to render PDF: ' + (err.message || String(err));
+          gallery.appendChild(errDiv);
+        }
       }
     }
 
@@ -1712,17 +1732,31 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
       controls.classList.remove('hidden');
       countEl.innerText = img2pdfSelectedFiles.length;
-      listEl.innerHTML = '';
+      listEl.replaceChildren();
 
       img2pdfSelectedFiles.forEach((file, idx) => {
         const item = document.createElement('div');
         item.className = 'relative group border border-slate-200 dark:border-slate-700 rounded-xl p-2 bg-slate-50 dark:bg-slate-800 text-center flex flex-col items-center justify-between';
         const previewUrl = createTrackedObjectURL(file);
-        item.innerHTML = `
-          <img src="${previewUrl}" alt="${escapeHtml(file.name)}" class="w-full h-20 object-cover rounded-lg mb-1 pointer-events-none" />
-          <span class="text-[10px] text-slate-600 dark:text-slate-400 truncate w-full block" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
-          <button data-action="remove-img" data-index="${idx}" class="absolute top-1 right-1 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-rose-700 transition" title="Remove image">×</button>
-        `;
+
+        const img = document.createElement('img');
+        img.src = previewUrl;
+        img.alt = file.name || 'image';
+        img.className = 'w-full h-20 object-cover rounded-lg mb-1 pointer-events-none';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'text-[10px] text-slate-600 dark:text-slate-400 truncate w-full block';
+        nameSpan.title = file.name || '';
+        nameSpan.textContent = file.name || '';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.dataset.action = 'remove-img';
+        removeBtn.dataset.index = idx;
+        removeBtn.className = 'absolute top-1 right-1 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold shadow hover:bg-rose-700 transition';
+        removeBtn.title = 'Remove image';
+        removeBtn.textContent = '×';
+
+        item.append(img, nameSpan, removeBtn);
         listEl.appendChild(item);
       });
 
@@ -1764,16 +1798,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'converted_images.pdf';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
+        downloadTrackedBlob(blob, 'converted_images.pdf');
       } catch (err) {
         console.error('Image to PDF error:', err);
         alert('Failed to generate PDF from images: ' + err.message);
@@ -1849,14 +1874,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
     // Universal Helper: Download File Blob
     function triggerDownload(blob, filename) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadTrackedBlob(blob, filename);
     }
 
 
@@ -2004,16 +2022,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         });
 
         const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'compressed_' + compressFileState.file.name;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
+        downloadTrackedBlob(blob, 'compressed_' + compressFileState.file.name);
 
         if (typeof showNotification === 'function') {
           showNotification('✅ PDF compressed successfully! Saved in local memory.', 'success');
@@ -2198,16 +2207,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
         const signedBytes = await pdfDoc.save();
         const blob = new Blob([signedBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'signed_' + signFileState.file.name;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
+        downloadTrackedBlob(blob, 'signed_' + signFileState.file.name);
 
         if (typeof showNotification === 'function') {
           showNotification('✅ Document signed successfully!', 'success');
@@ -2305,16 +2305,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'protected_' + protectFileState.file.name;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 100);
+        downloadTrackedBlob(blob, 'protected_' + protectFileState.file.name);
 
         if (typeof showNotification === 'function') {
           showNotification('🔒 Document secured and downloaded in memory!', 'success');
@@ -2419,16 +2410,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       if (!markdownState.text) return;
       const filename = (markdownState.file ? markdownState.file.name.replace(/\.pdf$/i, '') : 'document') + '.md';
       const blob = new Blob([markdownState.text], { type: 'text/markdown;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
+      downloadTrackedBlob(blob, filename);
     }
 
     function initPortalApp() {
@@ -2573,7 +2555,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       const alertBox = document.getElementById('upload-validation-alert');
       if (alertBox) {
         alertBox.classList.add('hidden');
-        alertBox.innerHTML = '';
+        alertBox.replaceChildren();
+      }
+
+      function showUploadAlert(title, message, detail) {
+        if (!alertBox) return;
+        alertBox.replaceChildren();
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '⚠️ ';
+        const strongEl = document.createElement('strong');
+        strongEl.textContent = title + ': ';
+        const msgSpan = document.createElement('span');
+        msgSpan.textContent = message + (detail ? ' ' : '');
+        alertBox.append(iconSpan, strongEl, msgSpan);
+        if (detail) {
+          const codeEl = document.createElement('code');
+          codeEl.textContent = detail;
+          alertBox.append(codeEl);
+        }
+        alertBox.classList.remove('hidden');
       }
 
       if (!files || files.length === 0) return;
@@ -2582,20 +2582,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
       // 1. File Size Validation (50MB Limit)
       const fileSizeMb = (file.size / (1024 * 1024)).toFixed(2);
       if (file.size > 50 * 1024 * 1024) {
-        if (alertBox) {
-          alertBox.classList.remove('hidden');
-          alertBox.innerHTML = '⚠️ <strong>File Too Large:</strong> Maximum file size is 50MB. Selected file is ' + fileSizeMb + 'MB.';
-        }
+        showUploadAlert('File Too Large', 'Maximum file size is 50MB. Selected file is ' + fileSizeMb + 'MB.');
         return;
       }
 
       // 2. Binary Magic-Byte Signature Validation
       const magic = await validateFileMagicBytes(file);
       if (!magic.valid) {
-        if (alertBox) {
-          alertBox.classList.remove('hidden');
-          alertBox.innerHTML = '⚠️ <strong>Security Validation Error:</strong> ' + escapeHtml(magic.error || 'Unsupported format.') + ' Detected file: <code>' + escapeHtml(file.name || 'Unknown file') + '</code>';
-        }
+        showUploadAlert('Security Validation Error', (magic.error || 'Unsupported format.') + ' Detected file:', file.name || 'Unknown file');
         return;
       }
 
@@ -2608,10 +2602,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
           const buffer = await file.slice(0, Math.min(file.size, 1024 * 1024 * 8)).arrayBuffer();
           const quickPdf = await pdfjsLib.getDocument({ data: buffer }).promise;
           if (quickPdf.numPages > 300) {
-            if (alertBox) {
-              alertBox.classList.remove('hidden');
-              alertBox.innerHTML = '⚠️ <strong>Page Limit Exceeded:</strong> Maximum supported document size is 300 pages (Detected: ' + quickPdf.numPages + ' pages). Please split document first.';
-            }
+            showUploadAlert('Page Limit Exceeded', 'Maximum supported document size is 300 pages (Detected: ' + quickPdf.numPages + ' pages). Please split document first.');
             return;
           }
         } catch (e) {}
@@ -3185,11 +3176,23 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
           return;
         }
         tray.classList.remove('hidden');
-        listEl.innerHTML = '';
+        listEl.replaceChildren();
         sessionRecentFiles.forEach(item => {
           const chip = document.createElement('span');
           chip.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-slate-700 shadow-2xs';
-          chip.innerHTML = '<span>📄</span> <span class="font-semibold truncate max-w-[140px]">' + escapeHtml(item.name) + '</span> <span class="text-[10px] text-slate-400">(' + (parseInt(item.count, 10) || 0) + ' tx)</span>';
+          
+          const iconSpan = document.createElement('span');
+          iconSpan.textContent = '📄';
+          
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'font-semibold truncate max-w-[140px]';
+          nameSpan.textContent = item.name || '';
+          
+          const countSpan = document.createElement('span');
+          countSpan.className = 'text-[10px] text-slate-400';
+          countSpan.textContent = `(${parseInt(item.count, 10) || 0} tx)`;
+          
+          chip.append(iconSpan, nameSpan, countSpan);
           listEl.appendChild(chip);
         });
       } catch (e) {
@@ -3621,14 +3624,18 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
       const qualityCard = document.getElementById('ocr-quality-card');
       if (qualityCard) {
-        qualityCard.innerHTML = `
-          <div class="font-bold text-slate-800 dark:text-slate-200 mb-1">OCR Quality Score: ${ocrQuality}%</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">
-            ${ocrQuality >= 80 ? '✅ High confidence — Characters and financial figures are clear and reliable.' :
-              ocrQuality >= 50 ? '⚠️ Medium confidence — Minor noise detected; review flagged transactions before exporting.' :
-              '🚨 Low confidence — Document quality is low or noisy; manual verification strongly recommended.'}
-          </div>
-        `;
+        qualityCard.replaceChildren();
+        const scoreDiv = document.createElement('div');
+        scoreDiv.className = 'font-bold text-slate-800 dark:text-slate-200 mb-1';
+        scoreDiv.textContent = `OCR Quality Score: ${ocrQuality}%`;
+
+        const descDiv = document.createElement('div');
+        descDiv.className = 'text-xs text-slate-500 dark:text-slate-400';
+        descDiv.textContent = ocrQuality >= 80 ? '✅ High confidence — Characters and financial figures are clear and reliable.' :
+          ocrQuality >= 50 ? '⚠️ Medium confidence — Minor noise detected; review flagged transactions before exporting.' :
+          '🚨 Low confidence — Document quality is low or noisy; manual verification strongly recommended.';
+
+        qualityCard.append(scoreDiv, descDiv);
       }
 
       updateAuditUI();
@@ -3821,15 +3828,28 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
         const pct = totalDebit > 0 ? Math.round((amt / totalDebit) * 100) : 0;
         const color = colors[idx % colors.length];
         const row = document.createElement('div');
-        row.innerHTML = `
-          <div class="flex items-center justify-between mb-1 text-[11px] font-bold">
-            <span class="text-slate-700 dark:text-slate-300">${name}</span>
-            <span class="font-mono text-slate-600 dark:text-slate-400">${pct}% ($${amt.toFixed(2)})</span>
-          </div>
-          <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-            <div class="${color} h-full rounded-full transition-all duration-300" style="width: ${pct}%"></div>
-          </div>
-        `;
+        
+        const topRow = document.createElement('div');
+        topRow.className = 'flex items-center justify-between mb-1 text-[11px] font-bold';
+        
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'text-slate-700 dark:text-slate-300';
+        labelSpan.textContent = name;
+        
+        const valSpan = document.createElement('span');
+        valSpan.className = 'font-mono text-slate-600 dark:text-slate-400';
+        valSpan.textContent = `${pct}% ($${amt.toFixed(2)})`;
+        
+        topRow.append(labelSpan, valSpan);
+        
+        const barWrap = document.createElement('div');
+        barWrap.className = 'w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden';
+        const bar = document.createElement('div');
+        bar.className = `${color} h-full rounded-full transition-all duration-300`;
+        bar.style.width = `${pct}%`;
+        barWrap.appendChild(bar);
+        
+        row.append(topRow, barWrap);
         container.appendChild(row);
       });
     }
@@ -4585,11 +4605,7 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
         }
 
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${bankName.replace(/\s+/g, '_')}_Statement.csv`;
-        a.click();
+        downloadTrackedBlob(blob, `${bankName.replace(/\s+/g, '_')}_Statement.csv`);
       });
 
       // 3. Clean PDF Export via jsPDF
@@ -4867,3 +4883,32 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
     } else {
       initEventDispatcher();
     }
+
+    // ================= PWA SERVICE WORKER REGISTRATION =================
+    function initServiceWorker() {
+      if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
+
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          const badge = document.getElementById('offline-status-badge');
+          if (badge) {
+            badge.title = 'PWA Offline Cache Active (s2s-cache-v1)';
+          }
+
+          reg.addEventListener('updatefound', () => {
+            const installing = reg.installing;
+            if (installing) {
+              installing.addEventListener('statechange', () => {
+                if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('Statement2Sheet updated in local cache.');
+                }
+              });
+            }
+          });
+        }).catch((err) => {
+          console.warn('ServiceWorker registration skipped:', err);
+        });
+      });
+    }
+
+    initServiceWorker();

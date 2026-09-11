@@ -1,0 +1,9 @@
+{
+  "name": "statement2sheet",
+  "version": "1.0.0",
+  "description": "100% Client-Side Private Financial Document & PDF Utility Suite",
+  "scripts": {
+    "test": "node tests/security-regression.test.js"
+  },
+  "license": "MIT"
+}
