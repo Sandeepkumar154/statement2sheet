@@ -6,3 +6,5 @@ node_modules/
 .vercel
 tests/.test_browser_profile/
 .test_browser_profile/
+tests/.test_profile_*/
+.test_profile_*/

@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; script-src 'self' 'wasm-unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.sheetjs.com blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' blob: data: https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; script-src 'self' 'wasm-unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.sheetjs.com blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' blob: data: https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none';" />
 
-  
   <title>Statement2Sheet — All-in-One Financial & PDF Suite (100% Private)</title>
   <meta name="description" content="Statement2Sheet is the all-in-one in-browser PDF & financial toolkit. Convert bank statements to 3-sheet Excel with balance reconciliation, merge, split, rotate, organize, unlock, watermark, and compress PDFs with 100% privacy and zero server uploads." />
+  <meta name="google-site-verification" content="0i-KOCRF7La3vG9_wjw-_E0BFC5gQPNW4bu6kRZ3e6U" />
 
   <!-- Canonical & Social Metadata -->
-  <link rel="canonical" href="https://sandeepkumar1549.github.io/statement2sheet/" />
+  <link rel="canonical" href="https://statement2sheet-lake.vercel.app/" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Statement2Sheet" />
   <meta property="og:title" content="Statement2Sheet — All-in-One Financial &amp; PDF Suite (100% Private)" />
   <meta property="og:description" content="Convert bank statements to 3-sheet Excel (.xlsx) with balance reconciliation, CSV, QBO, and Markdown. Merge, split, compress, protect, and sign PDFs locally in browser memory with zero server uploads." />
-  <meta property="og:url" content="https://sandeepkumar1549.github.io/statement2sheet/" />
-  <meta property="og:image" content="https://sandeepkumar1549.github.io/statement2sheet/icon.svg" />
+  <meta property="og:url" content="https://statement2sheet-lake.vercel.app/" />
+  <meta property="og:image" content="https://statement2sheet-lake.vercel.app/icon.svg" />
 
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Statement2Sheet — All-in-One Financial &amp; PDF Suite (100% Private)" />
   <meta name="twitter:description" content="Convert bank statements to 3-sheet Excel (.xlsx) with balance reconciliation, CSV, QBO, and Markdown. Merge, split, compress, protect, and sign PDFs locally in browser memory with zero server uploads." />
-  <meta name="twitter:image" content="https://sandeepkumar1549.github.io/statement2sheet/icon.svg" />
+  <meta name="twitter:image" content="https://statement2sheet-lake.vercel.app/icon.svg" />
 
   <!-- Structured Data: JSON-LD WebApplication & FAQPage Schema -->
   <script type="application/ld+json">
@@ -33,8 +33,8 @@
     "@graph": [
       {
         "@type": "WebApplication",
-        "@id": "https://sandeepkumar1549.github.io/statement2sheet/#webapp",
-        "url": "https://sandeepkumar1549.github.io/statement2sheet/",
+        "@id": "https://statement2sheet-lake.vercel.app/#webapp",
+        "url": "https://statement2sheet-lake.vercel.app/",
         "name": "Statement2Sheet",
         "alternateName": ["Statement to Sheet", "Statement2Sheet Financial & PDF Suite"],
         "applicationCategory": "FinanceApplication",
@@ -58,7 +58,7 @@
       },
       {
         "@type": "FAQPage",
-        "@id": "https://sandeepkumar1549.github.io/statement2sheet/#faq",
+        "@id": "https://statement2sheet-lake.vercel.app/#faq",
         "mainEntity": [
           {
             "@type": "Question",
@@ -98,32 +98,16 @@
   }
   </script>
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  
-  <!-- PDF.js for Client-Side PDF Parsing (SRI pinned) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
-  
-  <!-- SheetJS for Multi-Sheet Excel (.xlsx) Generation (SRI pinned) -->
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js" integrity="sha384-QCIdq2UMVEoSRhR3ZWZwdz2/pivLowr+eokFMdYyukq7qI26VYRxFa4Nl6FKetmL" crossorigin="anonymous"></script>
+  <!-- High-Performance Static Compiled Stylesheet (Replaces 350KB Tailwind CDN JIT compiler) -->
+  <link rel="stylesheet" href="styles.css" />
 
-  <!-- Tesseract.js for Scanned / Photographed Bank Statements (SRI pinned) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" integrity="sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F" crossorigin="anonymous"></script>
+  <!-- PDF.js for Client-Side PDF Parsing (Non-blocking deferred load) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous" defer></script>
+  <!-- Note: SheetJS, Tesseract.js, jsPDF, and PDF-Lib are lazy-loaded on demand via app.js -->
 
-  <!-- jsPDF for Clean PDF / Searchable Export (SRI pinned) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
-
-  <!-- PDF-Lib for Client-Side Merge, Split, Rotate, and Unlock (SRI pinned) -->
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
-
-  
-
-  
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#0f172a" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
-  <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
@@ -291,8 +275,9 @@
           <ul class="space-y-2">
             <li><button data-tool="merge" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">📑</span> Merge PDF</button></li>
             <li><button data-tool="split" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✂️</span> Split PDF</button></li>
-            <li><button data-tool="organize" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🔄</span> Organize &amp; Rotate</button></li>
-            <li><button data-tool="split" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">📄</span> Extract Pages</button></li>
+            <li><button data-tool="organize" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🔄</span> Organize Pages</button></li>
+            <li><button data-tool="rotate" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">🔁</span> Rotate PDF</button></li>
+            <li><button data-tool="crop" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">✂</span> Crop PDF</button></li>
           </ul>
         </div>
 
@@ -301,7 +286,8 @@
           <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">OPTIMIZE PDF</h4>
           <ul class="space-y-2">
             <li><button data-tool="compress" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">🗜️</span> Compress PDF</button></li>
-            <li><button data-tool="organize" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">🧹</span> Clean &amp; Repair</button></li>
+            <li><button data-tool="redact" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">⬛</span> Redact PDF</button></li>
+            <li><button data-tool="pdfa" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">🏛️</span> Convert PDF/A</button></li>
             <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">🔍</span> OCR / Text Extract</button></li>
           </ul>
         </div>
@@ -311,6 +297,7 @@
           <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">CONVERT TO PDF</h4>
           <ul class="space-y-2">
             <li><button data-tool="img2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-[10px]">📸</span> JPG / PNG to PDF</button></li>
+            <li><button data-tool="office2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📑</span> Office &amp; HTML to PDF</button></li>
             <li><button data-tool="img2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-yellow-50 dark:bg-yellow-950 text-yellow-600 flex items-center justify-center text-[10px]">🧾</span> Receipts to PDF</button></li>
           </ul>
         </div>
@@ -320,8 +307,10 @@
           <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">CONVERT FROM PDF</h4>
           <ul class="space-y-2">
             <li><button data-tool="excel" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📊</span> PDF to Excel</button></li>
+            <li><button data-tool="pdf2word" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">📝</span> PDF to Word (.docx)</button></li>
             <li><button data-tool="pdf2img" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-fuchsia-50 dark:bg-fuchsia-950 text-fuchsia-600 flex items-center justify-center text-[10px]">🖼️</span> PDF to JPG / PNG</button></li>
-            <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">📝</span> PDF to Markdown</button></li>
+            <li><button data-tool="extract-images" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-lime-50 dark:bg-lime-950 text-lime-600 flex items-center justify-center text-[10px]">📷</span> Extract Images</button></li>
+            <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">📋</span> PDF to Markdown</button></li>
           </ul>
         </div>
 
@@ -329,19 +318,20 @@
         <div>
           <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">EDIT PDF</h4>
           <ul class="space-y-2">
-            <li><button data-tool="organize" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🔄</span> Rotate PDF</button></li>
             <li><button data-tool="pagenumber" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px]">🔢</span> Add Page Numbers</button></li>
             <li><button data-tool="watermark" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center text-[10px]">🏷️</span> Add Watermark</button></li>
             <li><button data-tool="sign" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✍️</span> Sign PDF</button></li>
+            <li><button data-tool="digitalsign" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">🔐</span> Digital PKI Sign</button></li>
           </ul>
         </div>
 
-        <!-- Col 6: PDF Security -->
+        <!-- Col 6: PDF Security & Review -->
         <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">PDF SECURITY</h4>
+          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">SECURITY &amp; REVIEW</h4>
           <ul class="space-y-2">
             <li><button data-tool="unlock" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">🔓</span> Unlock PDF</button></li>
             <li><button data-tool="protect" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px]">🔒</span> Protect PDF</button></li>
+            <li><button data-tool="compare" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">⚖️</span> Compare PDF (Diff)</button></li>
           </ul>
         </div>
 
@@ -586,13 +576,13 @@
         </div>
 
         <!-- Card 12: Rotate PDF -->
-        <div data-category="organize edit" data-tool="organize" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <div data-category="organize edit" data-tool="rotate" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             </div>
             <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Rotate PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Rotate your PDFs the way you need them. Batch rotate all or specific pages by 90°, 180°, or 270°.</p>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
             <span>Rotate</span> <span>&rarr;</span>
@@ -641,70 +631,70 @@
           </div>
         </div>
 
-        <!-- Card 16: PDF to Markdown -->
-        <div data-category="convert intelligence" data-tool="markdown" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <!-- Card 16: PDF to Word (.docx) -->
+        <div data-category="convert" data-tool="pdf2word" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
-            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-950/80 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+            <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-600 transition">PDF to Markdown</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract text, headers, and markdown tables directly from PDF for LLMs and note-taking.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition">PDF to Word</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Convert PDF documents into fully editable Microsoft Word (.docx) documents locally.</p>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-sky-600 transition">
-            <span>Extract MD</span> <span>&rarr;</span>
-          </div>
-        </div>
-
-        <!-- Card 17: Expense Categorizer -->
-        <div data-category="banking intelligence" data-tool="excel" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-violet-600 transition">Expense Categorizer</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Automatic AI tagging of banking spend: Retail, Groceries, Medical, Travel, Utilities.</p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-violet-600 transition">
-            <span>Analyze</span> <span>&rarr;</span>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">
+            <span>To Word</span> <span>&rarr;</span>
           </div>
         </div>
 
-        <!-- Card 18: Ledger Audit Inspector -->
-        <div data-category="banking security" data-tool="excel" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <!-- Card 17: Compare PDF (Diff) -->
+        <div data-category="security intelligence" data-tool="compare" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
             </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Math Audit Inspector</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Mathematical delta and running balance verification to identify falsified statements.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Compare PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Compare two PDF versions side-by-side with visual pixel diff overlay and text delta analysis.</p>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
-            <span>Audit</span> <span>&rarr;</span>
+            <span>Compare</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 18: Redact PDF -->
+        <div data-category="security edit" data-tool="redact" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">Redact PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Permanently black out sensitive text, PII, and financial numbers via 300 DPI raster flattening.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
+            <span>Redact</span> <span>&rarr;</span>
           </div>
         </div>
 
         <!-- Card 19: Crop PDF -->
-        <div data-category="organize edit" data-tool="organize" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <div data-category="organize edit" data-tool="crop" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
             </div>
             <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Crop PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Trim margins and crop document boundaries to focus on relevant tables or content.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Interactive draggable visual box & margin trimmer to crop document boundaries or tables.</p>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
-            <span>Trim</span> <span>&rarr;</span>
+            <span>Crop</span> <span>&rarr;</span>
           </div>
         </div>
 
         <!-- Card 20: AI Document Summarizer -->
-        <div data-category="intelligence" data-tool="markdown" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <div data-category="intelligence" data-tool="summarize" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">AI Document Summary</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract core findings, metrics, and structured bullet summaries from dense documents.</p>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">Document Summarizer</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">100% private local in-browser extractive NLP summary, key metrics, and financial bullet points.</p>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
             <span>Summarize</span> <span>&rarr;</span>
@@ -712,16 +702,58 @@
         </div>
 
         <!-- Card 21: Extract Images from PDF -->
-        <div data-category="convert" data-tool="pdf2img" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+        <div data-category="convert" data-tool="extract-images" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-xl bg-lime-50 dark:bg-lime-950/80 text-lime-600 dark:text-lime-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-lime-600 transition">Extract Images</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract embedded photos, scanned checks, and diagrams into standalone image files.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Extract all embedded photos, scanned checks, and logos from PDF into standalone image files.</p>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-lime-600 transition">
             <span>Extract</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 22: Office & HTML to PDF -->
+        <div data-category="convert" data-tool="office2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">Office & HTML to PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Convert Excel (.xlsx), CSV, TXT, or HTML markup directly into crisp, paginated PDF documents.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
+            <span>Convert</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 23: PDF/A ISO 19005-1 Archival -->
+        <div data-category="convert security" data-tool="pdfa" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">PDF/A ISO 19005-1</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Inject ISO 19005-1 XMP conformance packet & sRGB OutputIntent for legal long-term archiving.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
+            <span>Archive</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 24: Digital PKI Sign -->
+        <div data-category="security edit" data-tool="digitalsign" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Digital PKI Sign</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Cryptographic SHA-256 WebCrypto signature with tamper-evident seal and verifiable audit receipt.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
+            <span>PKI Sign</span> <span>&rarr;</span>
           </div>
         </div>
 
@@ -1845,6 +1877,583 @@
           </div>
         </div>
         <textarea id="markdown-result-textarea" readonly class="w-full h-80 font-mono text-xs p-4 bg-slate-900 text-slate-100 rounded-xl border border-slate-800 focus:outline-none resize-y"></textarea>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: CROP PDF WORKSPACE ================= -->
+    <section id="view-crop" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Crop PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Crop PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Trim margins or drag a visual crop box to eliminate unwanted margins and whitespace.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-purple-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="crop-drop-zone" tabindex="0" role="button">
+        <input type="file" id="crop-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Crop Margins</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Interactive draggable crop box with instant preview</p>
+        <button data-trigger-click="crop-file-input" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="crop-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="crop-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="crop-page-indicator">Page 1 of 1</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-action="crop-prev-page" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">Prev Page</button>
+            <button data-action="crop-next-page" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">Next Page</button>
+            <button data-action="run-crop" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-2xs transition">
+              ✂️ Crop &amp; Download PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div class="lg:col-span-1 space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Preset Trims</label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <button data-action="crop-preset-reset" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-center">Reset (100%)</button>
+                <button data-action="crop-preset-margins" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-center">Trim 10% Margins</button>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Margin Inset (%):</label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span class="text-[10px] text-slate-400">Top %</span>
+                  <input type="number" id="crop-inset-top" min="0" max="45" value="0" class="w-full mt-0.5 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400">Bottom %</span>
+                  <input type="number" id="crop-inset-bottom" min="0" max="45" value="0" class="w-full mt-0.5 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400">Left %</span>
+                  <input type="number" id="crop-inset-left" min="0" max="45" value="0" class="w-full mt-0.5 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400">Right %</span>
+                  <input type="number" id="crop-inset-right" min="0" max="45" value="0" class="w-full mt-0.5 px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+                </div>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+              <label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                <input type="checkbox" id="crop-apply-all-pages" checked class="rounded text-purple-600 focus:ring-purple-500" />
+                <span>Apply crop dimensions to all pages</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="lg:col-span-3 flex items-center justify-center bg-slate-100 dark:bg-slate-950 p-4 rounded-xl overflow-auto min-h-[420px]">
+            <div id="crop-stage-container" class="relative inline-block select-none shadow-md">
+              <canvas id="crop-preview-canvas" class="max-w-full block"></canvas>
+              <div id="crop-selection-box" class="absolute border-2 border-dashed border-purple-500 bg-purple-500/15 pointer-events-none transition-all"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: EXTRACT IMAGES WORKSPACE ================= -->
+    <section id="view-extract-images" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Extract Images</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Extract Images from PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Extract embedded photos, scanned checks, and graphics directly from PDF streams into high-res images.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-lime-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="extract-images-drop-zone" tabindex="0" role="button">
+        <input type="file" id="extract-images-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-lime-50 dark:bg-lime-950 text-lime-600 dark:text-lime-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Extract Embedded Images</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Lossless image extraction from internal PDF operator streams</p>
+        <button data-trigger-click="extract-images-file-input" class="bg-lime-600 hover:bg-lime-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="extract-images-results-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="extract-images-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="extract-images-status-text">Scanning for images...</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-action="download-all-extracted-images" id="btn-download-all-extracted" class="px-4 py-1.5 rounded-lg bg-lime-600 hover:bg-lime-700 text-white text-xs font-bold shadow-2xs transition">
+              ⬇️ Download All Images
+            </button>
+          </div>
+        </div>
+        <div id="extracted-images-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: COMPARE PDF WORKSPACE ================= -->
+    <section id="view-compare" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Compare PDF (Diff)</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Compare PDF Documents</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Side-by-side visual difference and text changes between two versions.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="compare-intake-zones">
+        <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-teal-500 rounded-2xl p-6 text-center transition shadow-sm select-none cursor-pointer" id="compare-drop-zone-1" tabindex="0" role="button">
+          <input type="file" id="compare-file-input-1" accept=".pdf,application/pdf" class="hidden" />
+          <div class="w-12 h-12 mx-auto mb-2 bg-slate-100 dark:bg-slate-800 text-teal-600 dark:text-teal-400 rounded-xl flex items-center justify-center font-black">
+            1
+          </div>
+          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200" id="compare-name-1">Upload Document A (Original)</h3>
+          <p class="text-[11px] text-slate-400 mt-1 mb-3">Base version to compare from</p>
+          <button data-trigger-click="compare-file-input-1" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] px-3.5 py-1.5 rounded-lg shadow-xs transition">
+            Select File A
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-teal-500 rounded-2xl p-6 text-center transition shadow-sm select-none cursor-pointer" id="compare-drop-zone-2" tabindex="0" role="button">
+          <input type="file" id="compare-file-input-2" accept=".pdf,application/pdf" class="hidden" />
+          <div class="w-12 h-12 mx-auto mb-2 bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 rounded-xl flex items-center justify-center font-black">
+            2
+          </div>
+          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200" id="compare-name-2">Upload Document B (Modified)</h3>
+          <p class="text-[11px] text-slate-400 mt-1 mb-3">Revised version to compare against</p>
+          <button data-trigger-click="compare-file-input-2" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-[11px] px-3.5 py-1.5 rounded-lg shadow-xs transition">
+            Select File B
+          </button>
+        </div>
+      </div>
+
+      <div id="compare-results-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300" id="compare-page-indicator">Page 1</span>
+            <button data-action="compare-prev-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&larr;</button>
+            <button data-action="compare-next-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&rarr;</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5 text-xs font-bold">
+              <button data-action="compare-view-diff" id="btn-compare-diff" class="px-3 py-1 rounded-md bg-white dark:bg-slate-700 text-teal-600 dark:text-teal-300 shadow-xs">Visual Diff</button>
+              <button data-action="compare-view-split" id="btn-compare-split" class="px-3 py-1 rounded-md text-slate-600 dark:text-slate-300">Side-by-Side</button>
+              <button data-action="compare-view-text" id="btn-compare-text" class="px-3 py-1 rounded-md text-slate-600 dark:text-slate-300">Text Delta</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="compare-container-diff" class="flex flex-col items-center justify-center p-4 bg-slate-100 dark:bg-slate-950 rounded-xl overflow-auto">
+          <div class="mb-2 flex items-center gap-4 text-xs font-semibold">
+            <span class="flex items-center gap-1 text-rose-600"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Removed in B</span>
+            <span class="flex items-center gap-1 text-emerald-600"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Added in B</span>
+          </div>
+          <canvas id="compare-diff-canvas" class="max-w-full shadow-md bg-white rounded"></canvas>
+        </div>
+
+        <div id="compare-container-split" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-100 dark:bg-slate-950 rounded-xl overflow-auto">
+          <div class="text-center">
+            <div class="text-xs font-bold text-slate-500 mb-1">Document A (Original)</div>
+            <canvas id="compare-canvas-left" class="w-full shadow-md bg-white rounded"></canvas>
+          </div>
+          <div class="text-center">
+            <div class="text-xs font-bold text-slate-500 mb-1">Document B (Modified)</div>
+            <canvas id="compare-canvas-right" class="w-full shadow-md bg-white rounded"></canvas>
+          </div>
+        </div>
+
+        <div id="compare-container-text" class="hidden p-4 bg-slate-900 text-slate-100 rounded-xl font-mono text-xs max-h-96 overflow-auto leading-relaxed"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: ROTATE PDF WORKSPACE ================= -->
+    <section id="view-rotate" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Rotate PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Rotate PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Rotate all or specific pages clockwise or counterclockwise with instant preview.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-purple-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="rotate-drop-zone" tabindex="0" role="button">
+        <input type="file" id="rotate-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Rotate</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Batch rotate 90°, 180°, or 270° in local memory</p>
+        <button data-trigger-click="rotate-file-input" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="rotate-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="rotate-doc-name">-</span>
+            <button data-action="rotate-all-right" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">Rotate All Right 90° ↻</button>
+            <button data-action="rotate-all-left" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">Rotate All Left 90° ↺</button>
+            <button data-action="rotate-all-180" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">180° Flip</button>
+          </div>
+          <button data-action="run-rotate" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-2xs transition">
+            💾 Save Rotated PDF
+          </button>
+        </div>
+        <div id="rotate-thumbnails-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: REDACT PDF WORKSPACE ================= -->
+    <section id="view-redact" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Permanent Redact</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Redact PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Irreversibly black out confidential data. Pages are rasterized at 300 DPI so underlying vector text cannot be recovered.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-rose-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="redact-drop-zone" tabindex="0" role="button">
+        <input type="file" id="redact-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Redact Sensitive Content</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Click and drag blackout boxes over sensitive numbers, names, or accounts</p>
+        <button data-trigger-click="redact-file-input" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="redact-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="redact-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="redact-page-indicator">Page 1 of 1</span>
+            <button data-action="redact-prev-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&larr;</button>
+            <button data-action="redact-next-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&rarr;</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-action="redact-clear-page" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">Clear Page</button>
+            <button data-action="run-redact" class="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-2xs transition">
+              🔥 Permanently Redact &amp; Download
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3 flex flex-wrap items-center gap-2 text-xs bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+          <span class="font-bold text-slate-600 dark:text-slate-300">Quick Text Match:</span>
+          <input type="text" id="redact-search-input" placeholder="Type text to redact (e.g. Account #, Name)" class="flex-1 min-w-[200px] px-3 py-1.5 text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200" />
+          <button data-action="redact-search-match" class="px-3 py-1.5 rounded-lg bg-slate-800 dark:bg-slate-700 text-white font-bold hover:bg-slate-700 transition">Auto-Box Match</button>
+        </div>
+
+        <div class="flex items-center justify-center p-4 bg-slate-100 dark:bg-slate-950 rounded-xl overflow-auto min-h-[460px]">
+          <div id="redact-stage-container" class="relative inline-block select-none shadow-md cursor-crosshair">
+            <canvas id="redact-canvas" class="max-w-full block"></canvas>
+            <div id="redact-active-drag" class="absolute border-2 border-rose-600 bg-black/60 pointer-events-none hidden"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: PDF TO WORD WORKSPACE ================= -->
+    <section id="view-pdf2word" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to Word (.docx)</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">PDF to Word (.docx)</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert PDF documents into fully editable Microsoft Word (.docx) files with paragraphs and tables preserved.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="pdf2word-drop-zone" tabindex="0" role="button">
+        <input type="file" id="pdf2word-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Convert to Word</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Generates valid OpenXML .docx with structured paragraphs & tables</p>
+        <button data-trigger-click="pdf2word-file-input" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="pdf2word-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="pdf2word-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="pdf2word-stats-text">Extracted paragraphs &amp; tables</span>
+          </div>
+          <button data-action="run-pdf2word" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-2xs transition">
+            ⬇️ Download Word (.docx)
+          </button>
+        </div>
+
+        <div class="mb-3 text-xs text-slate-500 dark:text-slate-400 font-semibold">Word Document Content Preview:</div>
+        <div id="pdf2word-preview-box" class="p-4 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 rounded-xl border border-slate-200 dark:border-slate-800 max-h-72 overflow-auto text-xs leading-relaxed font-sans"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: OFFICE & HTML TO PDF WORKSPACE ================= -->
+    <section id="view-office2pdf" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Office &amp; HTML to PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Office &amp; HTML to PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert Excel spreadsheets (.xlsx, .xls, .csv), plain text, or HTML markup directly into clean, paginated PDF documents.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="office2pdf-drop-zone" tabindex="0" role="button">
+        <input type="file" id="office2pdf-file-input" accept=".xlsx,.xls,.csv,.tsv,.txt,.html,.htm" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop Excel, CSV, TXT, or HTML to Convert</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Formatted client-side conversion to A4 / Letter PDF</p>
+        <button data-trigger-click="office2pdf-file-input" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select Office / HTML File
+        </button>
+      </div>
+
+      <div id="office2pdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="office2pdf-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="office2pdf-status-text">Parsed data ready for PDF compilation</span>
+          </div>
+          <button data-action="run-office2pdf" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-2xs transition">
+            📄 Convert &amp; Download PDF
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Page Orientation</label>
+            <select id="office2pdf-orientation" class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Paper Size</label>
+            <select id="office2pdf-size" class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs">
+              <option value="a4">A4 (210 x 297 mm)</option>
+              <option value="letter">Letter (8.5 x 11 in)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Font Size</label>
+            <select id="office2pdf-font-size" class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs">
+              <option value="8">Compact (8 pt)</option>
+              <option value="10" selected>Standard (10 pt)</option>
+              <option value="12">Large (12 pt)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="office2pdf-preview-container" class="max-h-64 overflow-auto border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-950 font-mono text-xs"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: PDF/A ARCHIVAL WORKSPACE ================= -->
+    <section id="view-pdfa" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: PDF/A ISO 19005-1</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Convert to PDF/A</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert documents into ISO 19005-1 standard PDF/A-1b format for legal long-term archival.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-teal-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="pdfa-drop-zone" tabindex="0" role="button">
+        <input type="file" id="pdfa-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Convert to PDF/A</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">ISO 19005-1 conformance with sRGB OutputIntents & XMP metadata</p>
+        <button data-trigger-click="pdfa-file-input" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="pdfa-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="pdfa-doc-name">-</span>
+            <span class="text-[11px] text-teal-600 dark:text-teal-400 font-bold">Standard: PDF/A-1b (ISO 19005-1:2005)</span>
+          </div>
+          <button data-action="run-pdfa" class="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-2xs transition">
+            🏛️ Convert to PDF/A &amp; Download
+          </button>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div class="p-3 rounded-xl bg-teal-50/60 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 text-slate-700 dark:text-slate-300">
+            <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-1">Archival Specifications Applied:</h4>
+            <ul class="list-disc list-inside space-y-1 text-[11px]">
+              <li>Injects AIIM ISO 19005-1 XMP conformance packet (pdfaid:part=1, pdfaid:conformance=B)</li>
+              <li>Injects standard sRGB IEC61966-2.1 OutputIntent dictionary to ensure device-independent color</li>
+              <li>Strips executable JavaScript and dynamic action dictionaries for permanent archiving security</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: DIGITAL PKI SIGN WORKSPACE ================= -->
+    <section id="view-digitalsign" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Digital PKI Sign</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Cryptographic Digital Signatures</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Sign PDFs with browser native WebCrypto keys (SHA-256 / RSA). Embeds a tamper-evident visual verification seal and exports a cryptographic audit manifest.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-purple-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="digitalsign-drop-zone" tabindex="0" role="button">
+        <input type="file" id="digitalsign-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Sign Cryptographically</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Tamper-evident SHA-256 WebCrypto signature with audit receipt</p>
+        <button data-trigger-click="digitalsign-file-input" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="digitalsign-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="digitalsign-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="digitalsign-sha256-preview">SHA-256 Digest: Computing...</span>
+          </div>
+          <button data-action="run-digitalsign" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-2xs transition">
+            🔐 Sign &amp; Stamp Document
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Signer Legal Name</label>
+            <input type="text" id="digitalsign-name" placeholder="e.g. Jane Doe" class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Organization / Title</label>
+            <input type="text" id="digitalsign-org" placeholder="e.g. Acme Corp / CFO" class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+          </div>
+          <div class="md:col-span-2">
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Reason for Signing</label>
+            <input type="text" id="digitalsign-reason" value="I approve and attest to the contents of this document." class="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW: AI DOCUMENT SUMMARIZER WORKSPACE ================= -->
+    <section id="view-summarize" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Document Summarizer</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">AI Document Summarizer</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">100% private local in-browser extractive NLP summarizer. Extracts key sentences, financial figures, and executive highlights without sending data to any cloud.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-rose-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="summarize-drop-zone" tabindex="0" role="button">
+        <input type="file" id="summarize-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Summarize</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Fast TF-IDF extractive ranking with financial entity extraction</p>
+        <button data-trigger-click="summarize-file-input" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="summarize-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
+          <div>
+            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="summarize-doc-name">-</span>
+            <span class="text-[11px] text-slate-400" id="summarize-metrics-text">Analyzed tokens</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-action="copy-summary" id="btn-copy-summary" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
+              📋 Copy Summary
+            </button>
+            <button data-action="download-summary-md" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-2xs transition">
+              ⬇️ Download .md
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-black uppercase text-rose-600 tracking-wider mb-2">Executive Highlights</h4>
+            <ul id="summarize-highlights-list" class="space-y-2 text-xs text-slate-700 dark:text-slate-300 list-disc list-inside"></ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-black uppercase text-rose-600 tracking-wider mb-2">Key Financial &amp; Date Entities</h4>
+            <div id="summarize-entities-container" class="flex flex-wrap gap-2 text-xs"></div>
+          </div>
+        </div>
       </div>
     </section>
 
