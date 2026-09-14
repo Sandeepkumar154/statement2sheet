@@ -243,6 +243,7 @@ async function runTests() {
   // Validate Canonical URL, Open Graph, Twitter cards, and JSON-LD structured data
   const seoCheck = await evaluate(`(() => {
     const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute('href');
+    const googleVerification = document.querySelector('meta[name="google-site-verification"]')?.getAttribute('content');
     const ogTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content');
     const ogUrl = document.querySelector('meta[property="og:url"]')?.getAttribute('content');
     const twitterCard = document.querySelector('meta[name="twitter:card"]')?.getAttribute('content');
@@ -261,13 +262,19 @@ async function runTests() {
     }
     const hasGuidesSection = !!document.getElementById('content-guides-section');
     const hasFaqSection = !!document.getElementById('faq-section');
-    return { canonical, ogTitle, ogUrl, twitterCard, jsonLdValid, hasWebApp, hasFaq, hasGuidesSection, hasFaqSection };
+    return { canonical, googleVerification, ogTitle, ogUrl, twitterCard, jsonLdValid, hasWebApp, hasFaq, hasGuidesSection, hasFaqSection };
   })()`);
   console.log('✓ SEO & Metadata Verification:', seoCheck);
-  if (seoCheck.canonical !== 'https://sandeepkumar1549.github.io/statement2sheet/') throw new Error('Invalid canonical URL: ' + seoCheck.canonical);
+  if (seoCheck.canonical !== 'https://statement2sheet-lake.vercel.app/' && seoCheck.canonical !== 'https://statement2sheet.vercel.app/' && seoCheck.canonical !== 'https://sandeepkumar1549.github.io/statement2sheet/') throw new Error('Invalid canonical URL: ' + seoCheck.canonical);
+  if (seoCheck.googleVerification !== '0i-KOCRF7La3vG9_wjw-_E0BFC5gQPNW4bu6kRZ3e6U') throw new Error('Invalid or missing google-site-verification meta tag');
   if (!seoCheck.ogTitle || !seoCheck.ogUrl || !seoCheck.twitterCard) throw new Error('Missing Open Graph / Twitter Card meta tags');
   if (!seoCheck.jsonLdValid || !seoCheck.hasWebApp || !seoCheck.hasFaq) throw new Error('JSON-LD schema incomplete or invalid');
   if (!seoCheck.hasGuidesSection || !seoCheck.hasFaqSection) throw new Error('Missing guides or FAQ content section in DOM');
+
+  // Verify heavy vendor libraries are NOT loaded upfront on initial page visit (Lazy-Loading Assertion)
+  const upfrontVendors = await evaluate("({ hasXlsx: typeof XLSX !== 'undefined', hasPdfLib: typeof PDFLib !== 'undefined', hasJsPdf: typeof window.jspdf !== 'undefined', hasTesseract: typeof Tesseract !== 'undefined' })");
+  if (upfrontVendors.hasXlsx || upfrontVendors.hasPdfLib || upfrontVendors.hasJsPdf || upfrontVendors.hasTesseract) throw new Error('Heavy vendor scripts leaked into upfront page load!');
+  console.log('✓ Performance Check: 0 heavy vendor libraries loaded upfront:', upfrontVendors);
 
   console.log('\n--- 2. Testing Centralized Event Dispatcher ---');
   const navTest = await evaluate(`(() => {
@@ -391,9 +398,10 @@ async function runTests() {
     let cachedUrls = [];
     try {
       const names = await caches.keys();
-      hasCache = names.includes('s2s-cache-v1');
+      const activeCacheName = names.find(n => n.startsWith('s2s-cache-'));
+      hasCache = !!activeCacheName;
       if (hasCache) {
-        const cache = await caches.open('s2s-cache-v1');
+        const cache = await caches.open(activeCacheName);
         const reqs = await cache.keys();
         cachedUrls = reqs.map(r => r.url);
       }
@@ -805,6 +813,191 @@ async function runTests() {
     if (!signRes.success || !signRes.valid) {
       throw new Error('PDF sign output generation failed!');
     }
+
+    // 10 Advanced iLovePDF Parity Tools:
+    // 1. Crop PDF
+    const cropRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "crop_test.pdf", { type: "application/pdf" });
+      await loadCropFile(f);
+      await new Promise(r => setTimeout(r, 600));
+      setCropPreset(10, 10, 10, 10);
+      await executeCropPdf();
+      await new Promise(r => setTimeout(r, 300));
+      if (!lastDownloadedItem) return { success: false, error: "No crop download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const doc = await PDFLib.PDFDocument.load(outBuf);
+      const cb = doc.getPages()[0].getCropBox();
+      return { success: true, filename: lastDownloadedItem.filename, hasCrop: cb.width > 0 };
+    })()`);
+    console.log('✓ PDF Crop Tool Generation:', cropRes);
+    if (!cropRes.success || !cropRes.hasCrop) throw new Error('PDF Crop failed');
+
+    // 2. Extract Images
+    const extractRes = await evaluate(`(async () => {
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "extract_test.pdf", { type: "application/pdf" });
+      await executeExtractImages(f);
+      return { success: true, count: extractImagesState.images.length };
+    })()`);
+    console.log('✓ Extract Images Tool Execution:', extractRes);
+    if (!extractRes.success) throw new Error('Extract images failed');
+
+    // 3. Visual & Textual Compare
+    const compareRes = await evaluate(`(async () => {
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f1 = new File([arr], "doc_v1.pdf", { type: "application/pdf" });
+      const f2 = new File([arr], "doc_v2.pdf", { type: "application/pdf" });
+      await loadCompareDoc("A", f1);
+      await loadCompareDoc("B", f2);
+      await new Promise(r => setTimeout(r, 800));
+      return { success: true, hasDocA: !!compareState.docA, hasDocB: !!compareState.docB };
+    })()`);
+    console.log('✓ PDF Visual & Textual Compare Execution:', compareRes);
+    if (!compareRes.success || !compareRes.hasDocA || !compareRes.hasDocB) throw new Error('Compare failed');
+
+    // 4. Batch Rotate PDF
+    const rotateRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "rotate_test.pdf", { type: "application/pdf" });
+      await loadRotateFile(f);
+      await new Promise(r => setTimeout(r, 500));
+      rotateAllPages(90);
+      await executeSaveRotatedPdf();
+      await new Promise(r => setTimeout(r, 300));
+      if (!lastDownloadedItem) return { success: false, error: "No rotate download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const doc = await PDFLib.PDFDocument.load(outBuf);
+      return { success: true, filename: lastDownloadedItem.filename, angle: doc.getPages()[0].getRotation().angle };
+    })()`);
+    console.log('✓ PDF Batch Rotate Execution:', rotateRes);
+    if (!rotateRes.success || rotateRes.angle !== 90) throw new Error('Rotate failed');
+
+    // 5. Permanent PDF Redaction
+    const redactRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "redact_test.pdf", { type: "application/pdf" });
+      await loadRedactFile(f);
+      await new Promise(r => setTimeout(r, 600));
+      redactState.redactions[1] = [{ x: 0.1, y: 0.1, w: 0.5, h: 0.1 }];
+      await executeRedactPdf();
+      await new Promise(r => setTimeout(r, 500));
+      if (!lastDownloadedItem) return { success: false, error: "No redact download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const doc = await PDFLib.PDFDocument.load(outBuf);
+      return { success: true, filename: lastDownloadedItem.filename, pageCount: doc.getPageCount() };
+    })()`);
+    console.log('✓ Permanent Raster Redaction Execution:', redactRes);
+    if (!redactRes.success || redactRes.pageCount < 1) throw new Error('Redact failed');
+
+    // 6. PDF to Word (.docx) OpenXML Packaging
+    const docxRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "word_test.pdf", { type: "application/pdf" });
+      await loadPdf2WordFile(f);
+      await new Promise(r => setTimeout(r, 500));
+      await executeConvertPdfToWord();
+      await new Promise(r => setTimeout(r, 300));
+      if (!lastDownloadedItem) return { success: false, error: "No docx download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const bytes = new Uint8Array(outBuf);
+      const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B;
+      return { success: true, filename: lastDownloadedItem.filename, isZip, size: lastDownloadedItem.size };
+    })()`);
+    console.log('✓ PDF to Word (.docx) OpenXML Execution:', docxRes);
+    if (!docxRes.success || !docxRes.isZip) throw new Error('PDF to Word (.docx) failed');
+
+    // 7. Office/Sheet to PDF Converter
+    const officeRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const sampleCsv = "Date,Description,Amount\\n2026-01-01,Deposit,1500.00\\n2026-01-02,Supplies,-120.00";
+      const f = new File([sampleCsv], "sample_table.csv", { type: "text/csv" });
+      await loadOffice2PdfFile(f);
+      await new Promise(r => setTimeout(r, 400));
+      await executeConvertOfficeToPdf();
+      await new Promise(r => setTimeout(r, 300));
+      if (!lastDownloadedItem) return { success: false, error: "No office2pdf download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const bytes = new Uint8Array(outBuf);
+      const isPdf = bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46;
+      return { success: true, filename: lastDownloadedItem.filename, isPdf };
+    })()`);
+    console.log('✓ Office/Sheet to PDF Conversion Execution:', officeRes);
+    if (!officeRes.success || !officeRes.isPdf) throw new Error('Office to PDF failed');
+
+    // 8. PDF/A ISO 19005-1 Archival Converter
+    const pdfaRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "pdfa_test.pdf", { type: "application/pdf" });
+      await loadPdfaFile(f);
+      await new Promise(r => setTimeout(r, 400));
+      await executeConvertToPdfa();
+      await new Promise(r => setTimeout(r, 300));
+      if (!lastDownloadedItem) return { success: false, error: "No pdfa download" };
+      const text = await lastDownloadedItem.blob.text();
+      const hasXmp = text.includes("pdfaid:part") || text.includes("xmpmeta");
+      return { success: true, filename: lastDownloadedItem.filename, hasXmp };
+    })()`);
+    console.log('✓ ISO 19005-1 PDF/A Archival Execution:', pdfaRes);
+    if (!pdfaRes.success || !pdfaRes.hasXmp) throw new Error('PDF/A failed');
+
+    // 9. Cryptographic PKI Signatures
+    const cryptoSignRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "crypto_sign_test.pdf", { type: "application/pdf" });
+      await loadDigitalSignFile(f);
+      await new Promise(r => setTimeout(r, 400));
+      await executeDigitalSignPdf();
+      await new Promise(r => setTimeout(r, 500));
+      if (!lastDownloadedItem) return { success: false, error: "No crypto sign download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const doc = await PDFLib.PDFDocument.load(outBuf);
+      return { success: true, filename: lastDownloadedItem.filename, pageCount: doc.getPageCount() };
+    })()`);
+    console.log('✓ Cryptographic PKI Seal Execution:', cryptoSignRes);
+    if (!cryptoSignRes.success || cryptoSignRes.pageCount < 1) throw new Error('Crypto Sign failed');
+
+    // 10. In-Browser Document Summarizer
+    const summarizeRes = await evaluate(`(async () => {
+      const raw = atob("${b64}");
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      const f = new File([arr], "summarize_test.pdf", { type: "application/pdf" });
+      await loadSummarizeFile(f);
+      await new Promise(r => setTimeout(r, 600));
+      return {
+        success: true,
+        highlights: summarizeState.highlights.length,
+        entities: summarizeState.entities.length
+      };
+    })()`);
+    console.log('✓ Document Summarizer Execution:', summarizeRes);
+    if (!summarizeRes.success || summarizeRes.highlights < 1) throw new Error('Summarizer failed');
+
+    // Clean session data so Object URL registry returns to baseline
+    await evaluate(`(() => { purgeAllSessionData(); })()`);
   }
 
   console.log('\n--- 11. Testing Object URL Registry Returning to Zero After Downloads ---');
@@ -813,8 +1006,8 @@ async function runTests() {
     await new Promise(r => setTimeout(r, 1600));
     const countBeforeTrigger = activeObjectUrls.size;
 
-    // 2. Trigger CSV download (which adds 1 tracked URL to activeObjectUrls)
-    document.getElementById('btn-export-csv').click();
+    // 2. Trigger tracked download (which adds 1 tracked URL to activeObjectUrls)
+    downloadTrackedBlob(new Blob(['lifecycle-data']), 'lifecycle-test.txt');
     const countDuringDownload = activeObjectUrls.size;
 
     // 3. Wait 1600ms (> 1200ms auto-revocation timeout)

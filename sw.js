@@ -1,4 +1,4 @@
-const CACHE_NAME = 's2s-cache-v1';
+const CACHE_NAME = 's2s-cache-v2';
 
 const LOCAL_ASSETS = [
   './',
@@ -10,7 +10,6 @@ const LOCAL_ASSETS = [
 ];
 
 const CDN_ASSETS = [
-  'https://cdn.tailwindcss.com',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
   'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js',

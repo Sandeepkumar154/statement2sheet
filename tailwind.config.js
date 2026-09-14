@@ -1,0 +1,1 @@
+module.exports = { darkMode: 'class', content: ['./index.html', './app.js'], theme: { extend: { colors: { brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 700: '#047857' } } } }, plugins: [] };
