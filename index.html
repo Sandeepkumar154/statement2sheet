@@ -221,15 +221,28 @@
           <span>🧹</span> <span class="hidden sm:inline" data-i18n="btn_clear_data">Clear Data</span>
         </button>
 
+        <!-- Quick Tour & Help Button -->
+        <button id="btn-open-tour" data-action="open-onboarding" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" aria-label="Quick Tour & Help" title="Quick Tour & Feature Guide">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+
         <!-- Language Selector (i18n) -->
         <div class="relative inline-flex items-center">
           <select id="lang-select" aria-label="Select Language" class="text-xs font-bold py-1.5 px-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer transition">
-            <option value="en">🇺🇸 EN</option>
-            <option value="es">🇪🇸 ES</option>
-            <option value="fr">🇫🇷 FR</option>
-            <option value="de">🇩🇪 DE</option>
-            <option value="pt">🇵🇹 PT</option>
-            <option value="hi">🇮🇳 HI</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="pt">🇵🇹 Português</option>
+            <option value="hi">🇮🇳 हिन्दी</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="ja">🇯🇵 日本語</option>
+            <option value="ko">🇰🇷 한국어</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ar">🇸🇦 العربية</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="id">🇮🇩 Bahasa</option>
           </select>
         </div>
 
@@ -312,6 +325,8 @@
           <ul class="space-y-2">
             <li><button data-tool="img2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-[10px]">📸</span> JPG / PNG to PDF</button></li>
             <li><button data-tool="office2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📑</span> Office &amp; HTML to PDF</button></li>
+            <li><button data-tool="pptx2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-[10px]">📊</span> PowerPoint to PDF</button></li>
+            <li><button data-tool="scan2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📷</span> Scan to PDF</button></li>
             <li><button data-tool="img2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-yellow-50 dark:bg-yellow-950 text-yellow-600 flex items-center justify-center text-[10px]">🧾</span> Receipts to PDF</button></li>
           </ul>
         </div>
@@ -322,6 +337,7 @@
           <ul class="space-y-2">
             <li><button data-tool="excel" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📊</span> PDF to Excel</button></li>
             <li><button data-tool="pdf2word" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">📝</span> PDF to Word (.docx)</button></li>
+            <li><button data-tool="pdf2pptx" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">📽️</span> PDF to PowerPoint</button></li>
             <li><button data-tool="pdf2img" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-fuchsia-50 dark:bg-fuchsia-950 text-fuchsia-600 flex items-center justify-center text-[10px]">🖼️</span> PDF to JPG / PNG</button></li>
             <li><button data-tool="extract-images" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-lime-50 dark:bg-lime-950 text-lime-600 flex items-center justify-center text-[10px]">📷</span> Extract Images</button></li>
             <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">📋</span> PDF to Markdown</button></li>
@@ -336,6 +352,8 @@
             <li><button data-tool="watermark" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center text-[10px]">🏷️</span> Add Watermark</button></li>
             <li><button data-tool="sign" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✍️</span> Sign PDF</button></li>
             <li><button data-tool="digitalsign" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">🔐</span> Digital PKI Sign</button></li>
+            <li><button data-tool="editpdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-violet-50 dark:bg-violet-950 text-violet-600 flex items-center justify-center text-[10px]">✏️</span> Edit PDF (Annotations)</button></li>
+            <li><button data-tool="formfill" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">📋</span> Fill PDF Forms</button></li>
           </ul>
         </div>
 
@@ -782,6 +800,91 @@
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-amber-600 transition">
             <span>Repair</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 26: Edit PDF (Annotations & Text) -->
+        <div data-category="edit" data-tool="editpdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              </div>
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300">New</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-violet-600 transition">Edit PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Add text, rectangles, circles, arrows, drawings, and notes directly onto your PDF pages in local RAM.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-violet-600 transition">
+            <span>Edit</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 27: Fill PDF Forms -->
+        <div data-category="edit" data-tool="formfill" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+              </div>
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300">New</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Fill PDF Forms</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Detect and fill interactive AcroForm fields (text fields, checkboxes, dropdowns) directly in-browser.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
+            <span>Fill Form</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 28: PowerPoint to PDF -->
+        <div data-category="convert" data-tool="pptx2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+              </div>
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300">New</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition">PowerPoint to PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Convert PPTX presentations into crisp, paginated PDF documents directly in local RAM.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-orange-600 transition">
+            <span>To PDF</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 29: PDF to PowerPoint -->
+        <div data-category="convert" data-tool="pdf2pptx" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              </div>
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">New</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition">PDF to PowerPoint</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Turn your PDF documents into Microsoft PowerPoint (.pptx) slide decks instantly.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
+            <span>To PPTX</span> <span>&rarr;</span>
+          </div>
+        </div>
+
+        <!-- Card 30: Scan to PDF -->
+        <div data-category="convert" data-tool="scan2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">New</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">Scan to PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Capture physical documents with your webcam or phone camera directly into a PDF.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
+            <span>Scan</span> <span>&rarr;</span>
           </div>
         </div>
 
@@ -2588,6 +2691,326 @@
       </div>
     </section>
 
+    <!-- ================= VIEW 26: EDIT PDF WORKSPACE ================= -->
+    <section id="view-editpdf" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Edit PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Edit PDF (Text &amp; Annotations)</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Add text, draw shapes, insert notes, or sketch directly on your PDF pages. 100% private in browser memory.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-violet-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="editpdf-drop-zone" tabindex="0" role="button">
+        <input type="file" id="editpdf-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-violet-50 dark:bg-violet-950 text-violet-600 dark:text-violet-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File Here to Edit</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Annotate, add text, draw boxes and lines without leaving your browser</p>
+        <button data-trigger-click="editpdf-file-input" class="bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="editpdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
+        <!-- Top bar with document info -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <div>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="editpdf-doc-name">-</h4>
+            <span class="text-[11px] text-slate-400 font-mono" id="editpdf-doc-pages">- Pages</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-trigger-click="editpdf-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change PDF</button>
+          </div>
+        </div>
+
+        <!-- Annotation Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 mb-4 text-xs">
+          <!-- Tools -->
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="font-bold text-slate-600 dark:text-slate-300 mr-1">Tool:</span>
+            <button data-action="editpdf-set-tool" data-tool-type="text" id="btn-editpdf-tool-text" class="px-2.5 py-1 bg-violet-600 text-white font-bold rounded-lg transition shadow-2xs">🔤 Add Text</button>
+            <button data-action="editpdf-set-tool" data-tool-type="draw" id="btn-editpdf-tool-draw" class="px-2.5 py-1 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg border border-slate-200 dark:border-slate-600 transition shadow-2xs">✏️ Freehand</button>
+            <button data-action="editpdf-set-tool" data-tool-type="rect" id="btn-editpdf-tool-rect" class="px-2.5 py-1 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg border border-slate-200 dark:border-slate-600 transition shadow-2xs">▭ Rectangle</button>
+            <button data-action="editpdf-set-tool" data-tool-type="line" id="btn-editpdf-tool-line" class="px-2.5 py-1 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg border border-slate-200 dark:border-slate-600 transition shadow-2xs">╱ Line</button>
+          </div>
+
+          <!-- Color, Size & Clear -->
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Color:</span>
+              <input type="color" id="editpdf-color-picker" value="#ef4444" class="w-7 h-7 rounded border border-slate-300 dark:border-slate-600 cursor-pointer bg-transparent" />
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Size:</span>
+              <select id="editpdf-font-size" class="text-[11px] font-bold py-1 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                <option value="12">12 pt</option>
+                <option value="16" selected>16 pt</option>
+                <option value="20">20 pt</option>
+                <option value="24">24 pt</option>
+                <option value="32">32 pt</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Stroke:</span>
+              <select id="editpdf-stroke-width" class="text-[11px] font-bold py-1 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                <option value="2" selected>2 px</option>
+                <option value="4">4 px</option>
+                <option value="6">6 px</option>
+              </select>
+            </div>
+
+            <button data-action="editpdf-clear-page" class="text-xs px-2.5 py-1 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg font-bold transition">Clear Page</button>
+          </div>
+        </div>
+
+        <!-- Canvas Viewport -->
+        <div id="editpdf-viewport" class="overflow-auto max-h-[38rem] bg-slate-100 dark:bg-slate-950/60 p-4 rounded-xl flex justify-center items-start">
+          <div id="editpdf-canvas-wrap" class="relative inline-block select-none shadow-lg rounded">
+            <canvas id="editpdf-render-canvas" class="block rounded bg-white"></canvas>
+            <canvas id="editpdf-overlay-canvas" class="absolute inset-0 cursor-crosshair rounded"></canvas>
+          </div>
+        </div>
+
+        <!-- Pagination & Execute -->
+        <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <button data-action="editpdf-prev-page" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg transition border border-slate-200 dark:border-slate-700">&larr; Prev Page</button>
+            <span id="editpdf-page-display" class="text-xs font-bold text-slate-600 dark:text-slate-300 px-2 font-mono">Page 1 of 1</span>
+            <button data-action="editpdf-next-page" class="px-3 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg transition border border-slate-200 dark:border-slate-700">Next Page &rarr;</button>
+          </div>
+
+          <button data-action="run-editpdf" id="btn-run-editpdf" class="bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition flex items-center gap-2">
+            <span>💾 Save &amp; Download Edited PDF</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 27: FILL PDF FORMS WORKSPACE ================= -->
+    <section id="view-formfill" class="hidden max-w-4xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Fill PDF Forms</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Interactive PDF Form Filler</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Auto-detect and fill interactive AcroForm fields (text fields, checkboxes, dropdowns) directly in your browser.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-teal-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="formfill-drop-zone" tabindex="0" role="button">
+        <input type="file" id="formfill-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF Form Here to Fill</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Reads all AcroForm text fields, checkmarks, and choice lists in local memory</p>
+        <button data-trigger-click="formfill-file-input" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF Form
+        </button>
+      </div>
+
+      <div id="formfill-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-5">
+          <div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="formfill-doc-name">-</h4>
+            <span class="text-xs text-slate-400 font-mono" id="formfill-doc-size">-</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="formfill-field-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300">0 Fields Detected</span>
+            <button data-trigger-click="formfill-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change Form</button>
+          </div>
+        </div>
+
+        <div id="formfill-empty-message" class="hidden p-6 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/80 rounded-xl text-center mb-6">
+          <p class="text-sm font-bold text-amber-800 dark:text-amber-200">No interactive AcroForm fields detected in this document.</p>
+          <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">This document might be a scanned PDF or a static document. You can use our <button data-tool="editpdf" class="underline font-bold hover:text-amber-800">Edit PDF</button> tool to add text and annotations anywhere on the page!</p>
+        </div>
+
+        <form id="formfill-interactive-form" class="space-y-4 max-h-[32rem] overflow-y-auto p-1"></form>
+
+        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer">
+            <input type="checkbox" id="formfill-flatten-check" class="rounded border-slate-300 dark:border-slate-700 text-teal-600 focus:ring-teal-500 w-4 h-4" />
+            <span>Flatten Form (lock fields permanently into document)</span>
+          </label>
+
+          <button data-action="run-formfill" id="btn-run-formfill" class="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition flex items-center gap-2">
+            <span>💾 Save &amp; Download Filled PDF</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 28: POWERPOINT TO PDF WORKSPACE ================= -->
+    <section id="view-pptx2pdf" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: PowerPoint to PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Convert PowerPoint to PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Transform PPTX presentations into crisp, perfectly paginated PDF documents with 100% in-browser privacy.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-orange-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="pptx2pdf-drop-zone" tabindex="0" role="button">
+        <input type="file" id="pptx2pdf-file-input" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-orange-50 dark:bg-orange-950 text-orange-600 dark:text-orange-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PowerPoint (.pptx) Here</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Parses slides and layouts directly inside local browser RAM</p>
+        <button data-trigger-click="pptx2pdf-file-input" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PPTX File
+        </button>
+      </div>
+
+      <div id="pptx2pdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
+          <div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="pptx2pdf-doc-name">-</h4>
+            <span class="text-xs text-slate-400 font-mono" id="pptx2pdf-doc-summary">- Slides Detected</span>
+          </div>
+          <button data-trigger-click="pptx2pdf-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change File</button>
+        </div>
+
+        <div id="pptx2pdf-slides-gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[30rem] overflow-y-auto p-1 mb-6"></div>
+
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <span class="text-xs text-slate-500">100% In-Memory Conversion via JSZip + Canvas</span>
+          <button data-action="run-pptx2pdf" id="btn-run-pptx2pdf" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition flex items-center gap-2">
+            <span>Convert to PDF</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 29: PDF TO POWERPOINT WORKSPACE ================= -->
+    <section id="view-pdf2pptx" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to PowerPoint</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Convert PDF to PowerPoint Presentation</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert every page of your PDF into high-resolution PowerPoint (.pptx) presentation slides.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-rose-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="pdf2pptx-drop-zone" tabindex="0" role="button">
+        <input type="file" id="pdf2pptx-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File Here</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Renders each PDF page as an individual presentation slide</p>
+        <button data-trigger-click="pdf2pptx-file-input" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select PDF File
+        </button>
+      </div>
+
+      <div id="pdf2pptx-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
+          <div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="pdf2pptx-doc-name">-</h4>
+            <span class="text-xs text-slate-400 font-mono" id="pdf2pptx-doc-summary">- Pages</span>
+          </div>
+          <button data-trigger-click="pdf2pptx-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change PDF</button>
+        </div>
+
+        <div id="pdf2pptx-preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[30rem] overflow-y-auto p-1 mb-6"></div>
+
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <span class="text-xs text-slate-500">Creates .pptx with 16:9 HD Slide Formatting</span>
+          <button data-action="run-pdf2pptx" id="btn-run-pdf2pptx" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition flex items-center gap-2">
+            <span>Convert to PPTX</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 30: SCAN TO PDF WORKSPACE ================= -->
+    <section id="view-scan2pdf" class="hidden max-w-5xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Scan to PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Scan Paper Documents to PDF</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Capture single or multi-page documents directly using your webcam or mobile camera. 100% in-browser.</p>
+      </div>
+
+      <div id="scan2pdf-camera-card" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm text-center">
+        <div id="scan2pdf-placeholder" class="py-12">
+          <div class="w-16 h-16 mx-auto mb-4 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">Camera Not Connected</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-5">Click below to activate your camera or webcam and begin scanning physical pages.</p>
+          <button data-action="scan2pdf-start-camera" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+            📷 Activate Camera
+          </button>
+        </div>
+
+        <div id="scan2pdf-active-container" class="hidden">
+          <div class="relative max-w-lg mx-auto rounded-2xl overflow-hidden shadow-lg border border-slate-300 dark:border-slate-700 bg-black mb-4">
+            <video id="scan2pdf-video" class="w-full h-auto block" playsinline autoplay muted></video>
+            <div class="absolute inset-0 border-2 border-dashed border-emerald-400/60 pointer-events-none rounded-2xl m-4"></div>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 mb-6">
+            <button data-action="scan2pdf-capture-frame" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition flex items-center gap-2">
+              <span>📸 Capture Page</span>
+            </button>
+            <button data-action="scan2pdf-stop-camera" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs px-4 py-3 rounded-xl transition">
+              Close Camera
+            </button>
+          </div>
+        </div>
+
+        <div id="scan2pdf-gallery-section" class="border-t border-slate-200 dark:border-slate-800 pt-5 text-left">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">Scanned Pages:</h4>
+            <span id="scan2pdf-page-count" class="text-xs font-bold text-emerald-600 dark:text-emerald-400">0 Pages</span>
+          </div>
+
+          <div id="scan2pdf-pages-gallery" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-6 min-h-[5rem]">
+            <div class="col-span-full text-center py-4 text-xs text-slate-400 font-medium italic">No pages captured yet. Click "Capture Page" to add pages.</div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-slate-500">Compiles high-resolution captures into PDF</span>
+            <button data-action="run-scan2pdf" id="btn-run-scan2pdf" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition flex items-center gap-2">
+              <span>Generate PDF from Scans</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ================= TRUST & SOCIAL PROOF SECTION (Screenshot 3 Match) ================= -->
@@ -2954,6 +3377,84 @@
 
   <!-- ================= UNIVERSAL CONVERTER ENGINE SCRIPT ================= -->
   
+
+  <!-- ================= ONBOARDING & QUICK TOUR MODAL ================= -->
+  <div id="onboarding-overlay" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden animate-fadeIn flex flex-col">
+      <!-- Modal Header -->
+      <div class="px-6 pt-5 pb-2 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Welcome Tour</span>
+        </div>
+        <button data-action="close-onboarding" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold text-lg p-1 transition" aria-label="Close tour">✕</button>
+      </div>
+
+      <!-- Slides Container -->
+      <div class="p-6 text-center">
+        <!-- Slide 1: In-Browser Privacy -->
+        <div id="onboarding-slide-0" class="onboarding-slide space-y-3">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-3xl shadow-inner">
+            🔒
+          </div>
+          <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">100% In-Browser Privacy</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+            Your bank statements, PDFs, and files are processed strictly inside your device's memory. Zero cloud server uploads, no data collection, and zero tracking.
+          </p>
+        </div>
+
+        <!-- Slide 2: 30 Tools -->
+        <div id="onboarding-slide-1" class="onboarding-slide hidden space-y-3">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-violet-100 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center text-3xl shadow-inner">
+            ⚡
+          </div>
+          <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">30 Powerful PDF & Office Tools</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+            Edit text, fill interactive forms, convert PowerPoint, scan with camera, merge, split, watermark, OCR, compress, and sign — completely free with no limits.
+          </p>
+        </div>
+
+        <!-- Slide 3: Offline PWA -->
+        <div id="onboarding-slide-2" class="onboarding-slide hidden space-y-3">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-sky-100 dark:bg-sky-950/80 text-sky-600 dark:text-sky-400 flex items-center justify-center text-3xl shadow-inner">
+            ✈️
+          </div>
+          <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Works Completely Offline</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+            Install Statement2Sheet as a Progressive Web App (PWA). Once loaded, you can work securely on flights, trains, or anywhere without an internet connection.
+          </p>
+        </div>
+
+        <!-- Slide 4: Bank Statement to Excel -->
+        <div id="onboarding-slide-3" class="onboarding-slide hidden space-y-3">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center text-3xl shadow-inner">
+            📊
+          </div>
+          <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Bank Statements to Excel</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+            Auto-extract transactions from 100+ global banks into clean 3-sheet Excel workbooks with automated balance checks and reconciliation audits.
+          </p>
+        </div>
+
+        <!-- Carousel Dots -->
+        <div class="flex items-center justify-center gap-2 mt-6">
+          <span id="onboarding-dot-0" class="w-5 h-2.5 rounded-full bg-emerald-600 transition-all"></span>
+          <span id="onboarding-dot-1" class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></span>
+          <span id="onboarding-dot-2" class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></span>
+          <span id="onboarding-dot-3" class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all"></span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-slate-50 dark:bg-slate-950/50 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <button data-action="skip-onboarding" class="text-xs font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition">Skip</button>
+        <div class="flex items-center gap-2">
+          <button data-action="prev-onboarding" id="btn-onboarding-prev" class="hidden px-3 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition">Back</button>
+          <button data-action="next-onboarding" id="btn-onboarding-next" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">Next &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= PAGE ZOOM LIGHTBOX MODAL ================= -->
   <div id="page-zoom-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">

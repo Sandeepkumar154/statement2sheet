@@ -379,7 +379,16 @@ async function runTests() {
   if (!domSafetyRes.hasChip || !domSafetyRes.hasCats) throw new Error('Safe DOM rendering test failed!');
 
   console.log('\n--- 7. Testing PWA Offline Capabilities & Cache Contents ---');
-  await sleep(2000);
+  await evaluate(`(async () => {
+    if ('serviceWorker' in navigator) {
+      try {
+        await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise(r => setTimeout(r, 4000))
+        ]);
+      } catch (e) {}
+    }
+  })()`);
 
   const pwaRes = await evaluate(`(async () => {
     const hasSwInNav = 'serviceWorker' in navigator;
@@ -446,6 +455,16 @@ async function runTests() {
     console.log('Reloading page to attach active service worker controller...');
     await sendCommand('Page.reload');
     await sleep(2500);
+    await evaluate(`(async () => {
+      if ('serviceWorker' in navigator) {
+        try {
+          await Promise.race([
+            navigator.serviceWorker.ready,
+            new Promise(r => setTimeout(r, 4000))
+          ]);
+        } catch (e) {}
+      }
+    })()`);
   }
   const controlledAfterReload = await evaluate("!!navigator.serviceWorker.controller");
   console.log('✓ Service Worker Controller Active:', controlledAfterReload);
@@ -1124,6 +1143,277 @@ async function runTests() {
     })()`);
     console.log('✓ Universal High-Resolution Zoom Lightbox:', zoomRes);
     if (!zoomRes.zoomedIn || !zoomRes.resetCorrect) throw new Error('Zoom modal controls failed');
+
+    // 16. Inline PDF Text & Shape Editor Execution
+    const editPdfRes = await evaluate(`(async () => {
+      let downloadIntercept = null;
+      const origDownload = downloadTrackedBlob;
+      window.downloadTrackedBlob = (blob, name) => { downloadIntercept = { blob, name, size: blob.size }; };
+
+      try {
+        const bin = atob("${b64}");
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        const file = new File([bytes], 'sample_to_edit.pdf', { type: 'application/pdf' });
+
+        await loadEditPdfFile(file);
+
+        // Add text and rect annotations on page 1
+        editPdfState.annotations[1] = [
+          { type: 'text', text: 'CONFIDENTIAL AUDIT NOTE', x: 50, y: 100, color: '#ef4444', size: 18 },
+          { type: 'rect', x: 45, y: 85, width: 250, height: 40, color: '#2563eb', strokeWidth: 2 }
+        ];
+
+        await executeEditPdf();
+
+        return {
+          success: Boolean(downloadIntercept && downloadIntercept.size > 0),
+          filename: downloadIntercept ? downloadIntercept.name : null,
+          hasAnnotations: Boolean(editPdfState.annotations[1] && editPdfState.annotations[1].length === 2)
+        };
+      } finally {
+        window.downloadTrackedBlob = origDownload;
+      }
+    })()`);
+    console.log('✓ Inline PDF Text & Shape Editor Execution:', editPdfRes);
+    if (!editPdfRes.success || !editPdfRes.filename.includes('edited.pdf')) {
+      throw new Error('Edit PDF execution failed');
+    }
+
+    // 17. Interactive PDF Form Filler Execution
+    const formFillRes = await evaluate(`(async () => {
+      let downloadIntercept = null;
+      const origDownload = downloadTrackedBlob;
+      window.downloadTrackedBlob = (blob, name) => { downloadIntercept = { blob, name, size: blob.size }; };
+
+      try {
+        await ensurePdfLib();
+        // Create a PDF with an AcroForm text field and checkbox
+        const testPdfDoc = await PDFLib.PDFDocument.create();
+        const testPage = testPdfDoc.addPage([400, 400]);
+        const testForm = testPdfDoc.getForm();
+        const testTextField = testForm.createTextField('account_holder_name');
+        testTextField.setText('John Doe');
+        testTextField.addToPage(testPage, { x: 50, y: 300, width: 200, height: 25 });
+
+        const testCheckField = testForm.createCheckBox('tax_verified');
+        testCheckField.addToPage(testPage, { x: 50, y: 250, width: 20, height: 20 });
+
+        const testPdfBytes = await testPdfDoc.save();
+        const testFile = new File([testPdfBytes], 'w9_tax_form.pdf', { type: 'application/pdf' });
+
+        await loadFormPdfFile(testFile);
+        const fieldsDetected = formFillState.fields.length;
+
+        // Change the text field value and check the checkbox in DOM
+        const textInput = document.querySelector('input[data-field-name="account_holder_name"]');
+        if (textInput) textInput.value = 'Jane Smith (Audited)';
+
+        const checkInput = document.querySelector('input[data-field-name="tax_verified"]');
+        if (checkInput) checkInput.checked = true;
+
+        await executeFormFill();
+
+        return {
+          success: Boolean(downloadIntercept && downloadIntercept.size > 0),
+          filename: downloadIntercept ? downloadIntercept.name : null,
+          fieldsDetected,
+          flattenSupported: typeof testForm.flatten === 'function'
+        };
+      } finally {
+        window.downloadTrackedBlob = origDownload;
+      }
+    })()`);
+    console.log('✓ Interactive PDF Form Filler Execution:', formFillRes);
+    if (!formFillRes.success || formFillRes.fieldsDetected < 2 || !formFillRes.filename.includes('filled.pdf')) {
+      throw new Error('Form Filler execution failed');
+    }
+
+    // 18. PowerPoint (.pptx) to PDF Execution
+    const pptx2PdfRes = await evaluate(`(async () => {
+      let downloadIntercept = null;
+      const origDownload = downloadTrackedBlob;
+      window.downloadTrackedBlob = (blob, name) => { downloadIntercept = { blob, name, size: blob.size }; };
+
+      try {
+        await ensureJsZip();
+        const zip = new JSZip();
+        zip.file('ppt/slides/slide1.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:spTree><p:sp><p:txBody><a:p><a:r><a:t>Quarterly Financial Overview</a:t></a:r></a:p><a:p><a:r><a:t>Net Operating Revenue: $2,450,000</a:t></a:r></a:p></p:txBody></p:sp></p:spTree></p:cSld></p:sld>');
+        const buffer = await zip.generateAsync({ type: 'uint8array' });
+        const file = new File([buffer], 'financial_deck.pptx', { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+
+        await loadPptxFile(file);
+        const slidesCount = pptx2PdfState.slides.length;
+
+        await executePptxToPdf();
+
+        return {
+          success: Boolean(downloadIntercept && downloadIntercept.size > 0),
+          filename: downloadIntercept ? downloadIntercept.name : null,
+          slidesCount
+        };
+      } finally {
+        window.downloadTrackedBlob = origDownload;
+      }
+    })()`);
+    console.log('✓ PowerPoint (.pptx) to PDF Execution:', pptx2PdfRes);
+    if (!pptx2PdfRes.success || pptx2PdfRes.slidesCount < 1 || !pptx2PdfRes.filename.includes('converted.pdf')) {
+      throw new Error('PowerPoint to PDF execution failed');
+    }
+
+    // 19. PDF to PowerPoint (.pptx) Execution
+    const pdf2PptxRes = await evaluate(`(async () => {
+      let downloadIntercept = null;
+      const origDownload = downloadTrackedBlob;
+      window.downloadTrackedBlob = (blob, name) => { downloadIntercept = { blob, name, size: blob.size }; };
+
+      try {
+        const bin = atob("${b64}");
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        const file = new File([bytes], 'annual_report.pdf', { type: 'application/pdf' });
+
+        await loadPdf2PptxFile(file);
+        const pagesToConvert = pdf2PptxState.pageCount;
+
+        await executePdf2Pptx();
+
+        // Verify PPTX is a zip file (first 2 bytes = PK = 0x50, 0x4B)
+        let isZip = false;
+        if (downloadIntercept && downloadIntercept.blob) {
+          const ab = await downloadIntercept.blob.arrayBuffer();
+          const u8 = new Uint8Array(ab);
+          isZip = u8.length > 2 && u8[0] === 0x50 && u8[1] === 0x4B;
+        }
+
+        return {
+          success: Boolean(downloadIntercept && downloadIntercept.size > 0),
+          filename: downloadIntercept ? downloadIntercept.name : null,
+          pagesToConvert,
+          isZip
+        };
+      } finally {
+        window.downloadTrackedBlob = origDownload;
+      }
+    })()`);
+    console.log('✓ PDF to PowerPoint (.pptx) Execution:', pdf2PptxRes);
+    if (!pdf2PptxRes.success || pdf2PptxRes.pagesToConvert < 1 || !pdf2PptxRes.isZip || !pdf2PptxRes.filename.includes('.pptx')) {
+      throw new Error('PDF to PowerPoint execution failed');
+    }
+
+    // 20. Scan to PDF Execution
+    const scan2PdfRes = await evaluate(`(async () => {
+      let downloadIntercept = null;
+      const origDownload = downloadTrackedBlob;
+      window.downloadTrackedBlob = (blob, name) => { downloadIntercept = { blob, name, size: blob.size }; };
+
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 600;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 400, 600);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = '24px sans-serif';
+        ctx.fillText('Scanned Document Page 1', 30, 80);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        scan2PdfState.pages = [dataUrl];
+        renderScan2PdfGallery();
+
+        const galleryChildren = document.getElementById('scan2pdf-pages-gallery').children.length;
+        const countText = document.getElementById('scan2pdf-page-count').textContent;
+
+        await executeScan2Pdf();
+
+        return {
+          success: Boolean(downloadIntercept && downloadIntercept.size > 0),
+          filename: downloadIntercept ? downloadIntercept.name : null,
+          galleryChildren,
+          countText
+        };
+      } finally {
+        window.downloadTrackedBlob = origDownload;
+      }
+    })()`);
+    console.log('✓ Scan to PDF Execution:', scan2PdfRes);
+    if (!scan2PdfRes.success || scan2PdfRes.galleryChildren !== 1 || !scan2PdfRes.filename.includes('scanned_document')) {
+      throw new Error('Scan to PDF execution failed');
+    }
+
+    // 21. Multi-Language i18n & Arabic RTL Toggle
+    const i18nRtlRes = await evaluate(`(() => {
+      // Test Italian
+      applyLanguage('it');
+      const itMerge = document.querySelector('[data-i18n="nav_merge"]')?.textContent;
+
+      // Test Arabic + RTL
+      applyLanguage('ar');
+      const arDir = document.documentElement.dir;
+      const arLang = document.documentElement.lang;
+      const arMerge = document.querySelector('[data-i18n="nav_merge"]')?.textContent;
+
+      // Test Reset to English + LTR
+      applyLanguage('en');
+      const enDir = document.documentElement.dir;
+      const enMerge = document.querySelector('[data-i18n="nav_merge"]')?.textContent;
+
+      return {
+        itMerge,
+        arDir,
+        arLang,
+        arMerge,
+        enDir,
+        enMerge,
+        rtlActiveInArabic: arDir === 'rtl',
+        ltrActiveInEnglish: enDir === 'ltr'
+      };
+    })()`);
+    console.log('✓ Multi-Language i18n & Arabic RTL Toggle:', i18nRtlRes);
+    if (!i18nRtlRes.rtlActiveInArabic || !i18nRtlRes.ltrActiveInEnglish || !i18nRtlRes.arMerge || !i18nRtlRes.itMerge) {
+      throw new Error('i18n & RTL toggle failed');
+    }
+
+    // 22. Interactive Onboarding Modal & Multi-Step Carousel
+    const onboardingRes = await evaluate(`(() => {
+      // Trigger onboarding modal
+      showOnboardingModal(0);
+      const modal = document.getElementById('onboarding-overlay');
+      const isVisibleInitial = !modal.classList.contains('hidden');
+      const initialSlideIndex = onboardingSlideIndex;
+
+      // Advance slides
+      advanceOnboardingSlide();
+      const slide1Active = onboardingSlideIndex === 1;
+
+      advanceOnboardingSlide();
+      const slide2Active = onboardingSlideIndex === 2;
+
+      advanceOnboardingSlide();
+      const slide3Active = onboardingSlideIndex === 3;
+      const nextBtnText = document.getElementById('btn-onboarding-next')?.textContent;
+
+      // Finish / complete
+      finishOnboarding();
+      const isHiddenAfterFinish = modal.classList.contains('hidden');
+      const storedDone = localStorage.getItem('s2s_onboarding_done');
+
+      return {
+        isVisibleInitial,
+        initialSlideIndex,
+        slide1Active,
+        slide2Active,
+        slide3Active,
+        nextBtnText,
+        isHiddenAfterFinish,
+        storedDone
+      };
+    })()`);
+    console.log('✓ Interactive Onboarding Modal & Carousel:', onboardingRes);
+    if (!onboardingRes.isVisibleInitial || !onboardingRes.slide3Active || !onboardingRes.isHiddenAfterFinish || onboardingRes.storedDone !== 'true') {
+      throw new Error('Onboarding modal & carousel test failed');
+    }
 
     // Clean session data so Object URL registry returns to baseline
     await evaluate(`(() => { purgeAllSessionData(); })()`);

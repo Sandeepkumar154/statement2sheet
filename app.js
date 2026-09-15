@@ -40,6 +40,16 @@ const VENDOR_LIBS = {
     src: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
     integrity: 'sha384-GJqSu7vueQ9qN0E9yLPb3Wtpd7OrgK8KmYzC8T1IysG1bcvxvIO4qtYR/D3A991F',
     isLoaded: () => typeof Tesseract !== 'undefined'
+  },
+  jszip: {
+    src: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+    integrity: 'sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG',
+    isLoaded: () => typeof JSZip !== 'undefined'
+  },
+  pptxgenjs: {
+    src: 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+    integrity: 'sha384-Cck14aA9cifjYolcnjebXRfWGkz5ltHMBiG4px/j8GS+xQcb7OhNQWZYyWjQ+UwQ',
+    isLoaded: () => typeof PptxGenJS !== 'undefined'
   }
 };
 
@@ -92,6 +102,16 @@ async function ensureJsPdf() {
 async function ensureTesseract() {
   if (typeof Tesseract !== 'undefined') return;
   await loadVendorScript('tesseract');
+}
+
+async function ensureJsZip() {
+  if (typeof JSZip !== 'undefined') return;
+  await loadVendorScript('jszip');
+}
+
+async function ensurePptxGen() {
+  if (typeof PptxGenJS !== 'undefined') return;
+  await loadVendorScript('pptxgenjs');
 }
 
 // 3. Worker & Initial Theme Setup
@@ -475,7 +495,7 @@ setupPdfWorker();
       }
 
       // Hide all main views
-      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown', 'crop', 'extract-images', 'compare', 'rotate', 'redact', 'pdf2word', 'office2pdf', 'pdfa', 'digitalsign', 'summarize', 'repair'];
+      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown', 'crop', 'extract-images', 'compare', 'rotate', 'redact', 'pdf2word', 'office2pdf', 'pdfa', 'digitalsign', 'summarize', 'repair', 'editpdf', 'formfill', 'pptx2pdf', 'pdf2pptx', 'scan2pdf'];
       if (toolName === 'dashboard') {
         loadRecentFiles();
       }
@@ -4987,6 +5007,1304 @@ setupPdfWorker();
       }
     }
 
+    // ================= MODULE 26: EDIT PDF (TEXT & ANNOTATIONS) TOOL =================
+    let editPdfState = {
+      file: null,
+      pdfBytes: null,
+      pdfJsDoc: null,
+      currentPage: 1,
+      totalPages: 1,
+      scale: 1.5,
+      tool: 'text', // 'text' | 'draw' | 'rect' | 'line'
+      color: '#ef4444',
+      fontSize: 16,
+      strokeWidth: 2,
+      annotations: {}, // pageNum -> array of annotations
+      isDrawing: false,
+      startX: 0,
+      startY: 0,
+      currentPoints: [],
+      pageWidth: 0,
+      pageHeight: 0
+    };
+
+    function hexToPdfRgb(hex) {
+      if (!hex || hex[0] !== '#' || hex.length < 7) {
+        return PDFLib.rgb(0, 0, 0);
+      }
+      const r = parseInt(hex.slice(1, 3), 16) / 255;
+      const g = parseInt(hex.slice(3, 5), 16) / 255;
+      const b = parseInt(hex.slice(5, 7), 16) / 255;
+      return PDFLib.rgb(isNaN(r) ? 0 : r, isNaN(g) ? 0 : g, isNaN(b) ? 0 : b);
+    }
+
+    function initEditPdfToolListeners() {
+      const dropZone = document.getElementById('editpdf-drop-zone');
+      const input = document.getElementById('editpdf-file-input');
+      const colorPicker = document.getElementById('editpdf-color-picker');
+      const fontSizeSelect = document.getElementById('editpdf-font-size');
+      const strokeWidthSelect = document.getElementById('editpdf-stroke-width');
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+
+      if (dropZone && input) {
+        dropZone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-violet-500'); });
+        dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('border-violet-500'); });
+        dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('border-violet-500');
+          if (e.dataTransfer.files && e.dataTransfer.files.length) loadEditPdfFile(e.dataTransfer.files[0]);
+        });
+        input.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files.length) loadEditPdfFile(e.target.files[0]);
+        });
+      }
+
+      if (colorPicker) {
+        colorPicker.addEventListener('change', (e) => { editPdfState.color = e.target.value; });
+      }
+      if (fontSizeSelect) {
+        fontSizeSelect.addEventListener('change', (e) => { editPdfState.fontSize = parseInt(e.target.value, 10) || 16; });
+      }
+      if (strokeWidthSelect) {
+        strokeWidthSelect.addEventListener('change', (e) => { editPdfState.strokeWidth = parseInt(e.target.value, 10) || 2; });
+      }
+
+      if (overlayCanvas) {
+        overlayCanvas.addEventListener('mousedown', onEditPdfMouseDown);
+        overlayCanvas.addEventListener('mousemove', onEditPdfMouseMove);
+        overlayCanvas.addEventListener('mouseup', onEditPdfMouseUp);
+        overlayCanvas.addEventListener('mouseleave', onEditPdfMouseUp);
+        overlayCanvas.addEventListener('click', onEditPdfClick);
+      }
+    }
+
+    function setEditPdfTool(toolType) {
+      editPdfState.tool = toolType;
+      const toolButtons = ['text', 'draw', 'rect', 'line'];
+      toolButtons.forEach(t => {
+        const btn = document.getElementById(`btn-editpdf-tool-${t}`);
+        if (!btn) return;
+        if (t === toolType) {
+          btn.className = 'px-2.5 py-1 bg-violet-600 text-white font-bold rounded-lg transition shadow-2xs';
+        } else {
+          btn.className = 'px-2.5 py-1 bg-white dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg border border-slate-200 dark:border-slate-600 transition shadow-2xs';
+        }
+      });
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (overlayCanvas) {
+        overlayCanvas.style.cursor = toolType === 'text' ? 'text' : 'crosshair';
+      }
+    }
+
+    function clearEditPdfCurrentPage() {
+      if (editPdfState.annotations[editPdfState.currentPage]) {
+        editPdfState.annotations[editPdfState.currentPage] = [];
+        redrawEditPdfOverlay();
+      }
+    }
+
+    function navigateEditPdfPage(delta) {
+      const target = editPdfState.currentPage + delta;
+      if (target >= 1 && target <= editPdfState.totalPages) {
+        editPdfState.currentPage = target;
+        renderEditPdfCurrentPage();
+      }
+    }
+
+    async function loadEditPdfFile(file) {
+      try {
+        if (typeof pdfjsLib === 'undefined') {
+          throw new Error('PDF.js engine is not ready.');
+        }
+        const ab = await file.arrayBuffer();
+        editPdfState.file = file;
+        editPdfState.pdfBytes = ab;
+        editPdfState.annotations = {};
+        editPdfState.currentPage = 1;
+
+        const copy = ab.slice(0);
+        const doc = await pdfjsLib.getDocument({ data: copy }).promise;
+        editPdfState.pdfJsDoc = doc;
+        editPdfState.totalPages = doc.numPages;
+
+        const card = document.getElementById('editpdf-controls-card');
+        const docName = document.getElementById('editpdf-doc-name');
+        const docPages = document.getElementById('editpdf-doc-pages');
+
+        if (card) card.classList.remove('hidden');
+        if (docName) docName.textContent = file.name;
+        if (docPages) docPages.textContent = `${doc.numPages} Page(s)`;
+
+        await renderEditPdfCurrentPage();
+      } catch (err) {
+        console.error('Failed to load PDF for editing:', err);
+        alert('Could not open PDF: ' + err.message);
+      }
+    }
+
+    async function renderEditPdfCurrentPage() {
+      if (!editPdfState.pdfJsDoc) return;
+      const pageNum = editPdfState.currentPage;
+      const pageDisplay = document.getElementById('editpdf-page-display');
+      if (pageDisplay) {
+        pageDisplay.textContent = `Page ${pageNum} of ${editPdfState.totalPages}`;
+      }
+
+      const page = await editPdfState.pdfJsDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: editPdfState.scale });
+
+      const renderCanvas = document.getElementById('editpdf-render-canvas');
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (!renderCanvas || !overlayCanvas) return;
+
+      renderCanvas.width = viewport.width;
+      renderCanvas.height = viewport.height;
+      overlayCanvas.width = viewport.width;
+      overlayCanvas.height = viewport.height;
+
+      editPdfState.pageWidth = viewport.width;
+      editPdfState.pageHeight = viewport.height;
+
+      const ctx = renderCanvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      redrawEditPdfOverlay();
+    }
+
+    function redrawEditPdfOverlay() {
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (!overlayCanvas) return;
+      const ctx = overlayCanvas.getContext('2d');
+      ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+      const anns = editPdfState.annotations[editPdfState.currentPage] || [];
+      anns.forEach(ann => {
+        ctx.save();
+        if (ann.type === 'text') {
+          ctx.font = `${ann.size || 16}px sans-serif`;
+          ctx.fillStyle = ann.color || '#ef4444';
+          ctx.fillText(ann.text, ann.x, ann.y);
+        } else if (ann.type === 'rect') {
+          ctx.strokeStyle = ann.color || '#ef4444';
+          ctx.lineWidth = ann.strokeWidth || 2;
+          ctx.strokeRect(ann.x, ann.y, ann.width, ann.height);
+        } else if (ann.type === 'line') {
+          ctx.strokeStyle = ann.color || '#ef4444';
+          ctx.lineWidth = ann.strokeWidth || 2;
+          ctx.beginPath();
+          ctx.moveTo(ann.x1, ann.y1);
+          ctx.lineTo(ann.x2, ann.y2);
+          ctx.stroke();
+        } else if (ann.type === 'draw' && ann.points && ann.points.length > 1) {
+          ctx.strokeStyle = ann.color || '#ef4444';
+          ctx.lineWidth = ann.strokeWidth || 2;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(ann.points[0].x, ann.points[0].y);
+          for (let i = 1; i < ann.points.length; i++) {
+            ctx.lineTo(ann.points[i].x, ann.points[i].y);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+    }
+
+    function getCanvasCoords(e, canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    function onEditPdfMouseDown(e) {
+      if (editPdfState.tool === 'text') return;
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (!overlayCanvas) return;
+      const coords = getCanvasCoords(e, overlayCanvas);
+      editPdfState.isDrawing = true;
+      editPdfState.startX = coords.x;
+      editPdfState.startY = coords.y;
+
+      if (editPdfState.tool === 'draw') {
+        editPdfState.currentPoints = [coords];
+      }
+    }
+
+    function onEditPdfMouseMove(e) {
+      if (!editPdfState.isDrawing) return;
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (!overlayCanvas) return;
+      const coords = getCanvasCoords(e, overlayCanvas);
+      const ctx = overlayCanvas.getContext('2d');
+
+      if (editPdfState.tool === 'draw') {
+        editPdfState.currentPoints.push(coords);
+        redrawEditPdfOverlay();
+        ctx.save();
+        ctx.strokeStyle = editPdfState.color;
+        ctx.lineWidth = editPdfState.strokeWidth;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(editPdfState.currentPoints[0].x, editPdfState.currentPoints[0].y);
+        for (let i = 1; i < editPdfState.currentPoints.length; i++) {
+          ctx.lineTo(editPdfState.currentPoints[i].x, editPdfState.currentPoints[i].y);
+        }
+        ctx.stroke();
+        ctx.restore();
+      } else if (editPdfState.tool === 'rect') {
+        redrawEditPdfOverlay();
+        ctx.save();
+        ctx.strokeStyle = editPdfState.color;
+        ctx.lineWidth = editPdfState.strokeWidth;
+        const w = coords.x - editPdfState.startX;
+        const h = coords.y - editPdfState.startY;
+        ctx.strokeRect(editPdfState.startX, editPdfState.startY, w, h);
+        ctx.restore();
+      } else if (editPdfState.tool === 'line') {
+        redrawEditPdfOverlay();
+        ctx.save();
+        ctx.strokeStyle = editPdfState.color;
+        ctx.lineWidth = editPdfState.strokeWidth;
+        ctx.beginPath();
+        ctx.moveTo(editPdfState.startX, editPdfState.startY);
+        ctx.lineTo(coords.x, coords.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function onEditPdfMouseUp(e) {
+      if (!editPdfState.isDrawing) return;
+      editPdfState.isDrawing = false;
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (!overlayCanvas) return;
+      const coords = getCanvasCoords(e, overlayCanvas);
+      const pageNum = editPdfState.currentPage;
+      if (!editPdfState.annotations[pageNum]) {
+        editPdfState.annotations[pageNum] = [];
+      }
+
+      if (editPdfState.tool === 'draw' && editPdfState.currentPoints.length > 1) {
+        editPdfState.annotations[pageNum].push({
+          type: 'draw',
+          points: [...editPdfState.currentPoints],
+          color: editPdfState.color,
+          strokeWidth: editPdfState.strokeWidth
+        });
+      } else if (editPdfState.tool === 'rect') {
+        const w = coords.x - editPdfState.startX;
+        const h = coords.y - editPdfState.startY;
+        if (Math.abs(w) > 3 && Math.abs(h) > 3) {
+          editPdfState.annotations[pageNum].push({
+            type: 'rect',
+            x: Math.min(editPdfState.startX, coords.x),
+            y: Math.min(editPdfState.startY, coords.y),
+            width: Math.abs(w),
+            height: Math.abs(h),
+            color: editPdfState.color,
+            strokeWidth: editPdfState.strokeWidth
+          });
+        }
+      } else if (editPdfState.tool === 'line') {
+        const dx = coords.x - editPdfState.startX;
+        const dy = coords.y - editPdfState.startY;
+        if (Math.hypot(dx, dy) > 5) {
+          editPdfState.annotations[pageNum].push({
+            type: 'line',
+            x1: editPdfState.startX,
+            y1: editPdfState.startY,
+            x2: coords.x,
+            y2: coords.y,
+            color: editPdfState.color,
+            strokeWidth: editPdfState.strokeWidth
+          });
+        }
+      }
+
+      editPdfState.currentPoints = [];
+      redrawEditPdfOverlay();
+    }
+
+    function onEditPdfClick(e) {
+      if (editPdfState.tool !== 'text') return;
+      const overlayCanvas = document.getElementById('editpdf-overlay-canvas');
+      if (!overlayCanvas) return;
+      const coords = getCanvasCoords(e, overlayCanvas);
+
+      const text = prompt('Enter text to place on PDF:');
+      if (text && text.trim()) {
+        const pageNum = editPdfState.currentPage;
+        if (!editPdfState.annotations[pageNum]) {
+          editPdfState.annotations[pageNum] = [];
+        }
+        editPdfState.annotations[pageNum].push({
+          type: 'text',
+          text: text.trim(),
+          x: coords.x,
+          y: coords.y,
+          color: editPdfState.color,
+          size: editPdfState.fontSize
+        });
+        redrawEditPdfOverlay();
+      }
+    }
+
+    async function executeEditPdf() {
+      if (!editPdfState.file || !editPdfState.pdfBytes) {
+        alert('Please select a PDF file to edit.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-editpdf');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Saving Changes...</span>';
+      }
+
+      try {
+        await ensurePdfLib();
+        const pdfDoc = await PDFLib.PDFDocument.load(editPdfState.pdfBytes, { ignoreEncryption: true });
+        const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const totalPages = pdfDoc.getPageCount();
+
+        for (let p = 0; p < totalPages; p++) {
+          const pageNum = p + 1;
+          const anns = editPdfState.annotations[pageNum] || [];
+          if (anns.length === 0) continue;
+
+          const page = pdfDoc.getPage(p);
+          const { width, height } = page.getSize();
+          const canvasW = editPdfState.pageWidth || width;
+          const canvasH = editPdfState.pageHeight || height;
+          const sx = width / canvasW;
+          const sy = height / canvasH;
+
+          for (const ann of anns) {
+            const pdfColor = hexToPdfRgb(ann.color);
+
+            if (ann.type === 'text') {
+              const pdfX = ann.x * sx;
+              const pdfY = height - (ann.y * sy);
+              const fontSize = (ann.size || 16) * Math.min(sx, sy);
+              page.drawText(ann.text, {
+                x: pdfX,
+                y: Math.max(0, pdfY - fontSize),
+                size: fontSize,
+                font,
+                color: pdfColor
+              });
+            } else if (ann.type === 'rect') {
+              const rx = ann.x * sx;
+              const ry = height - ((ann.y + ann.height) * sy);
+              page.drawRectangle({
+                x: rx,
+                y: ry,
+                width: ann.width * sx,
+                height: ann.height * sy,
+                borderWidth: (ann.strokeWidth || 2) * Math.min(sx, sy),
+                borderColor: pdfColor
+              });
+            } else if (ann.type === 'line') {
+              page.drawLine({
+                start: { x: ann.x1 * sx, y: height - (ann.y1 * sy) },
+                end: { x: ann.x2 * sx, y: height - (ann.y2 * sy) },
+                thickness: (ann.strokeWidth || 2) * Math.min(sx, sy),
+                color: pdfColor
+              });
+            } else if (ann.type === 'draw' && ann.points && ann.points.length > 1) {
+              const thickness = (ann.strokeWidth || 2) * Math.min(sx, sy);
+              for (let i = 0; i < ann.points.length - 1; i++) {
+                page.drawLine({
+                  start: { x: ann.points[i].x * sx, y: height - (ann.points[i].y * sy) },
+                  end: { x: ann.points[i + 1].x * sx, y: height - (ann.points[i + 1].y * sy) },
+                  thickness,
+                  color: pdfColor
+                });
+              }
+            }
+          }
+        }
+
+        const savedBytes = await pdfDoc.save();
+        const baseName = editPdfState.file.name.replace(/\.pdf$/i, '');
+        const outName = `${baseName}_edited.pdf`;
+        downloadTrackedBlob(new Blob([savedBytes], { type: 'application/pdf' }), outName);
+      } catch (err) {
+        console.error('Failed to save edited PDF:', err);
+        alert('Could not save PDF: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>💾 Save &amp; Download Edited PDF</span><span>&rarr;</span>';
+        }
+      }
+    }
+
+    // ================= MODULE 27: FILL PDF FORMS (ACROFORM) TOOL =================
+    let formFillState = {
+      file: null,
+      pdfBytes: null,
+      fields: []
+    };
+
+    function initFormFillerToolListeners() {
+      const dropZone = document.getElementById('formfill-drop-zone');
+      const input = document.getElementById('formfill-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-teal-500'); });
+      dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('border-teal-500'); });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-teal-500');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) loadFormPdfFile(e.dataTransfer.files[0]);
+      });
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) loadFormPdfFile(e.target.files[0]);
+      });
+    }
+
+    async function loadFormPdfFile(file) {
+      try {
+        await ensurePdfLib();
+        const ab = await file.arrayBuffer();
+        formFillState.file = file;
+        formFillState.pdfBytes = ab;
+        formFillState.fields = [];
+
+        const pdfDoc = await PDFLib.PDFDocument.load(ab, { ignoreEncryption: true });
+        let form;
+        try {
+          form = pdfDoc.getForm();
+        } catch (e) {
+          form = null;
+        }
+
+        const rawFields = form ? form.getFields() : [];
+        const detectedFields = [];
+
+        rawFields.forEach((field) => {
+          const name = field.getName();
+          const constructorName = field.constructor ? field.constructor.name : '';
+
+          if (constructorName === 'PDFTextField' || typeof field.getText === 'function') {
+            detectedFields.push({
+              name,
+              type: 'text',
+              value: (typeof field.getText === 'function' ? field.getText() : '') || ''
+            });
+          } else if (constructorName === 'PDFCheckBox' || typeof field.isChecked === 'function') {
+            detectedFields.push({
+              name,
+              type: 'checkbox',
+              value: typeof field.isChecked === 'function' ? field.isChecked() : false
+            });
+          } else if (constructorName === 'PDFDropdown' || typeof field.getOptions === 'function') {
+            let opts = [];
+            try { opts = field.getOptions(); } catch (e) {}
+            let selectedVal = '';
+            try {
+              const sel = field.getSelected();
+              selectedVal = Array.isArray(sel) ? sel[0] : sel;
+            } catch (e) {}
+            detectedFields.push({
+              name,
+              type: 'dropdown',
+              value: selectedVal || '',
+              options: opts
+            });
+          } else if (constructorName === 'PDFRadioGroup') {
+            let opts = [];
+            try { opts = field.getOptions(); } catch (e) {}
+            let selectedVal = '';
+            try { selectedVal = field.getSelected(); } catch (e) {}
+            detectedFields.push({
+              name,
+              type: 'radio',
+              value: selectedVal || '',
+              options: opts
+            });
+          }
+        });
+
+        formFillState.fields = detectedFields;
+
+        const card = document.getElementById('formfill-controls-card');
+        const docName = document.getElementById('formfill-doc-name');
+        const docSize = document.getElementById('formfill-doc-size');
+        const badge = document.getElementById('formfill-field-badge');
+        const emptyMsg = document.getElementById('formfill-empty-message');
+
+        if (card) card.classList.remove('hidden');
+        if (docName) docName.textContent = file.name;
+        if (docSize) docSize.textContent = formatBytes(file.size);
+        if (badge) badge.textContent = `${detectedFields.length} Fields Detected`;
+
+        if (detectedFields.length === 0) {
+          if (emptyMsg) emptyMsg.classList.remove('hidden');
+        } else {
+          if (emptyMsg) emptyMsg.classList.add('hidden');
+        }
+
+        renderFormFieldsUI();
+      } catch (err) {
+        console.error('Failed to load PDF form:', err);
+        alert('Could not inspect PDF form: ' + err.message);
+      }
+    }
+
+    function renderFormFieldsUI() {
+      const container = document.getElementById('formfill-interactive-form');
+      if (!container) return;
+      container.innerHTML = '';
+
+      formFillState.fields.forEach((field, index) => {
+        const row = document.createElement('div');
+        row.className = 'p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700';
+
+        const label = document.createElement('label');
+        label.className = 'block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 truncate';
+        label.textContent = field.name || `Field #${index + 1}`;
+
+        if (field.type === 'text') {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.dataset.fieldName = field.name;
+          input.value = field.value || '';
+          input.placeholder = `Enter ${field.name}...`;
+          input.className = 'w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none';
+          row.appendChild(label);
+          row.appendChild(input);
+        } else if (field.type === 'checkbox') {
+          const checkWrap = document.createElement('label');
+          checkWrap.className = 'flex items-center gap-2 cursor-pointer select-none';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.dataset.fieldName = field.name;
+          cb.checked = Boolean(field.value);
+          cb.className = 'rounded border-slate-300 dark:border-slate-700 text-teal-600 focus:ring-teal-500 w-4 h-4';
+          const span = document.createElement('span');
+          span.className = 'text-xs font-bold text-slate-700 dark:text-slate-300';
+          span.textContent = field.name || `Checkbox #${index + 1}`;
+          checkWrap.appendChild(cb);
+          checkWrap.appendChild(span);
+          row.appendChild(checkWrap);
+        } else if (field.type === 'dropdown') {
+          const sel = document.createElement('select');
+          sel.dataset.fieldName = field.name;
+          sel.className = 'w-full text-xs p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none';
+          (field.options || []).forEach(opt => {
+            const optEl = document.createElement('option');
+            optEl.value = opt;
+            optEl.textContent = opt;
+            if (opt === field.value) optEl.selected = true;
+            sel.appendChild(optEl);
+          });
+          row.appendChild(label);
+          row.appendChild(sel);
+        } else if (field.type === 'radio') {
+          row.appendChild(label);
+          const radioGroup = document.createElement('div');
+          radioGroup.className = 'space-y-1.5 mt-1';
+          (field.options || []).forEach(opt => {
+            const radioLabel = document.createElement('label');
+            radioLabel.className = 'flex items-center gap-2 cursor-pointer select-none';
+            const r = document.createElement('input');
+            r.type = 'radio';
+            r.name = `radio-${field.name}`;
+            r.dataset.fieldName = field.name;
+            r.value = opt;
+            if (opt === field.value) r.checked = true;
+            r.className = 'text-teal-600 focus:ring-teal-500 w-4 h-4';
+            const sp = document.createElement('span');
+            sp.className = 'text-xs text-slate-700 dark:text-slate-300';
+            sp.textContent = opt;
+            radioLabel.appendChild(r);
+            radioLabel.appendChild(sp);
+            radioGroup.appendChild(radioLabel);
+          });
+          row.appendChild(radioGroup);
+        }
+
+        container.appendChild(row);
+      });
+    }
+
+    async function executeFormFill() {
+      if (!formFillState.file || !formFillState.pdfBytes) {
+        alert('Please select a PDF form to fill.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-formfill');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Saving Filled Form...</span>';
+      }
+
+      try {
+        await ensurePdfLib();
+        const pdfDoc = await PDFLib.PDFDocument.load(formFillState.pdfBytes, { ignoreEncryption: true });
+        const form = pdfDoc.getForm();
+
+        formFillState.fields.forEach(f => {
+          try {
+            if (f.type === 'text') {
+              const input = document.querySelector(`input[type="text"][data-field-name="${CSS.escape(f.name)}"]`);
+              if (input) {
+                const tf = form.getTextField(f.name);
+                tf.setText(input.value || '');
+              }
+            } else if (f.type === 'checkbox') {
+              const cbInput = document.querySelector(`input[type="checkbox"][data-field-name="${CSS.escape(f.name)}"]`);
+              if (cbInput) {
+                const cb = form.getCheckBox(f.name);
+                if (cbInput.checked) {
+                  cb.check();
+                } else {
+                  cb.uncheck();
+                }
+              }
+            } else if (f.type === 'dropdown') {
+              const selInput = document.querySelector(`select[data-field-name="${CSS.escape(f.name)}"]`);
+              if (selInput && selInput.value) {
+                const dd = form.getDropdown(f.name);
+                dd.select(selInput.value);
+              }
+            } else if (f.type === 'radio') {
+              const checkedRadio = document.querySelector(`input[type="radio"][data-field-name="${CSS.escape(f.name)}"]:checked`);
+              if (checkedRadio && checkedRadio.value) {
+                const rg = form.getRadioGroup(f.name);
+                rg.select(checkedRadio.value);
+              }
+            }
+          } catch (fieldErr) {
+            console.warn(`Could not set field ${f.name}:`, fieldErr);
+          }
+        });
+
+        const flattenCheck = document.getElementById('formfill-flatten-check');
+        if (flattenCheck && flattenCheck.checked) {
+          try {
+            form.flatten();
+          } catch (flatErr) {
+            console.warn('Form flattening error:', flatErr);
+          }
+        }
+
+        const savedBytes = await pdfDoc.save();
+        const baseName = formFillState.file.name.replace(/\.pdf$/i, '');
+        const outName = `${baseName}_filled.pdf`;
+        downloadTrackedBlob(new Blob([savedBytes], { type: 'application/pdf' }), outName);
+      } catch (err) {
+        console.error('Failed to save filled PDF form:', err);
+        alert('Could not save filled form: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>💾 Save &amp; Download Filled PDF</span><span>&rarr;</span>';
+        }
+      }
+    }
+
+    // ================= MODULE 28: POWERPOINT TO PDF TOOL =================
+    let pptx2PdfState = {
+      file: null,
+      slides: [],
+      fileName: ''
+    };
+
+    function initPptx2PdfToolListeners() {
+      const dropZone = document.getElementById('pptx2pdf-drop-zone');
+      const input = document.getElementById('pptx2pdf-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-orange-500'); });
+      dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('border-orange-500'); });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-orange-500');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) loadPptxFile(e.dataTransfer.files[0]);
+      });
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) loadPptxFile(e.target.files[0]);
+      });
+    }
+
+    async function loadPptxFile(file) {
+      try {
+        await ensureJsZip();
+        const ab = await file.arrayBuffer();
+        pptx2PdfState.file = file;
+        pptx2PdfState.fileName = file.name;
+        pptx2PdfState.slides = [];
+
+        const zip = await JSZip.loadAsync(ab);
+
+        // Find all slide XML entries and sort numerically
+        const slidePaths = Object.keys(zip.files)
+          .filter(p => /^ppt\/slides\/slide\d+\.xml$/i.test(p))
+          .sort((a, b) => {
+            const numA = parseInt((a.match(/slide(\d+)\.xml/i) || [0, 0])[1], 10);
+            const numB = parseInt((b.match(/slide(\d+)\.xml/i) || [0, 0])[1], 10);
+            return numA - numB;
+          });
+
+        const parser = new DOMParser();
+        const extractedSlides = [];
+
+        for (let i = 0; i < slidePaths.length; i++) {
+          const path = slidePaths[i];
+          const xmlText = await zip.files[path].async('text');
+          const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
+
+          // Extract text runs from paragraphs
+          const paragraphs = xmlDoc.querySelectorAll('p');
+          const textLines = [];
+
+          paragraphs.forEach(p => {
+            const textNodes = p.querySelectorAll('t');
+            let line = '';
+            textNodes.forEach(t => { line += t.textContent; });
+            line = line.trim();
+            if (line) textLines.push(line);
+          });
+
+          const title = textLines.length > 0 ? textLines[0] : `Slide ${i + 1}`;
+          extractedSlides.push({
+            index: i + 1,
+            title,
+            lines: textLines.slice(textLines.length > 1 ? 1 : 0)
+          });
+        }
+
+        pptx2PdfState.slides = extractedSlides;
+
+        const card = document.getElementById('pptx2pdf-controls-card');
+        const docName = document.getElementById('pptx2pdf-doc-name');
+        const summary = document.getElementById('pptx2pdf-doc-summary');
+        const gallery = document.getElementById('pptx2pdf-slides-gallery');
+
+        if (card) card.classList.remove('hidden');
+        if (docName) docName.textContent = file.name;
+        if (summary) summary.textContent = `${extractedSlides.length} Slide(s) Extracted`;
+
+        if (gallery) {
+          gallery.innerHTML = '';
+          extractedSlides.forEach((slide) => {
+            const slideCard = document.createElement('div');
+            slideCard.className = 'p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xs flex flex-col justify-between';
+
+            const header = document.createElement('div');
+            header.className = 'flex items-center justify-between mb-2';
+            header.innerHTML = `<span class="text-[10px] font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950 px-2 py-0.5 rounded-full">Slide ${slide.index}</span>`;
+
+            const titleEl = document.createElement('h5');
+            titleEl.className = 'text-xs font-bold text-slate-800 dark:text-slate-200 truncate mb-1';
+            titleEl.textContent = slide.title;
+
+            const snippet = document.createElement('p');
+            snippet.className = 'text-[11px] text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed';
+            snippet.textContent = slide.lines.join(' • ') || '(No additional text)';
+
+            slideCard.appendChild(header);
+            slideCard.appendChild(titleEl);
+            slideCard.appendChild(snippet);
+            gallery.appendChild(slideCard);
+          });
+        }
+      } catch (err) {
+        console.error('Failed to parse PPTX presentation:', err);
+        alert('Could not read PowerPoint presentation: ' + err.message);
+      }
+    }
+
+    async function executePptxToPdf() {
+      if (!pptx2PdfState.slides || pptx2PdfState.slides.length === 0) {
+        alert('Please select a valid PPTX presentation first.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-pptx2pdf');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Rendering Slides to PDF...</span>';
+      }
+
+      try {
+        await ensureJsPdf();
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+          unit: 'pt',
+          format: [960, 540]
+        });
+
+        const width = 960;
+        const height = 540;
+
+        for (let i = 0; i < pptx2PdfState.slides.length; i++) {
+          const slide = pptx2PdfState.slides[i];
+          if (i > 0) pdf.addPage([960, 540], 'landscape');
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+
+          // Draw modern slide background
+          const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+          bgGrad.addColorStop(0, '#ffffff');
+          bgGrad.addColorStop(1, '#f8fafc');
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, width, height);
+
+          // Top color accent band
+          ctx.fillStyle = '#ea580c';
+          ctx.fillRect(0, 0, width, 8);
+
+          // Slide number in top right
+          ctx.font = 'bold 16px sans-serif';
+          ctx.fillStyle = '#94a3b8';
+          ctx.textAlign = 'right';
+          ctx.fillText(`Slide ${slide.index}`, width - 50, 45);
+
+          // Slide Title
+          ctx.font = 'bold 32px sans-serif';
+          ctx.fillStyle = '#0f172a';
+          ctx.textAlign = 'left';
+          ctx.fillText(slide.title || `Slide ${slide.index}`, 60, 90);
+
+          // Divider rule
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(60, 115);
+          ctx.lineTo(width - 60, 115);
+          ctx.stroke();
+
+          // Bullet points / body text
+          ctx.font = '20px sans-serif';
+          ctx.fillStyle = '#334155';
+          let startY = 160;
+          const maxLines = Math.min(slide.lines.length, 10);
+
+          for (let j = 0; j < maxLines; j++) {
+            const line = slide.lines[j];
+            ctx.fillStyle = '#ea580c';
+            ctx.fillText('•', 65, startY);
+            ctx.fillStyle = '#334155';
+            ctx.fillText(line, 85, startY);
+            startY += 36;
+          }
+
+          // Footer
+          ctx.font = '12px sans-serif';
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText('Generated privately with Statement2Sheet', 60, height - 30);
+
+          const imgData = canvas.toDataURL('image/png');
+          pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+        }
+
+        const blob = pdf.output('blob');
+        const baseName = (pptx2PdfState.fileName || 'presentation').replace(/\.pptx$/i, '');
+        const outName = `${baseName}_converted.pdf`;
+        downloadTrackedBlob(blob, outName, 'application/pdf');
+      } catch (err) {
+        console.error('Failed to convert PPTX to PDF:', err);
+        alert('Could not convert PPTX to PDF: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Convert to PDF</span><span>&rarr;</span>';
+        }
+      }
+    }
+
+    // ================= MODULE 29: PDF TO POWERPOINT TOOL =================
+    let pdf2PptxState = {
+      file: null,
+      pdfBytes: null,
+      pdfJsDoc: null,
+      pageCount: 0
+    };
+
+    function initPdf2PptxToolListeners() {
+      const dropZone = document.getElementById('pdf2pptx-drop-zone');
+      const input = document.getElementById('pdf2pptx-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-rose-500'); });
+      dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('border-rose-500'); });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-rose-500');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) loadPdf2PptxFile(e.dataTransfer.files[0]);
+      });
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) loadPdf2PptxFile(e.target.files[0]);
+      });
+    }
+
+    async function loadPdf2PptxFile(file) {
+      try {
+        if (typeof pdfjsLib === 'undefined') {
+          throw new Error('PDF.js engine is not available.');
+        }
+        const ab = await file.arrayBuffer();
+        pdf2PptxState.file = file;
+        pdf2PptxState.pdfBytes = ab;
+
+        const copy = ab.slice(0);
+        const doc = await pdfjsLib.getDocument({ data: copy }).promise;
+        pdf2PptxState.pdfJsDoc = doc;
+        pdf2PptxState.pageCount = doc.numPages;
+
+        const card = document.getElementById('pdf2pptx-controls-card');
+        const docName = document.getElementById('pdf2pptx-doc-name');
+        const summary = document.getElementById('pdf2pptx-doc-summary');
+        const previewContainer = document.getElementById('pdf2pptx-preview-container');
+
+        if (card) card.classList.remove('hidden');
+        if (docName) docName.textContent = file.name;
+        if (summary) summary.textContent = `${doc.numPages} Page(s) to Convert`;
+
+        if (previewContainer) {
+          previewContainer.innerHTML = '';
+          const previewLimit = Math.min(doc.numPages, 8);
+          for (let p = 1; p <= previewLimit; p++) {
+            const page = await doc.getPage(p);
+            const viewport = page.getViewport({ scale: 0.3 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.className = 'w-full rounded border border-slate-200 dark:border-slate-700 shadow-2xs bg-white mb-1';
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+
+            const wrap = document.createElement('div');
+            wrap.className = 'p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-center';
+            wrap.appendChild(canvas);
+            const lbl = document.createElement('span');
+            lbl.className = 'text-[10px] font-bold text-slate-500 dark:text-slate-400';
+            lbl.textContent = `Slide ${p}`;
+            wrap.appendChild(lbl);
+            previewContainer.appendChild(wrap);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load PDF for PPTX conversion:', err);
+        alert('Could not inspect PDF document: ' + err.message);
+      }
+    }
+
+    async function executePdf2Pptx() {
+      if (!pdf2PptxState.pdfJsDoc || pdf2PptxState.pageCount === 0) {
+        alert('Please select a PDF document first.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-pdf2pptx');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Converting to PowerPoint Deck...</span>';
+      }
+
+      try {
+        await ensurePptxGen();
+        const pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_16x9';
+
+        for (let p = 1; p <= pdf2PptxState.pageCount; p++) {
+          const page = await pdf2PptxState.pdfJsDoc.getPage(p);
+          const viewport = page.getViewport({ scale: 2.0 });
+
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const imgData = canvas.toDataURL('image/png');
+          const slide = pptx.addSlide();
+          slide.addImage({
+            data: imgData,
+            x: 0,
+            y: 0,
+            w: '100%',
+            h: '100%'
+          });
+        }
+
+        const blob = await pptx.write({ outputType: 'blob' });
+        const baseName = (pdf2PptxState.file ? pdf2PptxState.file.name : 'document').replace(/\.pdf$/i, '');
+        const outName = `${baseName}_presentation.pptx`;
+        downloadTrackedBlob(blob, outName, 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+      } catch (err) {
+        console.error('Failed to convert PDF to PPTX:', err);
+        alert('Could not convert to PowerPoint: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Convert to PPTX</span><span>&rarr;</span>';
+        }
+      }
+    }
+
+    // ================= MODULE 30: SCAN TO PDF (CAMERA CAPTURE) TOOL =================
+    let scan2PdfState = {
+      stream: null,
+      pages: []
+    };
+
+    function initScan2PdfToolListeners() {
+      // Specialized events handled via centralized dispatcher
+    }
+
+    async function startScan2PdfCamera() {
+      const placeholder = document.getElementById('scan2pdf-placeholder');
+      const activeContainer = document.getElementById('scan2pdf-active-container');
+      const video = document.getElementById('scan2pdf-video');
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Camera access is not supported by this browser environment.');
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+          audio: false
+        });
+
+        scan2PdfState.stream = stream;
+        if (video) {
+          video.srcObject = stream;
+          video.play();
+        }
+
+        if (placeholder) placeholder.classList.add('hidden');
+        if (activeContainer) activeContainer.classList.remove('hidden');
+      } catch (err) {
+        console.warn('Camera stream activation error:', err);
+        alert('Could not open camera: ' + err.message);
+      }
+    }
+
+    function captureScan2PdfFrame() {
+      const video = document.getElementById('scan2pdf-video');
+      if (!video || !scan2PdfState.stream) {
+        alert('Camera is not currently active.');
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      scan2PdfState.pages.push(dataUrl);
+      renderScan2PdfGallery();
+    }
+
+    function stopScan2PdfCamera() {
+      if (scan2PdfState.stream) {
+        scan2PdfState.stream.getTracks().forEach(track => track.stop());
+        scan2PdfState.stream = null;
+      }
+
+      const placeholder = document.getElementById('scan2pdf-placeholder');
+      const activeContainer = document.getElementById('scan2pdf-active-container');
+      const video = document.getElementById('scan2pdf-video');
+
+      if (video) {
+        video.pause();
+        video.srcObject = null;
+      }
+
+      if (placeholder) placeholder.classList.remove('hidden');
+      if (activeContainer) activeContainer.classList.add('hidden');
+    }
+
+    function renderScan2PdfGallery() {
+      const gallery = document.getElementById('scan2pdf-pages-gallery');
+      const pageCount = document.getElementById('scan2pdf-page-count');
+      if (!gallery) return;
+
+      if (pageCount) {
+        pageCount.textContent = `${scan2PdfState.pages.length} Page(s)`;
+      }
+
+      gallery.innerHTML = '';
+      if (scan2PdfState.pages.length === 0) {
+        gallery.innerHTML = '<div class="col-span-full text-center py-4 text-xs text-slate-400 font-medium italic">No pages captured yet. Click "Capture Page" to add pages.</div>';
+        return;
+      }
+
+      scan2PdfState.pages.forEach((dataUrl, idx) => {
+        const item = document.createElement('div');
+        item.className = 'relative group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xs';
+
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.alt = `Scanned Page ${idx + 1}`;
+        img.className = 'w-full h-28 object-cover';
+
+        const bar = document.createElement('div');
+        bar.className = 'p-1.5 flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-slate-300';
+        bar.textContent = `Page ${idx + 1}`;
+
+        item.appendChild(img);
+        item.appendChild(bar);
+        gallery.appendChild(item);
+      });
+    }
+
+    async function executeScan2Pdf() {
+      if (!scan2PdfState.pages || scan2PdfState.pages.length === 0) {
+        alert('Please capture at least one page using the camera first.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-scan2pdf');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>Creating PDF...</span>';
+      }
+
+      try {
+        await ensureJsPdf();
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'pt',
+          format: 'a4'
+        });
+
+        const pageWidth = 595.28;
+        const pageHeight = 841.89;
+
+        for (let i = 0; i < scan2PdfState.pages.length; i++) {
+          if (i > 0) pdf.addPage('a4', 'portrait');
+          const dataUrl = scan2PdfState.pages[i];
+          pdf.addImage(dataUrl, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
+        }
+
+        const blob = pdf.output('blob');
+        const outName = `scanned_document_${Date.now()}.pdf`;
+        downloadTrackedBlob(blob, outName, 'application/pdf');
+      } catch (err) {
+        console.error('Failed to generate scanned PDF:', err);
+        alert('Could not generate PDF from scans: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>Generate PDF from Scans</span><span>&rarr;</span>';
+        }
+      }
+    }
+
+    // ================= MODULE 31: ONBOARDING & HELP SYSTEM =================
+    let onboardingSlideIndex = 0;
+    const ONBOARDING_TOTAL_SLIDES = 4;
+
+    function initOnboarding() {
+      let done = false;
+      try {
+        done = localStorage.getItem('s2s_onboarding_done') === 'true';
+      } catch (e) {}
+
+      if (!done) {
+        showOnboardingModal(0);
+      }
+    }
+
+    function showOnboardingModal(initialIndex = 0) {
+      const modal = document.getElementById('onboarding-overlay');
+      if (!modal) return;
+      onboardingSlideIndex = initialIndex;
+      updateOnboardingSlide();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function updateOnboardingSlide() {
+      for (let i = 0; i < ONBOARDING_TOTAL_SLIDES; i++) {
+        const slide = document.getElementById(`onboarding-slide-${i}`);
+        const dot = document.getElementById(`onboarding-dot-${i}`);
+        if (slide) {
+          if (i === onboardingSlideIndex) {
+            slide.classList.remove('hidden');
+          } else {
+            slide.classList.add('hidden');
+          }
+        }
+        if (dot) {
+          if (i === onboardingSlideIndex) {
+            dot.className = 'w-5 h-2.5 rounded-full bg-emerald-600 transition-all';
+          } else {
+            dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-all';
+          }
+        }
+      }
+
+      const prevBtn = document.getElementById('btn-onboarding-prev');
+      const nextBtn = document.getElementById('btn-onboarding-next');
+      if (prevBtn) {
+        if (onboardingSlideIndex === 0) {
+          prevBtn.classList.add('hidden');
+        } else {
+          prevBtn.classList.remove('hidden');
+        }
+      }
+      if (nextBtn) {
+        if (onboardingSlideIndex === ONBOARDING_TOTAL_SLIDES - 1) {
+          nextBtn.textContent = 'Get Started 🎉';
+        } else {
+          nextBtn.innerHTML = 'Next &rarr;';
+        }
+      }
+    }
+
+    function advanceOnboardingSlide() {
+      if (onboardingSlideIndex < ONBOARDING_TOTAL_SLIDES - 1) {
+        onboardingSlideIndex++;
+        updateOnboardingSlide();
+      } else {
+        finishOnboarding();
+      }
+    }
+
+    function retreatOnboardingSlide() {
+      if (onboardingSlideIndex > 0) {
+        onboardingSlideIndex--;
+        updateOnboardingSlide();
+      }
+    }
+
+    function finishOnboarding() {
+      try {
+        localStorage.setItem('s2s_onboarding_done', 'true');
+      } catch (e) {}
+      const modal = document.getElementById('onboarding-overlay');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
     // ================= MULTI-LANGUAGE I18N ENGINE =================
     const I18N_TRANSLATIONS = {
       en: {
@@ -5084,6 +6402,134 @@ setupPdfWorker();
         btn_clear_data: 'डेटा साफ़ करें',
         repair_title: 'क्षतिग्रस्त PDF सुधारें (Repair)',
         repair_subtitle: 'अपने ब्राउज़र में ही क्षतिग्रस्त, दूषित या अधूरी PDF फ़ाइलों को पुनर्प्राप्त करें।'
+      },
+      it: {
+        nav_merge: 'Unisci PDF',
+        nav_split: 'Dividi PDF',
+        nav_compress: 'Comprimi PDF',
+        nav_convert: 'Converti PDF',
+        tool_excel: 'PDF in Excel (3 fogli)',
+        tool_pdf2img: 'PDF in JPG / PNG',
+        tool_img2pdf: 'JPG / PNG in PDF',
+        tool_ocr: 'PDF in Markdown',
+        nav_all_tools: 'TUTTI GLI STRUMENTI PDF',
+        badge_free_private: '100% Gratuito · Nessuna registrazione',
+        badge_offline: 'Pronto offline',
+        btn_clear_data: 'Cancella dati',
+        repair_title: 'Ripara file PDF',
+        repair_subtitle: 'Recupera file PDF danneggiati o corrotti direttamente nel tuo browser. Ricostruisce riferimenti e recupera pagine leggibili.'
+      },
+      ja: {
+        nav_merge: 'PDF 結合',
+        nav_split: 'PDF 分割',
+        nav_compress: 'PDF 圧縮',
+        nav_convert: 'PDF 変換',
+        tool_excel: 'PDF から Excel (3シート)',
+        tool_pdf2img: 'PDF から JPG / PNG',
+        tool_img2pdf: 'JPG / PNG から PDF',
+        tool_ocr: 'PDF から Markdown',
+        nav_all_tools: 'すべての PDF ツール',
+        badge_free_private: '100% 無料 · 登録不要',
+        badge_offline: 'オフライン対応',
+        btn_clear_data: 'データを消去',
+        repair_title: 'PDF 修復',
+        repair_subtitle: '破損した PDF ファイルをブラウザ内で直接修復します。相互参照を再構築し、読取可能なページを復元します。'
+      },
+      ko: {
+        nav_merge: 'PDF 병합',
+        nav_split: 'PDF 분할',
+        nav_compress: 'PDF 압축',
+        nav_convert: 'PDF 변환',
+        tool_excel: 'PDF를 Excel로 (3시트)',
+        tool_pdf2img: 'PDF를 JPG / PNG로',
+        tool_img2pdf: 'JPG / PNG를 PDF로',
+        tool_ocr: 'PDF를 Markdown으로',
+        nav_all_tools: '모든 PDF 도구',
+        badge_free_private: '100% 무료 · 회원가입 불필요',
+        badge_offline: '오프라인 지원',
+        btn_clear_data: '데이터 삭제',
+        repair_title: '손상된 PDF 복구',
+        repair_subtitle: '손상되거나 깨진 PDF 파일을 브라우저 메모리에서 안전하게 복구합니다.'
+      },
+      zh: {
+        nav_merge: '合并 PDF',
+        nav_split: '拆分 PDF',
+        nav_compress: '压缩 PDF',
+        nav_convert: '转换 PDF',
+        tool_excel: 'PDF 转 Excel (3工作表)',
+        tool_pdf2img: 'PDF 转 JPG / PNG',
+        tool_img2pdf: 'JPG / PNG 转 PDF',
+        tool_ocr: 'PDF 转 Markdown',
+        nav_all_tools: '所有 PDF 工具',
+        badge_free_private: '100% 免费 · 无需注册',
+        badge_offline: '支持离线',
+        btn_clear_data: '清除数据',
+        repair_title: '修复损坏的 PDF',
+        repair_subtitle: '直接在浏览器内存中修复损坏或受损的 PDF 文件。重建交叉引用并恢复可读页面。'
+      },
+      ar: {
+        nav_merge: 'دمج PDF',
+        nav_split: 'تقسيم PDF',
+        nav_compress: 'ضغط PDF',
+        nav_convert: 'تحويل PDF',
+        tool_excel: 'تحويل PDF إلى Excel',
+        tool_pdf2img: 'PDF إلى JPG / PNG',
+        tool_img2pdf: 'صور إلى PDF',
+        tool_ocr: 'PDF إلى Markdown',
+        nav_all_tools: 'جميع أدوات PDF',
+        badge_free_private: 'مجاني 100% · لا يلزم تسجيل',
+        badge_offline: 'جاهز بدون إنترنت',
+        btn_clear_data: 'مسح البيانات',
+        repair_title: 'إصلاح ملف PDF',
+        repair_subtitle: 'استرجع ملفات PDF التالفة مباشرة في متصفحك بأمان وخصوصية تامة.'
+      },
+      ru: {
+        nav_merge: 'Объединить PDF',
+        nav_split: 'Разделить PDF',
+        nav_compress: 'Сжать PDF',
+        nav_convert: 'Конвертировать PDF',
+        tool_excel: 'PDF в Excel (3 листа)',
+        tool_pdf2img: 'PDF в JPG / PNG',
+        tool_img2pdf: 'JPG / PNG в PDF',
+        tool_ocr: 'PDF в Markdown',
+        nav_all_tools: 'ВСЕ ИНСТРУМЕНТЫ PDF',
+        badge_free_private: '100% Бесплатно · Без регистрации',
+        badge_offline: 'Работает офлайн',
+        btn_clear_data: 'Очистить данные',
+        repair_title: 'Восстановить PDF',
+        repair_subtitle: 'Восстановление поврежденных PDF-файлов прямо в браузере. Перестраивает таблицы ссылок и восстанавливает страницы.'
+      },
+      tr: {
+        nav_merge: 'PDF Birleştir',
+        nav_split: 'PDF Böl',
+        nav_compress: 'PDF Sıkıştır',
+        nav_convert: 'PDF Dönüştür',
+        tool_excel: 'PDF\'den Excel\'e (3 Sayfa)',
+        tool_pdf2img: 'PDF\'den JPG / PNG\'ye',
+        tool_img2pdf: 'JPG / PNG\'den PDF\'ye',
+        tool_ocr: 'PDF\'den Markdown\'a',
+        nav_all_tools: 'TÜM PDF ARAÇLARI',
+        badge_free_private: '%100 Ücretsiz · Kayıt Gerekmez',
+        badge_offline: 'Çevrimdışı Hazır',
+        btn_clear_data: 'Verileri Temizle',
+        repair_title: 'Bozuk PDF Onar',
+        repair_subtitle: 'Hasarlı veya bozuk PDF dosyalarını doğrudan tarayıcınızda kurtarın. Çapraz referansları yeniden yapılandırır.'
+      },
+      id: {
+        nav_merge: 'Gabungkan PDF',
+        nav_split: 'Pisahkan PDF',
+        nav_compress: 'Kompres PDF',
+        nav_convert: 'Konversi PDF',
+        tool_excel: 'PDF ke Excel (3 Lembar)',
+        tool_pdf2img: 'PDF ke JPG / PNG',
+        tool_img2pdf: 'JPG / PNG ke PDF',
+        tool_ocr: 'PDF ke Markdown',
+        nav_all_tools: 'SEMUA ALAT PDF',
+        badge_free_private: '100% Gratis · Tanpa Daftar',
+        badge_offline: 'Siap Offline',
+        btn_clear_data: 'Hapus Data',
+        repair_title: 'Perbaiki File PDF',
+        repair_subtitle: 'Pulihkan file PDF rusak atau terpotong langsung di browser Anda secara privat dan aman.'
       }
     };
 
@@ -5093,6 +6539,13 @@ setupPdfWorker();
         localStorage.setItem('s2s_user_lang', selected);
       } catch (e) {}
       document.documentElement.lang = selected;
+
+      // Handle RTL for Arabic
+      if (selected === 'ar') {
+        document.documentElement.dir = 'rtl';
+      } else {
+        document.documentElement.dir = 'ltr';
+      }
 
       const langSelect = document.getElementById('lang-select');
       if (langSelect && langSelect.value !== selected) {
@@ -5151,10 +6604,16 @@ setupPdfWorker();
       initDigitalSignToolListeners();
       initSummarizeToolListeners();
       initRepairToolListeners();
+      initEditPdfToolListeners();
+      initFormFillerToolListeners();
+      initPptx2PdfToolListeners();
+      initPdf2PptxToolListeners();
+      initScan2PdfToolListeners();
       initI18n();
       initGlobalKeyboardShortcuts();
       loadRecentFiles();
       switchPortalTool('dashboard');
+      initOnboarding();
     }
 
     if (document.readyState === 'loading') {
@@ -6993,6 +8452,27 @@ NEWFILEVERSION:102
       pdfaState = { file: null, pdfBytes: null };
       digitalSignState = { file: null, pdfBytes: null, sha256Hex: null };
       summarizeState = { file: null, highlights: [], entities: [] };
+      if (typeof stopScan2PdfCamera === 'function') {
+        stopScan2PdfCamera();
+      }
+      scan2PdfState = { stream: null, pages: [] };
+      editPdfState = {
+        file: null,
+        pdfDoc: null,
+        pdfBytes: null,
+        pdfJsDoc: null,
+        currentPage: 1,
+        totalPages: 1,
+        currentTool: 'draw',
+        brushColor: '#ef4444',
+        brushSize: 4,
+        isDrawing: false,
+        annotationsByPage: {},
+        zoomScale: 1.0
+      };
+      formFillState = { file: null, pdfDoc: null, pdfBytes: null, fields: [] };
+      pptx2PdfState = { file: null, slides: [] };
+      pdf2PptxState = { file: null, pdfBytes: null, pdfJsDoc: null, pageCount: 0 };
       revokeAllObjectURLs();
 
       // 4. Reset Sensitive Inputs (Passwords, Metadata, Inputs)
@@ -7664,6 +9144,44 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
         case 'run-repair':
           executeRepairPdf();
           break;
+        case 'editpdf-set-tool': {
+          const toolType = btn.getAttribute('data-tool-type');
+          if (toolType) setEditPdfTool(toolType);
+          break;
+        }
+        case 'editpdf-clear-page':
+          clearEditPdfCurrentPage();
+          break;
+        case 'editpdf-prev-page':
+          navigateEditPdfPage(-1);
+          break;
+        case 'editpdf-next-page':
+          navigateEditPdfPage(1);
+          break;
+        case 'run-editpdf':
+          executeEditPdf();
+          break;
+        case 'run-formfill':
+          executeFormFill();
+          break;
+        case 'run-pptx2pdf':
+          executePptxToPdf();
+          break;
+        case 'run-pdf2pptx':
+          executePdf2Pptx();
+          break;
+        case 'scan2pdf-start-camera':
+          startScan2PdfCamera();
+          break;
+        case 'scan2pdf-capture-frame':
+          captureScan2PdfFrame();
+          break;
+        case 'scan2pdf-stop-camera':
+          stopScan2PdfCamera();
+          break;
+        case 'run-scan2pdf':
+          executeScan2Pdf();
+          break;
         case 'run-compress-batch':
           executeBatchCompressZip();
           break;
@@ -7705,6 +9223,19 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           break;
         case 'close-legal-modal':
           closeAllLegalModals();
+          break;
+        case 'open-onboarding':
+          showOnboardingModal(0);
+          break;
+        case 'next-onboarding':
+          advanceOnboardingSlide();
+          break;
+        case 'prev-onboarding':
+          retreatOnboardingSlide();
+          break;
+        case 'skip-onboarding':
+        case 'close-onboarding':
+          finishOnboarding();
           break;
       }
     }
