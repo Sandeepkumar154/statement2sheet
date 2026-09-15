@@ -1342,37 +1342,73 @@ async function runTests() {
       throw new Error('Scan to PDF execution failed');
     }
 
-    // 21. Multi-Language i18n & Arabic RTL Toggle
+    // 21. Multi-Language i18n & Arabic RTL Toggle (Full-Site Verification)
     const i18nRtlRes = await evaluate(`(() => {
       // Test Italian
       applyLanguage('it');
       const itMerge = document.querySelector('[data-i18n="nav_merge"]')?.textContent;
+      const itHeroTitle = document.querySelector('[data-i18n="hero_title"]')?.textContent;
+      const itCardMergeTitle = document.querySelector('[data-i18n="card_merge_title"]')?.textContent;
+      const itFaqTitle = document.querySelector('[data-i18n="faq_title"]')?.textContent;
+
+      // Test Spanish
+      applyLanguage('es');
+      const esHeroTitle = document.querySelector('[data-i18n="hero_title"]')?.textContent;
+      const esCardMergeTitle = document.querySelector('[data-i18n="card_merge_title"]')?.textContent;
+      const esFaqTitle = document.querySelector('[data-i18n="faq_title"]')?.textContent;
 
       // Test Arabic + RTL
       applyLanguage('ar');
       const arDir = document.documentElement.dir;
       const arLang = document.documentElement.lang;
       const arMerge = document.querySelector('[data-i18n="nav_merge"]')?.textContent;
+      const arHeroTitle = document.querySelector('[data-i18n="hero_title"]')?.textContent;
+      const arCardMergeTitle = document.querySelector('[data-i18n="card_merge_title"]')?.textContent;
+      const arFaqTitle = document.querySelector('[data-i18n="faq_title"]')?.textContent;
 
       // Test Reset to English + LTR
       applyLanguage('en');
       const enDir = document.documentElement.dir;
       const enMerge = document.querySelector('[data-i18n="nav_merge"]')?.textContent;
+      const enHeroTitle = document.querySelector('[data-i18n="hero_title"]')?.textContent;
+      const enCardMergeTitle = document.querySelector('[data-i18n="card_merge_title"]')?.textContent;
+      const enFaqTitle = document.querySelector('[data-i18n="faq_title"]')?.textContent;
 
       return {
         itMerge,
+        itHeroTitle,
+        itCardMergeTitle,
+        itFaqTitle,
+        esHeroTitle,
+        esCardMergeTitle,
+        esFaqTitle,
         arDir,
         arLang,
         arMerge,
+        arHeroTitle,
+        arCardMergeTitle,
+        arFaqTitle,
         enDir,
         enMerge,
+        enHeroTitle,
+        enCardMergeTitle,
+        enFaqTitle,
         rtlActiveInArabic: arDir === 'rtl',
         ltrActiveInEnglish: enDir === 'ltr'
       };
     })()`);
-    console.log('✓ Multi-Language i18n & Arabic RTL Toggle:', i18nRtlRes);
-    if (!i18nRtlRes.rtlActiveInArabic || !i18nRtlRes.ltrActiveInEnglish || !i18nRtlRes.arMerge || !i18nRtlRes.itMerge) {
-      throw new Error('i18n & RTL toggle failed');
+    console.log('✓ Multi-Language i18n & Arabic RTL Toggle (Full-Site):', i18nRtlRes);
+    if (
+      !i18nRtlRes.rtlActiveInArabic ||
+      !i18nRtlRes.ltrActiveInEnglish ||
+      !i18nRtlRes.arMerge ||
+      !i18nRtlRes.itMerge ||
+      !i18nRtlRes.itHeroTitle?.includes('Tutti gli strumenti') ||
+      !i18nRtlRes.esHeroTitle?.includes('Cada herramienta') ||
+      !i18nRtlRes.arHeroTitle?.includes('كل ما تحتاجه') ||
+      !i18nRtlRes.enHeroTitle?.includes('Every Tool You Need')
+    ) {
+      throw new Error('i18n full-site & RTL toggle failed');
     }
 
     // 22. Interactive Onboarding Modal & Multi-Step Carousel
