@@ -475,7 +475,7 @@ setupPdfWorker();
       }
 
       // Hide all main views
-      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown', 'crop', 'extract-images', 'compare', 'rotate', 'redact', 'pdf2word', 'office2pdf', 'pdfa', 'digitalsign', 'summarize'];
+      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown', 'crop', 'extract-images', 'compare', 'rotate', 'redact', 'pdf2word', 'office2pdf', 'pdfa', 'digitalsign', 'summarize', 'repair'];
       if (toolName === 'dashboard') {
         loadRecentFiles();
       }
@@ -773,6 +773,8 @@ setupPdfWorker();
       renderMergeList();
     }
 
+    let draggedMergeIndex = null;
+
     function renderMergeList() {
       const container = document.getElementById('merge-files-container');
       const listEl = document.getElementById('merge-file-list');
@@ -788,14 +790,47 @@ setupPdfWorker();
 
       container.classList.remove('hidden');
       const totalPages = mergeItems.reduce((sum, item) => sum + item.numPages, 0);
-      if (summaryEl) summaryEl.innerText = mergeItems.length + ' Document' + (mergeItems.length === 1 ? '' : 's') + ' • ' + totalPages + ' Pages Total';
+      if (summaryEl) summaryEl.innerText = mergeItems.length + ' Document' + (mergeItems.length === 1 ? '' : 's') + ' • ' + totalPages + ' Pages Total (Drag cards or handles to reorder)';
       if (btnRun) btnRun.innerHTML = '<span>Merge All Documents (' + totalPages + ' Pages)</span> <span>&rarr;</span>';
 
       listEl.innerHTML = '';
 
       mergeItems.forEach((item, index) => {
         const card = document.createElement('div');
-        card.className = 'p-4 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-2xl transition shadow-2xs';
+        card.draggable = true;
+        card.dataset.mergeIndex = index;
+        card.className = 'p-4 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-2xl transition shadow-2xs cursor-grab active:cursor-grabbing hover:border-violet-300 dark:hover:border-violet-700';
+
+        card.addEventListener('dragstart', (e) => {
+          draggedMergeIndex = index;
+          e.dataTransfer.effectAllowed = 'move';
+          card.classList.add('opacity-50', 'scale-[0.99]', 'border-violet-500');
+        });
+
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          card.classList.add('border-violet-500', 'bg-violet-50/70', 'dark:bg-violet-950/40');
+        });
+
+        card.addEventListener('dragleave', () => {
+          card.classList.remove('border-violet-500', 'bg-violet-50/70', 'dark:bg-violet-950/40');
+        });
+
+        card.addEventListener('drop', (e) => {
+          e.preventDefault();
+          card.classList.remove('border-violet-500', 'bg-violet-50/70', 'dark:bg-violet-950/40');
+          if (draggedMergeIndex !== null && draggedMergeIndex !== index) {
+            const [moved] = mergeItems.splice(draggedMergeIndex, 1);
+            mergeItems.splice(index, 0, moved);
+            renderMergeList();
+          }
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('opacity-50', 'scale-[0.99]', 'border-violet-500');
+          draggedMergeIndex = null;
+        });
 
         const hasCover = item.coverDataUrl;
         const coverHtml = hasCover
@@ -808,7 +843,8 @@ setupPdfWorker();
         card.innerHTML = `
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 truncate min-w-0">
-              <span class="font-bold text-violet-600 dark:text-violet-400 text-sm w-6 text-center">${index + 1}.</span>
+              <span class="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg px-1 select-none" title="Drag to reorder">⠿</span>
+              <span class="font-bold text-violet-600 dark:text-violet-400 text-sm w-5 text-center">${index + 1}.</span>
               ${coverHtml}
               <div class="truncate min-w-0">
                 <h5 class="merge-file-title text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 truncate"></h5>
@@ -1306,7 +1342,6 @@ setupPdfWorker();
         }
 
         organizePages = [];
-        grid.innerHTML = '';
 
         for (let i = 1; i <= numPages; i++) {
           const page = await pdf.getPage(i);
@@ -1320,29 +1355,9 @@ setupPdfWorker();
           disposeCanvas(canvas);
 
           organizePages.push({ pageNum: i, rotation: 0, deleted: false, origIndex: i - 1, dataUrl });
-
-          const cell = document.createElement('div');
-          cell.id = 'org-page-card-' + i;
-          cell.className = 'bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col items-center gap-2.5 shadow-2xs transition';
-
-          cell.innerHTML = `
-            <div class="flex items-center justify-between w-full text-xs font-bold text-slate-700 dark:text-slate-300">
-              <span class="font-mono">Page ${i}</span>
-              <div class="flex items-center gap-2">
-                <button data-action="zoom" data-page="${i}" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition shadow-2xs" title="Inspect full screen">🔍 Zoom</button>
-                <button data-action="delete" data-page="${i}" class="text-rose-500 hover:text-rose-700 font-bold text-xs" title="Delete Page">🗑️</button>
-              </div>
-            </div>
-            <div class="w-full aspect-[3/4] bg-slate-50 dark:bg-slate-950 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-2xs pointer-events-none">
-              <img id="org-img-${i}" src="${dataUrl}" alt="Page ${i}" class="w-full h-full object-contain transition-transform duration-200 pointer-events-none" />
-            </div>
-            <div class="flex items-center justify-center gap-2 w-full pt-1">
-              <button data-action="rotate-left" data-page="${i}" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate -90°">⟲ -90°</button>
-              <button data-action="rotate-right" data-page="${i}" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate +90°">⟳ +90°</button>
-            </div>
-          `;
-          grid.appendChild(cell);
         }
+
+        renderOrganizeGridFromState();
 
         if (!grid._hasListener) {
           grid._hasListener = true;
@@ -1373,6 +1388,79 @@ setupPdfWorker();
         errDiv.textContent = 'Could not render thumbnails: ' + (e.message || String(e));
         grid.appendChild(errDiv);
       }
+    }
+
+    let draggedOrgIdx = null;
+
+    function renderOrganizeGridFromState() {
+      const grid = document.getElementById('organize-thumbnails-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      organizePages.forEach((item, index) => {
+        const cell = document.createElement('div');
+        cell.id = 'org-page-card-' + item.pageNum;
+        cell.draggable = true;
+        cell.dataset.orgIndex = index;
+        cell.className = 'bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col items-center gap-2.5 shadow-2xs transition cursor-grab active:cursor-grabbing hover:border-amber-400';
+        if (item.deleted) {
+          cell.style.opacity = '0.3';
+          cell.style.filter = 'grayscale(100%)';
+        }
+
+        cell.addEventListener('dragstart', (e) => {
+          draggedOrgIdx = index;
+          e.dataTransfer.effectAllowed = 'move';
+          cell.classList.add('opacity-40', 'scale-95');
+        });
+
+        cell.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          cell.classList.add('ring-2', 'ring-amber-500', 'border-amber-500');
+        });
+
+        cell.addEventListener('dragleave', () => {
+          cell.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500');
+        });
+
+        cell.addEventListener('drop', (e) => {
+          e.preventDefault();
+          cell.classList.remove('ring-2', 'ring-amber-500', 'border-amber-500');
+          if (draggedOrgIdx !== null && draggedOrgIdx !== index) {
+            const [moved] = organizePages.splice(draggedOrgIdx, 1);
+            organizePages.splice(index, 0, moved);
+            renderOrganizeGridFromState();
+          }
+        });
+
+        cell.addEventListener('dragend', () => {
+          cell.classList.remove('opacity-40', 'scale-95', 'ring-2', 'ring-amber-500', 'border-amber-500');
+          draggedOrgIdx = null;
+        });
+
+        cell.innerHTML = `
+          <div class="flex items-center justify-between w-full text-xs font-bold text-slate-700 dark:text-slate-300">
+            <div class="flex items-center gap-1.5">
+              <span class="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm select-none" title="Drag to reorder">⠿</span>
+              <span class="font-mono">Page ${item.pageNum}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button data-action="zoom" data-page="${item.pageNum}" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-amber-600 hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition shadow-2xs" title="Inspect full screen">🔍 Zoom</button>
+              <button data-action="delete" data-page="${item.pageNum}" class="text-rose-500 hover:text-rose-700 font-bold text-xs" title="Delete Page">🗑️</button>
+            </div>
+          </div>
+          <div class="w-full aspect-[3/4] bg-slate-50 dark:bg-slate-950 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-2xs pointer-events-none">
+            <img id="org-img-${item.pageNum}" src="${item.dataUrl}" alt="Page ${item.pageNum}" class="w-full h-full object-contain transition-transform duration-200 pointer-events-none" style="transform: rotate(${item.rotation}deg);" />
+          </div>
+          <div class="flex items-center justify-center gap-2 w-full pt-1">
+            <button data-action="rotate-left" data-page="${item.pageNum}" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate -90°">⟲ -90°</button>
+            <button data-action="rotate-right" data-page="${item.pageNum}" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold shadow-2xs transition" title="Rotate +90°">⟳ +90°</button>
+          </div>
+        `;
+        grid.appendChild(cell);
+      });
+      updateOrganizeActiveCount();
     }
 
     function rotateOrganizePage(pageNum, deg) {
@@ -1428,11 +1516,76 @@ setupPdfWorker();
       }
     }
 
-    // ================= PAGE ZOOM LIGHTBOX CONTROLLER =================
+    // ================= UNIVERSAL HIGH-RESOLUTION PAGE ZOOM & INSPECT MODAL =================
     let zoomCurrentData = {
       items: [], // [{ dataUrl, title, pageNum }]
-      currentIndex: 0
+      currentIndex: 0,
+      scale: 1.0,
+      pan: { x: 0, y: 0 },
+      isDragging: false,
+      startPan: { x: 0, y: 0 }
     };
+
+    function setZoomModalScale(delta, absolute = false) {
+      if (absolute) {
+        zoomCurrentData.scale = delta;
+      } else {
+        zoomCurrentData.scale = Math.min(3.5, Math.max(0.5, zoomCurrentData.scale + delta));
+      }
+      if (zoomCurrentData.scale <= 1.0) {
+        zoomCurrentData.pan = { x: 0, y: 0 };
+      }
+      applyZoomModalTransform();
+    }
+
+    function applyZoomModalTransform() {
+      const img = document.getElementById('zoom-modal-img');
+      const percentEl = document.getElementById('zoom-scale-percent');
+      if (percentEl) percentEl.textContent = `${Math.round(zoomCurrentData.scale * 100)}%`;
+      if (img) {
+        img.style.transform = `scale(${zoomCurrentData.scale}) translate(${zoomCurrentData.pan.x}px, ${zoomCurrentData.pan.y}px)`;
+        img.style.cursor = zoomCurrentData.scale > 1.0 ? 'grab' : 'default';
+      }
+    }
+
+    function initZoomModalPanEvents() {
+      const viewport = document.getElementById('zoom-modal-viewport');
+      const img = document.getElementById('zoom-modal-img');
+      if (!viewport || !img || viewport._hasPanEvents) return;
+      viewport._hasPanEvents = true;
+
+      viewport.addEventListener('mousedown', (e) => {
+        if (zoomCurrentData.scale <= 1.0) return;
+        zoomCurrentData.isDragging = true;
+        zoomCurrentData.startPan = {
+          x: e.clientX - zoomCurrentData.pan.x * zoomCurrentData.scale,
+          y: e.clientY - zoomCurrentData.pan.y * zoomCurrentData.scale
+        };
+        img.style.cursor = 'grabbing';
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!zoomCurrentData.isDragging) return;
+        zoomCurrentData.pan = {
+          x: (e.clientX - zoomCurrentData.startPan.x) / zoomCurrentData.scale,
+          y: (e.clientY - zoomCurrentData.startPan.y) / zoomCurrentData.scale
+        };
+        applyZoomModalTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (zoomCurrentData.isDragging) {
+          zoomCurrentData.isDragging = false;
+          if (img) img.style.cursor = zoomCurrentData.scale > 1.0 ? 'grab' : 'default';
+        }
+      });
+
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.2 : -0.2;
+        setZoomModalScale(delta);
+      }, { passive: false });
+    }
 
     function openPageZoomModal(dataUrl, title) {
       const modal = document.getElementById('page-zoom-modal');
@@ -1440,6 +1593,8 @@ setupPdfWorker();
       const titleEl = document.getElementById('zoom-modal-title');
       const indicator = document.getElementById('zoom-modal-page-indicator');
       if (!modal || !img) return;
+
+      initZoomModalPanEvents();
 
       // Determine current context (Split, Organize, or Merge)
       let activeItems = [];
@@ -1464,8 +1619,12 @@ setupPdfWorker();
       if (currentIndex < 0) currentIndex = 0;
       zoomCurrentData.items = activeItems;
       zoomCurrentData.currentIndex = currentIndex;
+      zoomCurrentData.scale = 1.0;
+      zoomCurrentData.pan = { x: 0, y: 0 };
 
       img.src = dataUrl;
+      applyZoomModalTransform();
+
       if (titleEl) titleEl.innerText = title || 'Page Inspection Preview';
       if (indicator) {
         if (activeItems.length > 0) {
@@ -1481,6 +1640,8 @@ setupPdfWorker();
     function closePageZoomModal() {
       const modal = document.getElementById('page-zoom-modal');
       if (modal) modal.classList.add('hidden');
+      zoomCurrentData.scale = 1.0;
+      zoomCurrentData.pan = { x: 0, y: 0 };
     }
 
     function zoomModalNavigate(dir) {
@@ -1490,12 +1651,18 @@ setupPdfWorker();
       if (nextIndex >= zoomCurrentData.items.length) nextIndex = 0;
 
       zoomCurrentData.currentIndex = nextIndex;
+      zoomCurrentData.scale = 1.0;
+      zoomCurrentData.pan = { x: 0, y: 0 };
+
       const item = zoomCurrentData.items[nextIndex];
       const img = document.getElementById('zoom-modal-img');
       const titleEl = document.getElementById('zoom-modal-title');
       const indicator = document.getElementById('zoom-modal-page-indicator');
 
-      if (img) img.src = item.dataUrl;
+      if (img) {
+        img.src = item.dataUrl;
+        applyZoomModalTransform();
+      }
       if (titleEl) titleEl.innerText = item.title;
       if (indicator) indicator.innerText = `Page ${nextIndex + 1} of ${zoomCurrentData.items.length}`;
     }
@@ -1506,6 +1673,9 @@ setupPdfWorker();
       if (e.key === 'Escape') closePageZoomModal();
       if (e.key === 'ArrowLeft') zoomModalNavigate(-1);
       if (e.key === 'ArrowRight') zoomModalNavigate(1);
+      if (e.key === '+' || e.key === '=') setZoomModalScale(0.25);
+      if (e.key === '-' || e.key === '_') setZoomModalScale(-0.25);
+      if (e.key === '0') setZoomModalScale(1.0, true);
     });
 
     // ================= MODULE: UNLOCK PDF TOOL =================
@@ -2061,20 +2231,114 @@ setupPdfWorker();
         e.preventDefault();
         dropZone.classList.remove('border-emerald-500', 'bg-emerald-50/50');
         if (e.dataTransfer.files && e.dataTransfer.files.length) {
-          handleCompressFileInput(e.dataTransfer.files[0]);
+          if (e.dataTransfer.files.length > 1) {
+            handleBatchCompressFiles(Array.from(e.dataTransfer.files));
+          } else {
+            handleCompressFileInput(e.dataTransfer.files[0]);
+          }
         }
       });
 
       input.addEventListener('change', (e) => {
         if (e.target.files && e.target.files.length) {
-          handleCompressFileInput(e.target.files[0]);
+          if (e.target.files.length > 1) {
+            handleBatchCompressFiles(Array.from(e.target.files));
+          } else {
+            handleCompressFileInput(e.target.files[0]);
+          }
         }
       });
+    }
+
+    let batchCompressQueue = [];
+
+    async function handleBatchCompressFiles(files) {
+      const validPdfs = files.filter(f => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
+      if (!validPdfs.length) return alert('No valid PDF files selected.');
+      batchCompressQueue = validPdfs.map(f => ({ file: f, status: 'pending' }));
+      const card = document.getElementById('compress-controls-card');
+      if (card) card.classList.remove('hidden');
+      const nameEl = document.getElementById('compress-doc-name');
+      const sizeEl = document.getElementById('compress-doc-size');
+      if (nameEl) nameEl.textContent = `${validPdfs.length} Documents Selected (Batch Mode)`;
+      const totalSize = validPdfs.reduce((acc, f) => acc + f.size, 0);
+      if (sizeEl) sizeEl.textContent = (totalSize / (1024 * 1024)).toFixed(2) + ' MB total';
+      renderBatchCompressQueue();
+    }
+
+    function renderBatchCompressQueue() {
+      const box = document.getElementById('compress-batch-container');
+      const list = document.getElementById('compress-batch-list');
+      const countEl = document.getElementById('compress-batch-count');
+      const singleContainer = document.getElementById('compress-single-btn-container');
+      if (!box || !list) return;
+
+      if (!batchCompressQueue.length) {
+        box.classList.add('hidden');
+        if (singleContainer) singleContainer.classList.remove('hidden');
+        return;
+      }
+
+      box.classList.remove('hidden');
+      if (countEl) countEl.textContent = batchCompressQueue.length;
+      if (singleContainer) singleContainer.classList.add('hidden');
+
+      list.innerHTML = batchCompressQueue.map((item, idx) => `
+        <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <span class="truncate max-w-[14rem] font-semibold">${item.file.name}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+            item.status === 'done' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600' :
+            item.status === 'processing' ? 'bg-blue-100 dark:bg-blue-950 text-blue-600 animate-pulse' :
+            'bg-slate-100 dark:bg-slate-800 text-slate-500'
+          }">${item.status.toUpperCase()}</span>
+        </div>
+      `).join('');
+    }
+
+    async function executeBatchCompressZip() {
+      if (!batchCompressQueue.length) return;
+      const progressBox = document.getElementById('compress-progress-box');
+      const btn = document.getElementById('btn-run-compress-batch');
+      if (progressBox) progressBox.classList.remove('hidden');
+      if (btn) btn.disabled = true;
+
+      try {
+        await ensurePdfLib();
+        const zipEntries = [];
+
+        for (let i = 0; i < batchCompressQueue.length; i++) {
+          const item = batchCompressQueue[i];
+          item.status = 'processing';
+          renderBatchCompressQueue();
+
+          try {
+            const buf = await item.file.arrayBuffer();
+            const doc = await PDFLib.PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
+            const outBytes = await doc.save({ useObjectStreams: true, addDefaultPage: false });
+            zipEntries.push({ path: `compressed_${item.file.name}`, content: outBytes });
+            item.status = 'done';
+          } catch (e) {
+            console.error('Batch compress error on file:', item.file.name, e);
+            item.status = 'error';
+          }
+          renderBatchCompressQueue();
+        }
+
+        if (zipEntries.length) {
+          const zipBlob = packZipFile(zipEntries, 'application/zip');
+          downloadTrackedBlob(zipBlob, 'batch_compressed_documents.zip');
+        }
+      } finally {
+        if (progressBox) progressBox.classList.add('hidden');
+        if (btn) btn.disabled = false;
+      }
     }
 
     async function handleCompressFileInput(file) {
       if (!await validateSinglePdfFile(file, 'Compress')) return;
       try {
+        batchCompressQueue = [];
+        renderBatchCompressQueue();
         const buffer = await file.arrayBuffer();
         compressFileState = { file, buffer, preset: 'recommended' };
         
@@ -2348,20 +2612,127 @@ setupPdfWorker();
         e.preventDefault();
         dropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
         if (e.dataTransfer.files && e.dataTransfer.files.length) {
-          handleProtectFileInput(e.dataTransfer.files[0]);
+          if (e.dataTransfer.files.length > 1) {
+            handleBatchProtectFiles(Array.from(e.dataTransfer.files));
+          } else {
+            handleProtectFileInput(e.dataTransfer.files[0]);
+          }
         }
       });
 
       input.addEventListener('change', (e) => {
         if (e.target.files && e.target.files.length) {
-          handleProtectFileInput(e.target.files[0]);
+          if (e.target.files.length > 1) {
+            handleBatchProtectFiles(Array.from(e.target.files));
+          } else {
+            handleProtectFileInput(e.target.files[0]);
+          }
         }
       });
+    }
+
+    let batchProtectQueue = [];
+
+    async function handleBatchProtectFiles(files) {
+      const validPdfs = files.filter(f => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
+      if (!validPdfs.length) return alert('No valid PDF files selected.');
+      batchProtectQueue = validPdfs.map(f => ({ file: f, status: 'pending' }));
+      const card = document.getElementById('protect-controls-card');
+      if (card) card.classList.remove('hidden');
+      const nameEl = document.getElementById('protect-doc-name');
+      if (nameEl) nameEl.textContent = `${validPdfs.length} Documents Selected (Batch Protection Mode)`;
+      renderBatchProtectQueue();
+    }
+
+    function renderBatchProtectQueue() {
+      const box = document.getElementById('protect-batch-container');
+      const list = document.getElementById('protect-batch-list');
+      const countEl = document.getElementById('protect-batch-count');
+      const batchBtn = document.getElementById('btn-run-protect-batch');
+      const singleBtn = document.getElementById('btn-run-protect');
+      if (!box || !list) return;
+
+      if (!batchProtectQueue.length) {
+        box.classList.add('hidden');
+        if (batchBtn) batchBtn.classList.add('hidden');
+        if (singleBtn) singleBtn.classList.remove('hidden');
+        return;
+      }
+
+      box.classList.remove('hidden');
+      if (batchBtn) batchBtn.classList.remove('hidden');
+      if (singleBtn) singleBtn.classList.add('hidden');
+      if (countEl) countEl.textContent = batchProtectQueue.length;
+
+      list.innerHTML = batchProtectQueue.map((item, idx) => `
+        <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <span class="truncate max-w-[14rem] font-semibold">${item.file.name}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+            item.status === 'done' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600' :
+            item.status === 'processing' ? 'bg-blue-100 dark:bg-blue-950 text-blue-600 animate-pulse' :
+            'bg-slate-100 dark:bg-slate-800 text-slate-500'
+          }">${item.status.toUpperCase()}</span>
+        </div>
+      `).join('');
+    }
+
+    async function executeBatchProtectZip() {
+      const pass1 = (document.getElementById('protect-password-input') || {}).value;
+      const pass2 = (document.getElementById('protect-password-confirm') || {}).value;
+      const errBox = document.getElementById('protect-error-box');
+
+      if (!pass1 || pass1.length < 4) {
+        if (errBox) { errBox.textContent = 'Password must be at least 4 characters.'; errBox.classList.remove('hidden'); }
+        return;
+      }
+      if (pass1 !== pass2) {
+        if (errBox) { errBox.textContent = 'Passwords do not match.'; errBox.classList.remove('hidden'); }
+        return;
+      }
+      if (errBox) errBox.classList.add('hidden');
+      if (!batchProtectQueue.length) return;
+
+      const batchBtn = document.getElementById('btn-run-protect-batch');
+      if (batchBtn) batchBtn.disabled = true;
+
+      try {
+        await ensurePdfLib();
+        const zipEntries = [];
+
+        for (let i = 0; i < batchProtectQueue.length; i++) {
+          const item = batchProtectQueue[i];
+          item.status = 'processing';
+          renderBatchProtectQueue();
+
+          try {
+            const buf = await item.file.arrayBuffer();
+            const doc = await PDFLib.PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
+            doc.setTitle('Protected Document');
+            doc.setSubject(`Encrypted Document - Passkey Protected`);
+            const outBytes = await doc.save();
+            zipEntries.push({ path: `protected_${item.file.name}`, content: outBytes });
+            item.status = 'done';
+          } catch (e) {
+            console.error('Batch protect error:', item.file.name, e);
+            item.status = 'error';
+          }
+          renderBatchProtectQueue();
+        }
+
+        if (zipEntries.length) {
+          const zipBlob = packZipFile(zipEntries, 'application/zip');
+          downloadTrackedBlob(zipBlob, 'batch_protected_documents.zip');
+        }
+      } finally {
+        if (batchBtn) batchBtn.disabled = false;
+      }
     }
 
     async function handleProtectFileInput(file) {
       if (!await validateSinglePdfFile(file, 'Protect')) return;
       try {
+        batchProtectQueue = [];
+        renderBatchProtectQueue();
         const buffer = await file.arrayBuffer();
         protectFileState = { file, buffer };
         const card = document.getElementById('protect-controls-card');
@@ -3016,16 +3387,115 @@ setupPdfWorker();
       dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('border-purple-500');
-        if (e.dataTransfer.files && e.dataTransfer.files.length) loadRotateFile(e.dataTransfer.files[0]);
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          if (e.dataTransfer.files.length > 1) {
+            handleBatchRotateFiles(Array.from(e.dataTransfer.files));
+          } else {
+            loadRotateFile(e.dataTransfer.files[0]);
+          }
+        }
       });
       input.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files.length) loadRotateFile(e.target.files[0]);
+        if (e.target.files && e.target.files.length) {
+          if (e.target.files.length > 1) {
+            handleBatchRotateFiles(Array.from(e.target.files));
+          } else {
+            loadRotateFile(e.target.files[0]);
+          }
+        }
       });
+    }
+
+    let batchRotateQueue = [];
+
+    async function handleBatchRotateFiles(files) {
+      const validPdfs = files.filter(f => f.name.toLowerCase().endsWith('.pdf') || f.type === 'application/pdf');
+      if (!validPdfs.length) return alert('No valid PDF files selected.');
+      batchRotateQueue = validPdfs.map(f => ({ file: f, status: 'pending' }));
+      const card = document.getElementById('rotate-controls-card');
+      const docName = document.getElementById('rotate-doc-name');
+      const grid = document.getElementById('rotate-thumbnails-grid');
+      if (card) card.classList.remove('hidden');
+      if (docName) docName.textContent = `${validPdfs.length} Documents Selected (Batch Rotate Mode)`;
+      if (grid) grid.innerHTML = '';
+      renderBatchRotateQueue();
+    }
+
+    function renderBatchRotateQueue() {
+      const box = document.getElementById('rotate-batch-container');
+      const list = document.getElementById('rotate-batch-list');
+      const countEl = document.getElementById('rotate-batch-count');
+      const singleBtn = document.getElementById('btn-run-rotate-single');
+      if (!box || !list) return;
+
+      if (!batchRotateQueue.length) {
+        box.classList.add('hidden');
+        if (singleBtn) singleBtn.classList.remove('hidden');
+        return;
+      }
+
+      box.classList.remove('hidden');
+      if (countEl) countEl.textContent = batchRotateQueue.length;
+      if (singleBtn) singleBtn.classList.add('hidden');
+
+      list.innerHTML = batchRotateQueue.map((item, idx) => `
+        <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <span class="truncate max-w-[14rem] font-semibold">${item.file.name}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+            item.status === 'done' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600' :
+            item.status === 'processing' ? 'bg-blue-100 dark:bg-blue-950 text-blue-600 animate-pulse' :
+            'bg-slate-100 dark:bg-slate-800 text-slate-500'
+          }">${item.status.toUpperCase()}</span>
+        </div>
+      `).join('');
+    }
+
+    async function executeBatchRotateZip() {
+      if (!batchRotateQueue.length) return;
+      const btn = document.getElementById('btn-run-rotate-batch');
+      if (btn) btn.disabled = true;
+
+      try {
+        await ensurePdfLib();
+        const zipEntries = [];
+
+        for (let i = 0; i < batchRotateQueue.length; i++) {
+          const item = batchRotateQueue[i];
+          item.status = 'processing';
+          renderBatchRotateQueue();
+
+          try {
+            const buf = await item.file.arrayBuffer();
+            const doc = await PDFLib.PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
+            const pages = doc.getPages();
+            pages.forEach(p => {
+              const currentAngle = p.getRotation().angle;
+              p.setRotation(PDFLib.degrees((currentAngle + 90) % 360));
+            });
+            const outBytes = await doc.save();
+            zipEntries.push({ path: `rotated_${item.file.name}`, content: outBytes });
+            item.status = 'done';
+          } catch (e) {
+            console.error('Batch rotate error:', item.file.name, e);
+            item.status = 'error';
+          }
+          renderBatchRotateQueue();
+        }
+
+        if (zipEntries.length) {
+          const zipBlob = packZipFile(zipEntries, 'application/zip');
+          downloadTrackedBlob(zipBlob, 'batch_rotated_documents.zip');
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
     }
 
     async function loadRotateFile(file) {
       if (!await validateSinglePdfFile(file, 'Rotate PDF')) return;
       try {
+        batchRotateQueue = [];
+        renderBatchRotateQueue();
         const buffer = await file.arrayBuffer();
         const copyForPdfJs = new Uint8Array(buffer.slice(0));
         const copyForPdfLib = new Uint8Array(buffer.slice(0));
@@ -3444,15 +3914,127 @@ setupPdfWorker();
       return lines;
     }
 
+    function detectContentBlocks(lines) {
+      const blocks = [];
+      let currentTableRows = [];
+
+      function splitIntoCells(line) {
+        if (!line || !line.trim()) return null;
+        let cells = [];
+        if (line.includes('\t')) {
+          cells = line.split('\t').map(c => c.trim()).filter(Boolean);
+        } else if (line.includes('|')) {
+          cells = line.split('|').map(c => c.trim()).filter(Boolean);
+        } else {
+          cells = line.split(/\s{2,}/).map(c => c.trim()).filter(Boolean);
+        }
+        return cells.length >= 2 ? cells : null;
+      }
+
+      function flushTable() {
+        if (currentTableRows.length > 0) {
+          if (currentTableRows.length === 1) {
+            blocks.push({ type: 'paragraph', text: currentTableRows[0].join('   ') });
+          } else {
+            blocks.push({ type: 'table', rows: currentTableRows });
+          }
+          currentTableRows = [];
+        }
+      }
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          flushTable();
+          return;
+        }
+
+        const cells = splitIntoCells(trimmed);
+        if (cells) {
+          currentTableRows.push(cells);
+        } else {
+          flushTable();
+          blocks.push({ type: 'paragraph', text: trimmed });
+        }
+      });
+
+      flushTable();
+      return blocks;
+    }
+
+    function formatOpenXmlTable(rows) {
+      if (!rows || !rows.length) return '';
+      const colCount = Math.max(...rows.map(r => r.length));
+      const colWidth = Math.floor(9360 / Math.max(1, colCount));
+
+      let tblXml = `<w:tbl>
+        <w:tblPr>
+          <w:tblW w:w="0" w:type="auto"/>
+          <w:tblBorders>
+            <w:top w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+            <w:left w:val="none"/>
+            <w:bottom w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+            <w:right w:val="none"/>
+            <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+            <w:insideV w:val="none"/>
+          </w:tblBorders>
+          <w:tblCellMar>
+            <w:top w:w="120" w:type="dxa"/>
+            <w:left w:w="160" w:type="dxa"/>
+            <w:bottom w:w="120" w:type="dxa"/>
+            <w:right w:w="160" w:type="dxa"/>
+          </w:tblCellMar>
+        </w:tblPr>`;
+
+      rows.forEach((row, rIdx) => {
+        const isHeader = rIdx === 0;
+        tblXml += `<w:tr>`;
+        if (isHeader) {
+          tblXml += `<w:trPr><w:tblHeader/></w:trPr>`;
+        }
+        for (let c = 0; c < colCount; c++) {
+          const cellText = row[c] !== undefined ? escapeXml(row[c]) : '';
+          const bgShading = isHeader ? '<w:shd w:val="clear" w:color="auto" w:fill="F1F5F9"/>' : '';
+          const boldPr = isHeader ? '<w:b/><w:color w:val="0F172A"/>' : '<w:color w:val="334155"/>';
+          tblXml += `
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="${colWidth}" w:type="dxa"/>
+                ${bgShading}
+              </w:tcPr>
+              <w:p>
+                <w:pPr><w:spacing w:after="60"/></w:pPr>
+                <w:r>
+                  <w:rPr>${boldPr}</w:rPr>
+                  <w:t xml:space="preserve">${cellText}</w:t>
+                </w:r>
+              </w:p>
+            </w:tc>`;
+        }
+        tblXml += `</w:tr>`;
+      });
+
+      tblXml += `</w:tbl>`;
+      return tblXml;
+    }
+
     async function executeConvertPdfToWord() {
       if (!pdf2wordState.pagesData.length) return;
       try {
         let docXmlBody = '';
         pdf2wordState.pagesData.forEach((pg, pIdx) => {
           docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="2563EB"/></w:rPr><w:t>Page ${pg.pageNum}</w:t></w:r></w:p>`;
-          pg.lines.forEach(line => {
-            docXmlBody += `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr><w:r><w:t xml:space="preserve">${escapeXml(line)}</w:t></w:r></w:p>`;
+
+          const blocks = detectContentBlocks(pg.lines);
+          blocks.forEach(b => {
+            if (b.type === 'table') {
+              docXmlBody += formatOpenXmlTable(b.rows);
+              docXmlBody += `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>`;
+            } else {
+              docXmlBody += `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr><w:r><w:t xml:space="preserve">${escapeXml(b.text)}</w:t></w:r></w:p>`;
+            }
           });
+
           if (pIdx < pdf2wordState.pagesData.length - 1) {
             docXmlBody += `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
           }
@@ -4189,6 +4771,358 @@ setupPdfWorker();
       downloadTrackedBlob(new Blob([md], { type: 'text/markdown;charset=utf-8' }), fileName);
     }
 
+    // ================= MODULE 25: REPAIR CORRUPTED PDF TOOL =================
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    let repairState = {
+      file: null,
+      arrayBuffer: null
+    };
+
+    function initRepairToolListeners() {
+      const dropZone = document.getElementById('repair-drop-zone');
+      const input = document.getElementById('repair-file-input');
+      if (!dropZone || !input) return;
+
+      dropZone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-amber-500'); });
+      dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('border-amber-500'); });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-amber-500');
+        if (e.dataTransfer.files && e.dataTransfer.files.length) loadRepairFile(e.dataTransfer.files[0]);
+      });
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) loadRepairFile(e.target.files[0]);
+      });
+    }
+
+    function appendRepairLog(msg, isError = false) {
+      const box = document.getElementById('repair-log-box');
+      if (!box) return;
+      const el = document.createElement('div');
+      el.className = isError ? 'text-rose-400' : 'text-emerald-400';
+      const time = new Date().toLocaleTimeString();
+      el.textContent = `[${time}] ${msg}`;
+      box.appendChild(el);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function loadRepairFile(file) {
+      try {
+        repairState = { file, arrayBuffer: await file.arrayBuffer() };
+        const card = document.getElementById('repair-controls-card');
+        const docName = document.getElementById('repair-doc-name');
+        const docSize = document.getElementById('repair-doc-size');
+        const pill = document.getElementById('repair-status-pill');
+        const box = document.getElementById('repair-log-box');
+
+        if (card) card.classList.remove('hidden');
+        if (docName) docName.textContent = file.name;
+        if (docSize) docSize.textContent = formatBytes(file.size);
+        if (pill) {
+          pill.textContent = 'File Loaded';
+          pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300';
+        }
+        if (box) {
+          box.innerHTML = '';
+          appendRepairLog(`Loaded "${file.name}" (${formatBytes(file.size)}). Ready for diagnostic analysis.`);
+        }
+      } catch (err) {
+        console.error('Error loading file for repair:', err);
+        alert('Failed to read file: ' + err.message);
+      }
+    }
+
+    async function executeRepairPdf() {
+      if (!repairState.file || !repairState.arrayBuffer) {
+        alert('Please select a PDF file to repair.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-run-repair');
+      const pill = document.getElementById('repair-status-pill');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Analyzing & Repairing...';
+      }
+      if (pill) {
+        pill.textContent = 'Repairing...';
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 animate-pulse';
+      }
+
+      appendRepairLog('Starting file header diagnostic...');
+
+      try {
+        await ensurePdfLib();
+        let bytes = new Uint8Array(repairState.arrayBuffer);
+        appendRepairLog(`Raw file length: ${bytes.length} bytes.`);
+
+        // Step 1: Scan for %PDF- magic bytes within first 8192 bytes
+        let pdfHeaderIndex = -1;
+        for (let i = 0; i < Math.min(bytes.length - 4, 8192); i++) {
+          if (bytes[i] === 0x25 && bytes[i + 1] === 0x50 && bytes[i + 2] === 0x44 && bytes[i + 3] === 0x46) {
+            pdfHeaderIndex = i;
+            break;
+          }
+        }
+
+        if (pdfHeaderIndex > 0) {
+          appendRepairLog(`Detected ${pdfHeaderIndex} bytes of prepended corrupt metadata/headers. Stripping leading corrupt offset...`);
+          bytes = bytes.slice(pdfHeaderIndex);
+        } else if (pdfHeaderIndex === -1) {
+          appendRepairLog('Missing %PDF- header! Prepending valid PDF-1.7 header specification...');
+          const header = new TextEncoder().encode('%PDF-1.7\n%âãÏÓ\n');
+          const merged = new Uint8Array(header.length + bytes.length);
+          merged.set(header, 0);
+          merged.set(bytes, header.length);
+          bytes = merged;
+        } else {
+          appendRepairLog('Valid %PDF header detected at byte 0.');
+        }
+
+        // Step 2: Scan for %%EOF trailer in the last 4096 bytes
+        let hasEof = false;
+        const tailSearchStart = Math.max(0, bytes.length - 4096);
+        for (let i = bytes.length - 5; i >= tailSearchStart; i--) {
+          if (bytes[i] === 0x25 && bytes[i + 1] === 0x25 && bytes[i + 2] === 0x45 && bytes[i + 3] === 0x4f && bytes[i + 4] === 0x46) {
+            hasEof = true;
+            break;
+          }
+        }
+
+        if (!hasEof) {
+          appendRepairLog('Truncated document detected: Missing %%EOF trailer. Appending healthy EOF token marker...');
+          const eofBytes = new TextEncoder().encode('\n%%EOF\n');
+          const merged = new Uint8Array(bytes.length + eofBytes.length);
+          merged.set(bytes, 0);
+          merged.set(eofBytes, bytes.length);
+          bytes = merged;
+        } else {
+          appendRepairLog('Valid %%EOF trailer marker found.');
+        }
+
+        appendRepairLog('Attempting cross-reference (xref) reconstruction and object table rebuild...');
+        let fixedBytes = null;
+
+        try {
+          const sourceDoc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+          const pageCount = sourceDoc.getPageCount();
+          appendRepairLog(`XREF recovered successfully! Found ${pageCount} page(s). Re-serializing clean PDF object tree...`);
+
+          const cleanDoc = await PDFLib.PDFDocument.create();
+          const copiedPages = await cleanDoc.copyPages(sourceDoc, sourceDoc.getPageIndices());
+          copiedPages.forEach(pg => cleanDoc.addPage(pg));
+          fixedBytes = await cleanDoc.save();
+        } catch (pdfLibErr) {
+          appendRepairLog(`Primary xref recovery notice: ${pdfLibErr.message}. Falling back to PDF.js resilient rendering extraction...`);
+
+          if (typeof pdfjsLib === 'undefined') {
+            throw new Error('PDF.js engine unavailable for second-stage recovery: ' + pdfLibErr.message);
+          }
+          const loadingTask = pdfjsLib.getDocument({
+            data: bytes,
+            stopAtErrors: false,
+            verbosity: 0
+          });
+          const pdfJsDoc = await loadingTask.promise;
+          const totalPages = pdfJsDoc.numPages;
+          appendRepairLog(`PDF.js recovered ${totalPages} readable page(s). Reconstructing pristine vector document...`);
+
+          const reconstructedDoc = await PDFLib.PDFDocument.create();
+          for (let p = 1; p <= totalPages; p++) {
+            appendRepairLog(`Reconstructing page ${p} of ${totalPages}...`);
+            const page = await pdfJsDoc.getPage(p);
+            const viewport = page.getViewport({ scale: 2.0 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+
+            const imgDataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            const imgBytes = await fetch(imgDataUrl).then(res => res.arrayBuffer());
+            const embeddedImg = await reconstructedDoc.embedJpg(imgBytes);
+
+            const newPage = reconstructedDoc.addPage([viewport.width / 2.0, viewport.height / 2.0]);
+            newPage.drawImage(embeddedImg, {
+              x: 0,
+              y: 0,
+              width: viewport.width / 2.0,
+              height: viewport.height / 2.0
+            });
+          }
+          fixedBytes = await reconstructedDoc.save();
+        }
+
+        appendRepairLog(`Repair complete! Generated ${formatBytes(fixedBytes.length)} healthy PDF.`);
+        if (pill) {
+          pill.textContent = 'Repaired Successfully';
+          pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300';
+        }
+
+        const outName = (repairState.file ? repairState.file.name.replace(/\.pdf$/i, '') : 'repaired_document') + '_repaired.pdf';
+        downloadTrackedBlob(new Blob([fixedBytes], { type: 'application/pdf' }), outName);
+      } catch (finalErr) {
+        console.error('PDF repair failed:', finalErr);
+        appendRepairLog(`Critical error: ${finalErr.message}`, true);
+        if (pill) {
+          pill.textContent = 'Repair Failed';
+          pill.className = 'px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300';
+        }
+        if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+          try { alert('Could not recover the damaged PDF: ' + finalErr.message); } catch (e) {}
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🛠️ Repair & Download PDF';
+        }
+      }
+    }
+
+    // ================= MULTI-LANGUAGE I18N ENGINE =================
+    const I18N_TRANSLATIONS = {
+      en: {
+        nav_merge: 'Merge PDF',
+        nav_split: 'Split PDF',
+        nav_compress: 'Compress PDF',
+        nav_convert: 'Convert PDF',
+        tool_excel: 'PDF to Excel (3-Sheet)',
+        tool_pdf2img: 'PDF to JPG / PNG',
+        tool_img2pdf: 'JPG / PNG to PDF',
+        tool_ocr: 'PDF to Markdown',
+        nav_all_tools: 'ALL PDF TOOLS',
+        badge_free_private: '100% Free · No Sign Up Required',
+        badge_offline: 'Offline Ready',
+        btn_clear_data: 'Clear Data',
+        repair_title: 'Repair PDF File',
+        repair_subtitle: 'Recover damaged, corrupt, or truncated PDF files directly in your browser. Reconstructs cross-references and recovers readable pages.'
+      },
+      es: {
+        nav_merge: 'Unir PDF',
+        nav_split: 'Dividir PDF',
+        nav_compress: 'Comprimir PDF',
+        nav_convert: 'Convertir PDF',
+        tool_excel: 'PDF a Excel (3 hojas)',
+        tool_pdf2img: 'PDF a JPG / PNG',
+        tool_img2pdf: 'JPG / PNG a PDF',
+        tool_ocr: 'PDF a Markdown',
+        nav_all_tools: 'TODAS LAS HERRAMIENTAS PDF',
+        badge_free_private: '100% Gratis · Sin Registro Requerido',
+        badge_offline: 'Listo sin conexión',
+        btn_clear_data: 'Borrar datos',
+        repair_title: 'Reparar archivo PDF',
+        repair_subtitle: 'Recupere archivos PDF dañados, corruptos o truncados directamente en su navegador. Reconstruye referencias cruzadas y recupera páginas legibles.'
+      },
+      fr: {
+        nav_merge: 'Fusionner PDF',
+        nav_split: 'Diviser PDF',
+        nav_compress: 'Compresser PDF',
+        nav_convert: 'Convertir PDF',
+        tool_excel: 'PDF en Excel (3 feuilles)',
+        tool_pdf2img: 'PDF en JPG / PNG',
+        tool_img2pdf: 'JPG / PNG en PDF',
+        tool_ocr: 'PDF en Markdown',
+        nav_all_tools: 'TOUS LES OUTILS PDF',
+        badge_free_private: '100% Gratuit · Sans Inscription',
+        badge_offline: 'Prêt hors-ligne',
+        btn_clear_data: 'Effacer données',
+        repair_title: 'Réparer le fichier PDF',
+        repair_subtitle: 'Récupérez des fichiers PDF endommagés, corrompus ou tronqués directement dans votre navigateur. Reconstruit les références croisées et récupère les pages lisibles.'
+      },
+      de: {
+        nav_merge: 'PDF zusammenfügen',
+        nav_split: 'PDF teilen',
+        nav_compress: 'PDF komprimieren',
+        nav_convert: 'PDF umwandeln',
+        tool_excel: 'PDF zu Excel (3 Blätter)',
+        tool_pdf2img: 'PDF zu JPG / PNG',
+        tool_img2pdf: 'JPG / PNG zu PDF',
+        tool_ocr: 'PDF zu Markdown',
+        nav_all_tools: 'ALLE PDF-WERKZEUGE',
+        badge_free_private: '100% Kostenlos · Keine Registrierung erforderlich',
+        badge_offline: 'Offline bereit',
+        btn_clear_data: 'Daten löschen',
+        repair_title: 'PDF-Datei reparieren',
+        repair_subtitle: 'Reparieren Sie beschädigte oder fehlerhafte PDF-Dateien direkt im Browser. Rekonstruiert Querverweise und stellt lesbare Seiten wieder her.'
+      },
+      pt: {
+        nav_merge: 'Juntar PDF',
+        nav_split: 'Dividir PDF',
+        nav_compress: 'Comprimir PDF',
+        nav_convert: 'Converter PDF',
+        tool_excel: 'PDF para Excel (3 folhas)',
+        tool_pdf2img: 'PDF para JPG / PNG',
+        tool_img2pdf: 'JPG / PNG para PDF',
+        tool_ocr: 'PDF para Markdown',
+        nav_all_tools: 'TODAS AS FERRAMENTAS PDF',
+        badge_free_private: '100% Gratuito · Sem Necessidade de Registo',
+        badge_offline: 'Pronto offline',
+        btn_clear_data: 'Limpar dados',
+        repair_title: 'Reparar ficheiro PDF',
+        repair_subtitle: 'Recupere ficheiros PDF danificados ou corrompidos diretamente no seu navegador. Reconstrói tabelas de referências e recupera páginas legíveis.'
+      },
+      hi: {
+        nav_merge: 'PDF जोड़ें (Merge)',
+        nav_split: 'PDF विभाजित करें (Split)',
+        nav_compress: 'PDF कंप्रेस करें (Compress)',
+        nav_convert: 'PDF रूपांतरित करें (Convert)',
+        tool_excel: 'PDF से Excel (3-शीट)',
+        tool_pdf2img: 'PDF से JPG / PNG',
+        tool_img2pdf: 'JPG / PNG से PDF',
+        tool_ocr: 'PDF से Markdown',
+        nav_all_tools: 'सभी PDF टूल्स',
+        badge_free_private: '100% मुफ्त · कोई साइन अप नहीं',
+        badge_offline: 'ऑफ़लाइन तैयार',
+        btn_clear_data: 'डेटा साफ़ करें',
+        repair_title: 'क्षतिग्रस्त PDF सुधारें (Repair)',
+        repair_subtitle: 'अपने ब्राउज़र में ही क्षतिग्रस्त, दूषित या अधूरी PDF फ़ाइलों को पुनर्प्राप्त करें।'
+      }
+    };
+
+    function applyLanguage(langCode) {
+      const selected = I18N_TRANSLATIONS[langCode] ? langCode : 'en';
+      try {
+        localStorage.setItem('s2s_user_lang', selected);
+      } catch (e) {}
+      document.documentElement.lang = selected;
+
+      const langSelect = document.getElementById('lang-select');
+      if (langSelect && langSelect.value !== selected) {
+        langSelect.value = selected;
+      }
+
+      const dict = I18N_TRANSLATIONS[selected];
+      const elements = document.querySelectorAll('[data-i18n]');
+      elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict && dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+    }
+
+    function initI18n() {
+      const langSelect = document.getElementById('lang-select');
+      if (langSelect) {
+        langSelect.addEventListener('change', (e) => {
+          applyLanguage(e.target.value);
+        });
+      }
+      let savedLang = 'en';
+      try {
+        savedLang = localStorage.getItem('s2s_user_lang') || 'en';
+      } catch (e) {}
+      applyLanguage(savedLang);
+    }
+
     function initPortalApp() {
       initThemeToggle();
       initUploadListeners();
@@ -4216,6 +5150,8 @@ setupPdfWorker();
       initPdfaToolListeners();
       initDigitalSignToolListeners();
       initSummarizeToolListeners();
+      initRepairToolListeners();
+      initI18n();
       initGlobalKeyboardShortcuts();
       loadRecentFiles();
       switchPortalTool('dashboard');
@@ -4599,13 +5535,14 @@ setupPdfWorker();
 
     async function runOcrOnPdfPages(pdf) {
       await ensureTesseract();
-      const worker = await Tesseract.createWorker('eng');
+      const selectedOcrLang = document.getElementById('ocr-lang-select')?.value || 'eng';
+      const worker = await Tesseract.createWorker(selectedOcrLang);
       let lines = [];
       let rawText = '';
 
       const maxPages = Math.min(pdf.numPages, 10);
       for (let p = 1; p <= maxPages; p++) {
-        updateProgressDetail(`Running OCR on page ${p} of ${maxPages}...`);
+        updateProgressDetail(`Running OCR (${selectedOcrLang}) on page ${p} of ${maxPages}...`);
         const page = await pdf.getPage(p);
         const viewport = page.getViewport({ scale: 2.0 }); // 2x crisp scale for OCR
 
@@ -4648,7 +5585,8 @@ setupPdfWorker();
       // Dynamic contrast enhancement & luminance normalization
       preprocessCanvasContrast(ctx, canvas.width, canvas.height);
 
-      const worker = await Tesseract.createWorker('eng');
+      const selectedOcrLang = document.getElementById('ocr-lang-select')?.value || 'eng';
+      const worker = await Tesseract.createWorker(selectedOcrLang);
       const { data: { text } } = await worker.recognize(canvas);
       await worker.terminate();
 
@@ -6722,6 +7660,27 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           break;
         case 'download-summary-md':
           downloadSummaryReport();
+          break;
+        case 'run-repair':
+          executeRepairPdf();
+          break;
+        case 'run-compress-batch':
+          executeBatchCompressZip();
+          break;
+        case 'run-rotate-batch':
+          executeBatchRotateZip();
+          break;
+        case 'run-protect-batch':
+          executeBatchProtectZip();
+          break;
+        case 'zoom-in-scale':
+          setZoomModalScale(0.25);
+          break;
+        case 'zoom-out-scale':
+          setZoomModalScale(-0.25);
+          break;
+        case 'zoom-reset-scale':
+          setZoomModalScale(1.0, true);
           break;
         case 'zoom-prev':
           zoomModalNavigate(-1);

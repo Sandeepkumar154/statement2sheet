@@ -157,45 +157,46 @@
         <span id="nav-tool-sign"></span>
         <span id="nav-tool-protect"></span>
         <span id="nav-tool-markdown"></span>
+        <span id="nav-tool-repair"></span>
       </div>
 
       <!-- Center Navigation Links (iLovePDF Style) -->
       <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold tracking-wider uppercase">
-        <button data-tool="merge" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+        <button data-tool="merge" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_merge">
           Merge PDF
         </button>
-        <button data-tool="split" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+        <button data-tool="split" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_split">
           Split PDF
         </button>
-        <button data-tool="compress" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+        <button data-tool="compress" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_compress">
           Compress PDF
         </button>
         
         <!-- Convert PDF Dropdown -->
         <div class="relative" id="dropdown-convert-container">
           <button data-action="toggle-convert-dropdown" class="flex items-center gap-1 text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
-            <span>Convert PDF</span>
+            <span data-i18n="nav_convert">Convert PDF</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
           </button>
           <div id="convert-pdf-dropdown" class="hidden absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-2 z-50 text-xs normal-case">
             <button data-tool="excel" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
-              <span class="text-emerald-500 font-black">📊</span> <span>PDF to Excel (3-Sheet)</span>
+              <span class="text-emerald-500 font-black">📊</span> <span data-i18n="tool_excel">PDF to Excel (3-Sheet)</span>
             </button>
             <button data-tool="pdf2img" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
-              <span class="text-fuchsia-500 font-black">🖼️</span> <span>PDF to JPG / PNG</span>
+              <span class="text-fuchsia-500 font-black">🖼️</span> <span data-i18n="tool_pdf2img">PDF to JPG / PNG</span>
             </button>
             <button data-tool="img2pdf" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
-              <span class="text-orange-500 font-black">📸</span> <span>JPG / PNG to PDF</span>
+              <span class="text-orange-500 font-black">📸</span> <span data-i18n="tool_img2pdf">JPG / PNG to PDF</span>
             </button>
             <button data-tool="markdown" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left hover:bg-slate-100 dark:hover:bg-slate-800 transition font-semibold text-slate-700 dark:text-slate-200">
-              <span class="text-sky-500 font-black">📝</span> <span>PDF to Markdown</span>
+              <span class="text-sky-500 font-black">📝</span> <span data-i18n="tool_ocr">PDF to Markdown</span>
             </button>
           </div>
         </div>
 
         <!-- All PDF Tools Mega Menu Trigger -->
         <button id="mega-menu-trigger" data-action="toggle-mega-menu" class="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-extrabold px-3 py-2 rounded-xl transition hover:bg-rose-50 dark:hover:bg-rose-950/50">
-          <span>ALL PDF TOOLS</span>
+          <span data-i18n="nav_all_tools">ALL PDF TOOLS</span>
           <svg id="mega-chevron" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
         </button>
       </nav>
@@ -206,19 +207,31 @@
         <!-- 100% Free & Private Trust Pill -->
         <div class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>100% Free · No Sign Up Required</span>
+          <span data-i18n="badge_free_private">100% Free · No Sign Up Required</span>
         </div>
 
         <!-- Offline Status Badge -->
         <div id="offline-status-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs" title="PWA Local Cache Status">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          <span>Offline Ready</span>
+          <span data-i18n="badge_offline">Offline Ready</span>
         </div>
 
         <!-- Clear Session Data Button -->
         <button id="btn-purge-session" data-action="purge-session" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800/60 transition shadow-2xs focus-ring" title="Clear all loaded statements, memory buffers, and session data">
-          <span>🧹</span> <span class="hidden sm:inline">Clear Data</span>
+          <span>🧹</span> <span class="hidden sm:inline" data-i18n="btn_clear_data">Clear Data</span>
         </button>
+
+        <!-- Language Selector (i18n) -->
+        <div class="relative inline-flex items-center">
+          <select id="lang-select" aria-label="Select Language" class="text-xs font-bold py-1.5 px-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer transition">
+            <option value="en">🇺🇸 EN</option>
+            <option value="es">🇪🇸 ES</option>
+            <option value="fr">🇫🇷 FR</option>
+            <option value="de">🇩🇪 DE</option>
+            <option value="pt">🇵🇹 PT</option>
+            <option value="hi">🇮🇳 HI</option>
+          </select>
+        </div>
 
         <!-- Dark Mode Toggle Button -->
         <button id="theme-toggle" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition" aria-label="Toggle dark mode" title="Toggle light/dark theme">
@@ -286,6 +299,7 @@
           <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">OPTIMIZE PDF</h4>
           <ul class="space-y-2">
             <li><button data-tool="compress" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">🗜️</span> Compress PDF</button></li>
+            <li><button data-tool="repair" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🛠️</span> Repair PDF</button></li>
             <li><button data-tool="redact" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">⬛</span> Redact PDF</button></li>
             <li><button data-tool="pdfa" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">🏛️</span> Convert PDF/A</button></li>
             <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">🔍</span> OCR / Text Extract</button></li>
@@ -757,6 +771,20 @@
           </div>
         </div>
 
+        <!-- Card 25: Repair Corrupt PDF -->
+        <div data-category="optimize" data-tool="repair" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 rounded-2xl p-5 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition duration-200 flex flex-col justify-between">
+          <div>
+            <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition">Repair PDF</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">Reconstruct broken XREFs, repair damaged stream headers, and recover corrupted PDF pages safely.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-amber-600 transition">
+            <span>Repair</span> <span>&rarr;</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -1045,6 +1073,17 @@
             <input type="checkbox" id="opt-generate-pdf" checked class="rounded text-emerald-600 focus:ring-emerald-500" />
             <span>Clean / Searchable PDF</span>
           </label>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider text-[11px]">OCR Lang:</span>
+            <select id="ocr-lang-select" class="text-xs font-semibold py-1 px-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer">
+              <option value="eng">English (eng)</option>
+              <option value="spa">Español (spa)</option>
+              <option value="fra">Français (fra)</option>
+              <option value="deu">Deutsch (deu)</option>
+              <option value="por">Português (por)</option>
+              <option value="hin">Hindi (hin)</option>
+            </select>
+          </div>
         </div>
       </div>
     </section>
@@ -1671,14 +1710,14 @@
       </div>
 
       <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="compress-drop-zone" tabindex="0" role="button">
-        <input type="file" id="compress-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <input type="file" id="compress-file-input" accept=".pdf,application/pdf" multiple class="hidden" />
         <div class="w-14 h-14 mx-auto mb-3 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
         </div>
-        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File to Compress</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Zero server uploads. 100% In-memory stream compression.</p>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File(s) to Compress</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Zero server uploads. In-memory single or multi-file batch compression.</p>
         <button data-trigger-click="compress-file-input" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
-          Select PDF File
+          Select PDF File(s)
         </button>
       </div>
 
@@ -1686,6 +1725,20 @@
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="compress-doc-name">-</span>
           <span class="text-xs font-mono text-slate-400" id="compress-doc-size">-</span>
+        </div>
+
+        <!-- Multi-File Batch Queue Box -->
+        <div id="compress-batch-container" class="hidden mb-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Batch Queue (<span id="compress-batch-count">0</span> Files)</span>
+            <span class="text-[10px] text-emerald-600 font-bold">100% In-Browser ZIP Bundling</span>
+          </div>
+          <div id="compress-batch-list" class="space-y-1.5 max-h-40 overflow-y-auto text-xs"></div>
+          <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+            <button data-action="run-compress-batch" id="btn-run-compress-batch" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2 rounded-xl shadow transition">
+              📦 Compress All &amp; Download as ZIP
+            </button>
+          </div>
         </div>
 
         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Select Compression Level:</label>
@@ -1711,7 +1764,7 @@
           Compressing PDF in browser RAM...
         </div>
 
-        <div class="flex justify-end">
+        <div class="flex justify-end" id="compress-single-btn-container">
           <button data-action="run-compress" id="btn-run-compress" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
             Compress PDF &rarr;
           </button>
@@ -1804,14 +1857,14 @@
       </div>
 
       <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-indigo-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="protect-drop-zone" tabindex="0" role="button">
-        <input type="file" id="protect-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <input type="file" id="protect-file-input" accept=".pdf,application/pdf" multiple class="hidden" />
         <div class="w-14 h-14 mx-auto mb-3 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
         </div>
-        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File to Protect</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Set password and encrypt in browser memory</p>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File(s) to Protect</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Set password and encrypt single or batch documents in browser memory</p>
         <button data-trigger-click="protect-file-input" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
-          Select PDF File
+          Select PDF File(s)
         </button>
       </div>
 
@@ -1819,6 +1872,16 @@
         <div class="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="protect-doc-name">-</span>
         </div>
+
+        <!-- Multi-File Batch Queue Box -->
+        <div id="protect-batch-container" class="hidden mb-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Batch Queue (<span id="protect-batch-count">0</span> Files)</span>
+            <span class="text-[10px] text-indigo-600 font-bold">100% In-Browser ZIP Bundling</span>
+          </div>
+          <div id="protect-batch-list" class="space-y-1.5 max-h-40 overflow-y-auto text-xs"></div>
+        </div>
+
         <div class="space-y-4 mb-6">
           <div>
             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Set Password:</label>
@@ -1830,8 +1893,11 @@
           </div>
         </div>
         <div id="protect-error-box" class="hidden text-xs text-rose-600 mb-3"></div>
-        <div class="flex justify-end">
-          <button data-action="run-protect" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+        <div class="flex justify-end gap-3">
+          <button data-action="run-protect-batch" id="btn-run-protect-batch" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
+            📦 Encrypt All &amp; Download as ZIP
+          </button>
+          <button data-action="run-protect" id="btn-run-protect" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-6 py-3 rounded-xl shadow transition">
             Encrypt &amp; Download &rarr;
           </button>
         </div>
@@ -2105,18 +2171,32 @@
       </div>
 
       <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-purple-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="rotate-drop-zone" tabindex="0" role="button">
-        <input type="file" id="rotate-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <input type="file" id="rotate-file-input" accept=".pdf,application/pdf" multiple class="hidden" />
         <div class="w-14 h-14 mx-auto mb-3 bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         </div>
-        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF to Rotate</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Batch rotate 90°, 180°, or 270° in local memory</p>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop PDF File(s) to Rotate</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Batch rotate 90°, 180°, or 270° single or multiple documents in local memory</p>
         <button data-trigger-click="rotate-file-input" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
-          Select PDF File
+          Select PDF File(s)
         </button>
       </div>
 
       <div id="rotate-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <!-- Multi-File Batch Queue Box -->
+        <div id="rotate-batch-container" class="hidden mb-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Batch Queue (<span id="rotate-batch-count">0</span> Files)</span>
+            <span class="text-[10px] text-purple-600 font-bold">100% In-Browser ZIP Bundling</span>
+          </div>
+          <div id="rotate-batch-list" class="space-y-1.5 max-h-40 overflow-y-auto text-xs"></div>
+          <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+            <button data-action="run-rotate-batch" id="btn-run-rotate-batch" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-5 py-2 rounded-xl shadow transition">
+              📦 Rotate All &amp; Download as ZIP
+            </button>
+          </div>
+        </div>
+
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div class="flex items-center gap-2">
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="rotate-doc-name">-</span>
@@ -2124,7 +2204,7 @@
             <button data-action="rotate-all-left" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">Rotate All Left 90° ↺</button>
             <button data-action="rotate-all-180" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">180° Flip</button>
           </div>
-          <button data-action="run-rotate" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-2xs transition">
+          <button data-action="run-rotate" id="btn-run-rotate-single" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-2xs transition">
             💾 Save Rotated PDF
           </button>
         </div>
@@ -2453,6 +2533,57 @@
             <h4 class="text-xs font-black uppercase text-rose-600 tracking-wider mb-2">Key Financial &amp; Date Entities</h4>
             <div id="summarize-entities-container" class="flex flex-wrap gap-2 text-xs"></div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 25: REPAIR CORRUPT PDF WORKSPACE ================= -->
+    <section id="view-repair" class="hidden max-w-4xl mx-auto my-6 animate-fadeIn">
+      <div class="mb-4 flex items-center justify-between">
+        <button data-tool="dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span>&larr;</span> <span>All Tools</span>
+        </button>
+        <span class="text-[11px] font-semibold text-slate-400">Tool: Repair PDF</span>
+      </div>
+
+      <div class="text-center mb-6">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight" data-i18n="repair_title">Repair PDF File</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1" data-i18n="repair_subtitle">Recover damaged, corrupt, or truncated PDF files directly in your browser. Reconstructs cross-references and recovers readable pages.</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 rounded-2xl p-8 text-center transition shadow-sm select-none cursor-pointer" id="repair-drop-zone" tabindex="0" role="button">
+        <input type="file" id="repair-file-input" accept=".pdf,application/pdf" class="hidden" />
+        <div class="w-14 h-14 mx-auto mb-3 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">Drop Corrupted or Damaged PDF</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Fix broken trailers, invalid xref tables, and EOF corruption in local RAM</p>
+        <button data-trigger-click="repair-file-input" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm transition">
+          Select Damaged PDF
+        </button>
+      </div>
+
+      <div id="repair-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+          <div>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" id="repair-doc-name">-</h4>
+            <span class="text-[11px] text-slate-400 font-mono" id="repair-doc-size">-</span>
+          </div>
+          <span id="repair-status-pill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">Ready to Analyze</span>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Diagnostic &amp; Repair Log:</label>
+          <div id="repair-log-box" class="p-3 bg-slate-950 text-emerald-400 font-mono text-[11px] rounded-xl h-36 overflow-y-auto space-y-1">
+            <div>[System] Engine initialized. Awaiting file input...</div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <span class="text-xs text-slate-500">100% In-Memory Stream Reconstruction</span>
+          <button data-action="run-repair" id="btn-run-repair" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow transition">
+            🛠️ Repair &amp; Download PDF
+          </button>
         </div>
       </div>
     </section>
@@ -2826,24 +2957,35 @@
 
   <!-- ================= PAGE ZOOM LIGHTBOX MODAL ================= -->
   <div id="page-zoom-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
-      <div class="px-5 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-5xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+      <div class="px-5 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-800 dark:text-slate-200" id="zoom-modal-title">Page Inspection Preview</span>
           <span class="text-[11px] text-slate-400 font-mono" id="zoom-modal-info">• High Resolution In-Memory View</span>
         </div>
+        
+        <!-- Zoom Magnification & Navigation Toolbar -->
         <div class="flex items-center gap-2">
-          <button data-action="zoom-prev" id="zoom-modal-prev-btn" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition">◀ Prev</button>
-          <span id="zoom-modal-page-indicator" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">Page 1</span>
-          <button data-action="zoom-next" id="zoom-modal-next-btn" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition">Next ▶</button>
-          <button data-action="close-zoom-modal" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm flex items-center justify-center transition ml-2">✕</button>
+          <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+            <button data-action="zoom-out-scale" id="btn-zoom-out" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 transition" title="Zoom Out (−)">−</button>
+            <span id="zoom-scale-percent" class="text-[11px] font-mono font-bold px-1 text-slate-600 dark:text-slate-300 min-w-[3rem] text-center">100%</span>
+            <button data-action="zoom-in-scale" id="btn-zoom-in" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white dark:hover:bg-slate-700 font-bold text-xs text-slate-700 dark:text-slate-200 transition" title="Zoom In (+)">+</button>
+            <button data-action="zoom-reset-scale" id="btn-zoom-reset" class="px-2 py-0.5 text-[10px] font-bold rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition" title="Reset Zoom">1:1</button>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button data-action="zoom-prev" id="zoom-modal-prev-btn" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition">◀ Prev</button>
+            <span id="zoom-modal-page-indicator" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">Page 1</span>
+            <button data-action="zoom-next" id="zoom-modal-next-btn" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-bold transition">Next ▶</button>
+            <button data-action="close-zoom-modal" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm flex items-center justify-center transition ml-1">✕</button>
+          </div>
         </div>
       </div>
-      <div class="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-100 dark:bg-slate-950/60">
-        <img id="zoom-modal-img" src="" alt="Zoomed Page" class="max-h-[76vh] w-auto object-contain rounded-lg shadow-md border border-slate-200 dark:border-slate-800 bg-white" />
+      <div id="zoom-modal-viewport" class="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-100 dark:bg-slate-950/60 relative select-none">
+        <img id="zoom-modal-img" src="" alt="Zoomed Page" class="max-h-[76vh] w-auto object-contain rounded-lg shadow-md border border-slate-200 dark:border-slate-800 bg-white transition-transform duration-150 origin-center" />
       </div>
       <div class="px-5 py-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-        <span>💡 <em>Press Esc to close, or use Left/Right arrows to flip through pages</em></span>
+        <span>💡 <em>Use + / − to magnify details, drag to pan when zoomed in, or Arrow keys to flip pages</em></span>
         <button data-action="close-zoom-modal" class="px-4 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg transition text-xs">Close</button>
       </div>
     </div>
