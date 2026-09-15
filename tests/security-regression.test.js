@@ -996,6 +996,135 @@ async function runTests() {
     console.log('✓ Document Summarizer Execution:', summarizeRes);
     if (!summarizeRes.success || summarizeRes.highlights < 1) throw new Error('Summarizer failed');
 
+    // 11. Tool 25: Corrupted & Damaged PDF In-Browser Repair
+    const repairRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      // Create a corrupted byte array with prepended HTML garbage
+      const prependedGarbage = "<html><body>502 Bad Gateway Server Error Proxy Error</body></html>\\n\\n";
+      const garbageBytes = new TextEncoder().encode(prependedGarbage);
+      const rawBytes = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) rawBytes[i] = raw.charCodeAt(i);
+
+      const corruptBuffer = new Uint8Array(garbageBytes.length + rawBytes.length);
+      corruptBuffer.set(garbageBytes, 0);
+      corruptBuffer.set(rawBytes, garbageBytes.length);
+
+      const f = new File([corruptBuffer], "corrupt_damaged_test.pdf", { type: "application/pdf" });
+      await loadRepairFile(f);
+      await new Promise(r => setTimeout(r, 400));
+      await executeRepairPdf();
+      await new Promise(r => setTimeout(r, 1000));
+
+      if (!lastDownloadedItem) {
+        const box = document.getElementById('repair-log-box');
+        return { success: false, error: "No repair download", log: box ? box.innerText : '' };
+      }
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const repairedDoc = await PDFLib.PDFDocument.load(outBuf);
+      return {
+        success: true,
+        filename: lastDownloadedItem.filename,
+        pageCount: repairedDoc.getPageCount(),
+        size: outBuf.byteLength
+      };
+    })()`);
+    console.log('✓ Corrupt PDF In-Browser Recovery Execution:', repairRes);
+    if (!repairRes.success || repairRes.pageCount < 1) throw new Error('PDF Repair failed: ' + (repairRes.log || repairRes.error));
+
+    // 12. Batch Queues with Multi-file ZIP Packing
+    const batchRes = await evaluate(`(async () => {
+      lastDownloadedItem = null;
+      const raw = atob("${b64}");
+      const arr1 = new Uint8Array(raw.length);
+      const arr2 = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) {
+        arr1[i] = raw.charCodeAt(i);
+        arr2[i] = raw.charCodeAt(i);
+      }
+      const f1 = new File([arr1], "batch_doc_1.pdf", { type: "application/pdf" });
+      const f2 = new File([arr2], "batch_doc_2.pdf", { type: "application/pdf" });
+      await handleBatchRotateFiles([f1, f2]);
+      await new Promise(r => setTimeout(r, 500));
+      await executeBatchRotateZip();
+      await new Promise(r => setTimeout(r, 800));
+
+      if (!lastDownloadedItem) return { success: false, error: "No batch zip download" };
+      const outBuf = await lastDownloadedItem.blob.arrayBuffer();
+      const bytes = new Uint8Array(outBuf);
+      const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B; // PK magic bytes
+      return {
+        success: true,
+        filename: lastDownloadedItem.filename,
+        isZip,
+        size: outBuf.byteLength
+      };
+    })()`);
+    console.log('✓ Multi-File Batch Queue & ZIP Bundling:', batchRes);
+    if (!batchRes.success || !batchRes.isZip) throw new Error('Batch ZIP generation failed');
+
+    // 13. OpenXML Native Table Grid Detection
+    const tableDetectRes = await evaluate(`(() => {
+      const sampleLines = [
+        "Description              Quantity    Price       Total",
+        "Cloud Storage Subscription      1        $50.00      $50.00",
+        "Domain Registration             2        $15.00      $30.00",
+        "This is a standalone paragraph at the bottom of the invoice."
+      ];
+      const blocks = detectContentBlocks(sampleLines);
+      const tblBlock = blocks.find(b => b.type === 'table');
+      const pBlock = blocks.find(b => b.type === 'paragraph');
+      const tableXml = tblBlock ? formatOpenXmlTable(tblBlock.rows) : '';
+      return {
+        hasTableBlock: !!tblBlock,
+        rowCount: tblBlock ? tblBlock.rows.length : 0,
+        hasParagraphBlock: !!pBlock,
+        hasTblTags: tableXml.includes('<w:tbl>') && tableXml.includes('<w:tc>')
+      };
+    })()`);
+    console.log('✓ PDF to Word OpenXML Table Grid Detection:', tableDetectRes);
+    if (!tableDetectRes.hasTableBlock || !tableDetectRes.hasTblTags) throw new Error('OpenXML table detection failed');
+
+    // 14. Multi-Language i18n Switching
+    const i18nRes = await evaluate(`(() => {
+      applyLanguage('es');
+      const esMerge = document.querySelector('[data-i18n="nav_merge"]').textContent;
+      applyLanguage('fr');
+      const frMerge = document.querySelector('[data-i18n="nav_merge"]').textContent;
+      applyLanguage('hi');
+      const hiMerge = document.querySelector('[data-i18n="nav_merge"]').textContent;
+      applyLanguage('en');
+      const enMerge = document.querySelector('[data-i18n="nav_merge"]').textContent;
+      return {
+        esMerge,
+        frMerge,
+        hiMerge,
+        enMerge,
+        valid: esMerge === 'Unir PDF' && frMerge === 'Fusionner PDF' && enMerge === 'Merge PDF'
+      };
+    })()`);
+    console.log('✓ Multi-Language i18n Engine Switch:', i18nRes);
+    if (!i18nRes.valid) throw new Error('i18n Language switching failed');
+
+    // 15. Universal High-Resolution Page Zoom Lightbox Modal
+    const zoomRes = await evaluate(`(() => {
+      openPageZoomModal('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'Test Page 1');
+      const modal = document.getElementById('page-zoom-modal');
+      const initialScale = zoomCurrentData.scale;
+      setZoomModalScale(0.25);
+      const zoomedScale = zoomCurrentData.scale;
+      setZoomModalScale(1.0, true);
+      const resetScale = zoomCurrentData.scale;
+      closePageZoomModal();
+      return {
+        modalOpened: !modal.classList.contains('hidden'),
+        zoomedIn: zoomedScale > initialScale,
+        resetCorrect: resetScale === 1.0
+      };
+    })()`);
+    console.log('✓ Universal High-Resolution Zoom Lightbox:', zoomRes);
+    if (!zoomRes.zoomedIn || !zoomRes.resetCorrect) throw new Error('Zoom modal controls failed');
+
     // Clean session data so Object URL registry returns to baseline
     await evaluate(`(() => { purgeAllSessionData(); })()`);
   }
