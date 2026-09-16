@@ -1,62 +1,91 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Statement2Sheet Stylesheet */
+/* Statement2Sheet Executive Stylesheet */
 
 [contenteditable="true"]:focus {
-      outline: 2px solid #10b981;
-      background-color: rgba(16, 185, 129, 0.1);
-      border-radius: 4px;
-    }
-    svg {
-      max-width: 100%;
-    }
-    .focus-ring:focus-visible, .focus-ring:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5), 0 0 0 4px rgba(16, 185, 129, 0.2);
-    }
-    @keyframes slideDownFade {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -16px);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-      }
-    }
-    @keyframes slideInFromRight {
-      from {
-        opacity: 0;
-        transform: translateX(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    @keyframes slideBackFromLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    .animate-mega-slide-down {
-      animation: slideDownFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .animate-view-slide-in {
-      animation: slideInFromRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .animate-view-slide-back {
-      animation: slideBackFromLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
+  outline: 2px solid #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-radius: 4px;
+}
 
-/* ----------------------------- */
+svg {
+  max-width: 100%;
+}
+
+.focus-ring:focus-visible, .focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5), 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideBackFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-mega-slide-down {
+  animation: slideDownFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-view-slide-in {
+  animation: slideInFromRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-view-slide-back {
+  animation: slideBackFromLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Executive Theme Ambient Lighting & Glassmorphism */
+.hero-mesh-bg {
+  background-image: 
+    radial-gradient(at 20% 15%, rgba(99, 102, 241, 0.07) 0px, transparent 55%),
+    radial-gradient(at 80% 20%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 85%, rgba(244, 63, 94, 0.04) 0px, transparent 60%);
+}
+.dark .hero-mesh-bg {
+  background-image: 
+    radial-gradient(at 20% 15%, rgba(99, 102, 241, 0.16) 0px, transparent 55%),
+    radial-gradient(at 80% 20%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 85%, rgba(244, 63, 94, 0.08) 0px, transparent 60%);
+}
+
+.executive-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.executive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
+}
+.dark .executive-card:hover {
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.45), 0 4px 8px -2px rgba(0, 0, 0, 0.25);
+}
 
 .report-doc { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1e293b; margin: 30px; }
 .report-doc h1 { font-size: 18pt; color: #0f172a; margin-bottom: 4px; }
