@@ -4153,6 +4153,8 @@ setupPdfWorker();
             type: 'paragraph',
             text: rawText,
             runs: runs.map(r => ({ ...r })),
+            firstLineX: isObj ? (line.minX || 72) : 72,
+            minX: isObj ? (line.minX || 72) : 72,
             lastY: y,
             lastText: rawText,
             fontSize
@@ -4164,11 +4166,18 @@ setupPdfWorker();
           const isHardBreak = (endsWithTerminator && vertGap > 18) || isSignificantIndent;
 
           if (isHardBreak) {
+            // Check if activePara had a first-line indent relative to page left margin
+            if (activePara.firstLineX > activePara.minX + 10) {
+              activePara.hasFirstLineIndent = true;
+              activePara.firstLineIndentTwips = Math.round((activePara.firstLineX - activePara.minX) * 20);
+            }
             blocks.push(activePara);
             activePara = {
               type: 'paragraph',
               text: rawText,
               runs: runs.map(r => ({ ...r })),
+              firstLineX: isObj ? (line.minX || 72) : 72,
+              minX: isObj ? (line.minX || 72) : 72,
               lastY: y,
               lastText: rawText,
               fontSize
@@ -4180,14 +4189,42 @@ setupPdfWorker();
             }
             runs.forEach(r => activePara.runs.push({ ...r }));
             activePara.text += ' ' + rawText;
+            activePara.minX = Math.min(activePara.minX, isObj ? (line.minX || 72) : 72);
             activePara.lastY = y;
             activePara.lastText = rawText;
           }
         }
       });
 
-      if (activePara) blocks.push(activePara);
+      if (activePara) {
+        if (activePara.firstLineX > activePara.minX + 10) {
+          activePara.hasFirstLineIndent = true;
+          activePara.firstLineIndentTwips = Math.round((activePara.firstLineX - activePara.minX) * 20);
+        }
+        blocks.push(activePara);
+      }
       return blocks;
+    }
+
+    function detectDocumentFontFamily(pagesData) {
+      let serifCount = 0;
+      let sansCount = 0;
+      let calibriCount = 0;
+
+      pagesData.forEach(pg => {
+        (pg.lines || []).forEach(l => {
+          (l.runs || []).forEach(r => {
+            const fn = (r.fontName || '').toLowerCase();
+            if (/times|roman|serif|cmr|garamond|georgia|minion|cambria|ptserif/i.test(fn)) serifCount++;
+            else if (/calibri/i.test(fn)) calibriCount++;
+            else if (/arial|helvetica|sans|verdana|tahoma|ptsans/i.test(fn)) sansCount++;
+          });
+        });
+      });
+
+      if (calibriCount > serifCount && calibriCount > sansCount) return 'Calibri';
+      if (sansCount > serifCount) return 'Arial';
+      return 'Times New Roman';
     }
 
     function formatOpenXmlTable(rows) {
@@ -4200,12 +4237,12 @@ setupPdfWorker();
           <w:tblW w:w="0" w:type="auto"/>
           <w:jc w:val="center"/>
           <w:tblBorders>
-            <w:top w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
-            <w:left w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
-            <w:bottom w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
-            <w:right w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
-            <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
-            <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+            <w:top w:val="single" w:sz="6" w:space="0" w:color="000000"/>
+            <w:left w:val="single" w:sz="4" w:space="0" w:color="CCCCCC"/>
+            <w:bottom w:val="single" w:sz="6" w:space="0" w:color="000000"/>
+            <w:right w:val="single" w:sz="4" w:space="0" w:color="CCCCCC"/>
+            <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E5E5E5"/>
+            <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E5E5E5"/>
           </w:tblBorders>
           <w:tblCellMar>
             <w:top w:w="140" w:type="dxa"/>
@@ -4223,8 +4260,8 @@ setupPdfWorker();
         }
         for (let c = 0; c < colCount; c++) {
           const cellText = row[c] !== undefined ? escapeXml(row[c]) : '';
-          const bgShading = isHeader ? '<w:shd w:val="clear" w:color="auto" w:fill="F8FAFC"/>' : '';
-          const boldPr = isHeader ? '<w:b/><w:color w:val="0F172A"/>' : '<w:color w:val="334155"/>';
+          const bgShading = isHeader ? '<w:shd w:val="clear" w:color="auto" w:fill="F5F5F5"/>' : '';
+          const boldPr = isHeader ? '<w:b/><w:color w:val="000000"/>' : '<w:color w:val="000000"/>';
           tblXml += `
             <w:tc>
               <w:tcPr>
@@ -4249,39 +4286,44 @@ setupPdfWorker();
 
     function renderWordDocumentPreview(previewBox, pagesData) {
       if (!previewBox) return;
+      const fontFamily = detectDocumentFontFamily(pagesData);
+      const fontClass = fontFamily === 'Times New Roman' ? 'font-serif' : 'font-sans';
       let html = '';
 
       pagesData.forEach(pg => {
         html += `
-          <div class="mb-6 p-8 bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-800 font-serif leading-relaxed text-slate-900 dark:text-slate-100 max-w-2xl mx-auto">
-            <div class="text-[10px] font-sans font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-2 mb-4 flex items-center justify-between">
+          <div class="mb-6 p-8 sm:p-12 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 ${fontClass} leading-relaxed text-black dark:text-white max-w-3xl mx-auto" style="font-family: '${fontFamily}', serif;">
+            <div class="text-[10px] font-sans font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-2 mb-6 flex items-center justify-between">
               <span>Page ${pg.pageNum}</span>
-              <span class="text-[9px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Word Simulation</span>
+              <span class="text-[9px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400 font-mono">${fontFamily} • 1:1 Layout</span>
             </div>`;
 
         const blocks = pg.blocks || [];
         blocks.forEach(b => {
           if (b.type === 'title') {
-            html += `<h1 class="text-xl font-bold text-center text-slate-900 dark:text-white my-3 tracking-wide font-sans">${escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''))}</h1>`;
+            const titleText = escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''));
+            html += `<h1 class="text-xl font-bold text-center text-black dark:text-white my-4 tracking-wide">${titleText}</h1>`;
           } else if (b.type === 'heading2') {
-            html += `<h2 class="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 font-sans">${escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''))}</h2>`;
+            const headingText = escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''));
+            html += `<h2 class="text-base font-bold text-black dark:text-white mt-5 mb-2">${headingText}</h2>`;
           } else if (b.type === 'table') {
-            html += `<div class="my-4 overflow-x-auto"><table class="min-w-full text-xs border border-slate-200 dark:border-slate-700 rounded">`;
+            html += `<div class="my-4 overflow-x-auto"><table class="min-w-full text-xs border border-slate-300 dark:border-slate-700">`;
             b.rows.forEach((r, rIdx) => {
               const isHdr = rIdx === 0;
-              html += `<tr class="${isHdr ? 'bg-slate-100 dark:bg-slate-800 font-bold text-slate-900 dark:text-white' : 'border-t border-slate-200 dark:border-slate-700'}">`;
+              html += `<tr class="${isHdr ? 'bg-slate-100 dark:bg-slate-800 font-bold text-black dark:text-white' : 'border-t border-slate-200 dark:border-slate-700'}">`;
               r.forEach(c => {
-                html += `<td class="p-2 border-r border-slate-200 dark:border-slate-700">${escapeHtml(c)}</td>`;
+                html += `<td class="p-2 border-r border-slate-200 dark:border-slate-700 text-black dark:text-white">${escapeHtml(c)}</td>`;
               });
               html += `</tr>`;
             });
             html += `</table></div>`;
           } else {
-            html += `<p class="text-xs mb-3 text-justify leading-relaxed text-slate-700 dark:text-slate-300">`;
+            const indentClass = b.hasFirstLineIndent ? 'indent-8' : '';
+            html += `<p class="text-xs sm:text-sm mb-3 text-justify leading-relaxed text-black dark:text-slate-100 ${indentClass}">`;
             const runs = b.runs || [{ text: b.text || '' }];
             runs.forEach(r => {
               let t = escapeHtml(r.text);
-              if (r.bold) t = `<strong class="font-bold text-slate-900 dark:text-white">${t}</strong>`;
+              if (r.bold) t = `<strong class="font-bold text-black dark:text-white">${t}</strong>`;
               if (r.italic) t = `<em>${t}</em>`;
               html += t;
             });
@@ -4298,6 +4340,7 @@ setupPdfWorker();
     async function executeConvertPdfToWord() {
       if (!pdf2wordState.pagesData.length) return;
       try {
+        const docFontFamily = detectDocumentFontFamily(pdf2wordState.pagesData);
         let docXmlBody = '';
         
         pdf2wordState.pagesData.forEach((pg, pIdx) => {
@@ -4311,23 +4354,31 @@ setupPdfWorker();
               docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr>`;
               const runs = b.runs || [{ text: b.text || '' }];
               runs.forEach(r => {
-                docXmlBody += `<w:r><w:rPr><w:b/><w:sz w:val="${r.size || 32}"/><w:color w:val="0F172A"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
+                const sz = r.fontSize ? Math.round(r.fontSize * 2) : 28;
+                docXmlBody += `<w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
               });
               docXmlBody += `</w:p>`;
             } else if (b.type === 'heading2') {
-              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:spacing w:before="200" w:after="80"/></w:pPr>`;
+              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr>`;
               const runs = b.runs || [{ text: b.text || '' }];
               runs.forEach(r => {
-                docXmlBody += `<w:r><w:rPr><w:b/><w:sz w:val="${r.size || 26}"/><w:color w:val="0F172A"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
+                const sz = r.fontSize ? Math.round(r.fontSize * 2) : 24;
+                docXmlBody += `<w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
               });
               docXmlBody += `</w:p>`;
             } else {
-              docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/><w:jc w:val="both"/></w:pPr>`;
+              let pPr = '<w:pPr><w:spacing w:after="140" w:line="260" w:lineRule="auto"/><w:jc w:val="both"/>';
+              if (b.firstLineIndentTwips && b.firstLineIndentTwips >= 200 && b.firstLineIndentTwips <= 1440) {
+                pPr += `<w:ind w:firstLine="${b.firstLineIndentTwips}"/>`;
+              }
+              pPr += '</w:pPr>';
+              docXmlBody += `<w:p>${pPr}`;
               const runs = b.runs && b.runs.length ? b.runs : [{ text: b.text || '' }];
               runs.forEach(r => {
-                let rPr = '<w:rPr>';
+                let rPr = `<w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:color w:val="000000"/>`;
                 if (r.bold) rPr += '<w:b/>';
                 if (r.italic) rPr += '<w:i/>';
+                if (r.fontSize) rPr += `<w:sz w:val="${Math.round(r.fontSize * 2)}"/><w:szCs w:val="${Math.round(r.fontSize * 2)}"/>`;
                 rPr += '</w:rPr>';
                 docXmlBody += `<w:r>${rPr}<w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
               });
@@ -4341,7 +4392,7 @@ setupPdfWorker();
           }
         });
 
-        const docxBlob = await buildOpenXmlDocxBlob(docXmlBody);
+        const docxBlob = await buildOpenXmlDocxBlob(docXmlBody, docFontFamily);
         const fileName = (pdf2wordState.file ? pdf2wordState.file.name.replace(/\.pdf$/i, '') : 'document') + '.docx';
         downloadTrackedBlob(docxBlob, fileName);
       } catch (err) {
@@ -4350,7 +4401,7 @@ setupPdfWorker();
       }
     }
 
-    async function buildOpenXmlDocxBlob(documentXmlBody) {
+    async function buildOpenXmlDocxBlob(documentXmlBody, fontFamily = 'Times New Roman') {
       const contentTypesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
@@ -4374,22 +4425,26 @@ setupPdfWorker();
   <w:docDefaults>
     <w:rPrDefault>
       <w:rPr>
-        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
+        <w:rFonts w:ascii="${fontFamily}" w:hAnsi="${fontFamily}" w:cs="${fontFamily}"/>
         <w:sz w:val="22"/>
         <w:szCs w:val="22"/>
-        <w:color w:val="1E293B"/>
+        <w:color w:val="000000"/>
         <w:lang w:val="en-US"/>
       </w:rPr>
     </w:rPrDefault>
     <w:pPrDefault>
       <w:pPr>
-        <w:spacing w:after="120" w:line="276" w:lineRule="auto"/>
+        <w:spacing w:after="120" w:line="260" w:lineRule="auto"/>
       </w:pPr>
     </w:pPrDefault>
   </w:docDefaults>
   <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
     <w:name w:val="Normal"/>
     <w:qFormat/>
+    <w:rPr>
+      <w:rFonts w:ascii="${fontFamily}" w:hAnsi="${fontFamily}" w:cs="${fontFamily}"/>
+      <w:color w:val="000000"/>
+    </w:rPr>
   </w:style>
   <w:style w:type="paragraph" w:styleId="Heading1">
     <w:name w:val="heading 1"/>
@@ -4399,12 +4454,12 @@ setupPdfWorker();
     <w:pPr>
       <w:keepNext/>
       <w:spacing w:before="240" w:after="120"/>
+      <w:jc w:val="center"/>
     </w:pPr>
     <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+      <w:rFonts w:ascii="${fontFamily}" w:hAnsi="${fontFamily}" w:cs="${fontFamily}"/>
       <w:b/>
-      <w:sz w:val="32"/>
-      <w:color w:val="0F172A"/>
+      <w:color w:val="000000"/>
     </w:rPr>
   </w:style>
   <w:style w:type="paragraph" w:styleId="Heading2">
@@ -4414,13 +4469,13 @@ setupPdfWorker();
     <w:qFormat/>
     <w:pPr>
       <w:keepNext/>
-      <w:spacing w:before="180" w:after="80"/>
+      <w:spacing w:before="180" w:after="60"/>
+      <w:jc w:val="left"/>
     </w:pPr>
     <w:rPr>
-      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+      <w:rFonts w:ascii="${fontFamily}" w:hAnsi="${fontFamily}" w:cs="${fontFamily}"/>
       <w:b/>
-      <w:sz w:val="26"/>
-      <w:color w:val="0F172A"/>
+      <w:color w:val="000000"/>
     </w:rPr>
   </w:style>
 </w:styles>`;
