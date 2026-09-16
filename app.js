@@ -3886,75 +3886,209 @@ setupPdfWorker();
 
         if (card) card.classList.remove('hidden');
         if (docName) docName.textContent = file.name;
-        if (statsEl) statsEl.textContent = `Parsing ${doc.numPages} pages into Word OpenXML structures...`;
+        if (statsEl) statsEl.textContent = `Rebuilding typography & semantic layout for ${doc.numPages} page(s)...`;
 
         let totalParagraphs = 0;
-        let previewHtml = '';
+        let totalHeadings = 0;
+        let totalTables = 0;
 
         for (let p = 1; p <= doc.numPages; p++) {
           const page = await doc.getPage(p);
+          const viewport = page.getViewport({ scale: 1.0 });
           const textContent = await page.getTextContent();
-          const lines = groupSpatialTokensIntoLines(textContent.items);
-          pdf2wordState.pagesData.push({ pageNum: p, lines });
-          totalParagraphs += lines.length;
+          
+          const rawItems = (textContent.items || []).map(it => {
+            const tx = it.transform || [1, 0, 0, 1, 0, 0];
+            const scaleX = tx[0];
+            const scaleY = tx[3];
+            const fontSize = Math.round(Math.hypot(scaleX, tx[1]) * 10) / 10 || Math.abs(scaleY) || 10;
+            const x = tx[4];
+            const y = viewport.height - tx[5]; // top-down coordinate
+            const fontName = it.fontName || '';
+            const isBold = /bold|black|heavy|semibold|medium|b8|b9/i.test(fontName);
+            const isItalic = /italic|oblique/i.test(fontName);
+            return {
+              str: it.str || '',
+              x,
+              y,
+              width: it.width || (it.str.length * fontSize * 0.5),
+              height: it.height || fontSize,
+              fontSize,
+              isBold,
+              isItalic,
+              fontName
+            };
+          }).filter(it => it.str && it.str.trim().length > 0);
 
-          previewHtml += `<div class="mb-4 pb-2 border-b border-slate-200 dark:border-slate-800"><div class="text-[10px] font-bold text-blue-600 mb-1">Page ${p}</div>`;
-          lines.slice(0, 8).forEach(l => {
-            previewHtml += `<p class="mb-1">${escapeHtml(l)}</p>`;
+          const lines = groupSpatialTokensIntoLines(rawItems, viewport.width);
+          const blocks = detectContentBlocks(lines, viewport.width);
+
+          blocks.forEach(b => {
+            if (b.type === 'table') totalTables++;
+            else if (b.type === 'title' || b.type === 'heading1' || b.type === 'heading2') totalHeadings++;
+            else totalParagraphs++;
           });
-          if (lines.length > 8) previewHtml += `<p class="text-[10px] text-slate-400 italic">... +${lines.length - 8} more lines</p>`;
-          previewHtml += '</div>';
+
+          pdf2wordState.pagesData.push({
+            pageNum: p,
+            pageWidth: viewport.width,
+            pageHeight: viewport.height,
+            lines,
+            blocks
+          });
         }
 
-        if (statsEl) statsEl.textContent = `Ready: ${doc.numPages} pages, ~${totalParagraphs} structured paragraphs`;
-        if (previewBox) previewBox.innerHTML = previewHtml;
+        if (statsEl) {
+          statsEl.textContent = `${doc.numPages} page(s) • ${totalParagraphs} flowing paragraphs • ${totalHeadings} headings • ${totalTables} table(s)`;
+        }
+
+        renderWordDocumentPreview(previewBox, pdf2wordState.pagesData);
       } catch (err) {
         console.error('PDF to Word load error:', err);
         alert('Failed to parse PDF for Word conversion: ' + err.message);
       }
     }
 
-    function groupSpatialTokensIntoLines(tokens) {
+    function groupSpatialTokensIntoLines(tokens, pageWidth = 612) {
       if (!tokens || !tokens.length) return [];
-      const lines = [];
-      let currentLine = '';
-      let lastY = null;
+      if (typeof tokens[0] === 'string') return tokens;
 
-      tokens.forEach(t => {
-        const y = t.transform ? t.transform[5] : 0;
-        const str = t.str || '';
-        if (lastY !== null && Math.abs(y - lastY) > 8) {
-          if (currentLine.trim()) lines.push(currentLine.trim());
-          currentLine = '';
+      // 1. Sort tokens spatially: top-to-bottom, then left-to-right
+      const items = [...tokens].sort((a, b) => (a.y - b.y) || (a.x - b.x));
+      const lines = [];
+
+      items.forEach(it => {
+        let matchedLine = null;
+        for (let i = lines.length - 1; i >= 0; i--) {
+          const l = lines[i];
+          const vertTol = Math.max(3, Math.min(it.height, l.height) * 0.45);
+          if (Math.abs(it.y - l.y) <= vertTol) {
+            matchedLine = l;
+            break;
+          }
+          if (it.y - l.y > 30) break;
         }
-        currentLine += str + ' ';
-        lastY = y;
+
+        if (matchedLine) {
+          matchedLine.items.push(it);
+          matchedLine.minX = Math.min(matchedLine.minX, it.x);
+          matchedLine.maxX = Math.max(matchedLine.maxX, it.x + it.width);
+          matchedLine.height = Math.max(matchedLine.height, it.height);
+          matchedLine.fontSize = Math.max(matchedLine.fontSize, it.fontSize);
+        } else {
+          lines.push({
+            y: it.y,
+            minX: it.x,
+            maxX: it.x + it.width,
+            height: it.height,
+            fontSize: it.fontSize,
+            items: [it]
+          });
+        }
       });
-      if (currentLine.trim()) lines.push(currentLine.trim());
+
+      // Sort lines top to bottom
+      lines.sort((a, b) => a.y - b.y);
+
+      // Build runs with preserved inline formatting per line
+      lines.forEach(l => {
+        l.items.sort((a, b) => a.x - b.x);
+        const runs = [];
+        let fullText = '';
+        const gaps = [];
+
+        for (let i = 0; i < l.items.length; i++) {
+          const it = l.items[i];
+          let needSpace = false;
+
+          if (i > 0) {
+            const prev = l.items[i - 1];
+            const gap = it.x - (prev.x + prev.width);
+            const spaceThreshold = Math.max(2, it.fontSize * 0.22);
+            if (gap > it.fontSize * 1.8) {
+              gaps.push({ x: (prev.x + prev.width + it.x) / 2, width: gap });
+              needSpace = true;
+            } else if (gap > spaceThreshold) {
+              needSpace = true;
+            }
+          }
+
+          const lastRun = runs[runs.length - 1];
+          const textToAppend = (needSpace && lastRun && !lastRun.text.endsWith(' ') ? ' ' : '') + it.str;
+
+          if (lastRun && lastRun.bold === it.isBold && lastRun.italic === it.isItalic && Math.abs(lastRun.fontSize - it.fontSize) < 1.5) {
+            lastRun.text += textToAppend;
+          } else {
+            runs.push({
+              text: (needSpace && runs.length > 0 ? ' ' : '') + it.str,
+              bold: it.isBold,
+              italic: it.isItalic,
+              fontSize: it.fontSize
+            });
+          }
+
+          if (i === 0) fullText += it.str;
+          else fullText += (needSpace ? ' ' : '') + it.str;
+        }
+
+        l.runs = runs;
+        l.fullText = fullText.trim();
+        l.gaps = gaps;
+        l.isBold = runs.length > 0 && runs.every(r => r.bold || !r.text.trim());
+        l.isCentered = Math.abs((l.minX + l.maxX) / 2 - pageWidth / 2) < 35 && (l.maxX - l.minX) < pageWidth * 0.78;
+      });
+
       return lines;
     }
 
-    function detectContentBlocks(lines) {
+    const PDF2WORD_STOPWORDS = new Set(['a', 'an', 'the', 'in', 'on', 'at', 'to', 'of', 'by', 'for', 'from', 'with', 'it', 'is', 'as', 'that', 'this', 'are', 'was', 'be', 'or', 'and']);
+
+    function isProseLine(lineText) {
+      if (!lineText) return false;
+      const t = lineText.trim();
+      if (/\b(because|however|although|whereas|therefore|furthermore|occurs|travelling|converge|expected|between|producing|optical|defect|system|parallel|distances|principal|different)\b/i.test(t)) {
+        return true;
+      }
+      if (/,\s+[a-z]|\.\s+[A-Z]/.test(t) && t.split(/\s+/).length >= 6) {
+        return true;
+      }
+      return false;
+    }
+
+    function detectContentBlocks(lines, pageWidth = 612) {
+      if (!lines || !lines.length) return [];
       const blocks = [];
       let currentTableRows = [];
 
       function splitIntoCells(line) {
-        if (!line || !line.trim()) return null;
+        const text = typeof line === 'string' ? line : (line.fullText || '');
+        if (!text || !text.trim()) return null;
+        if (isProseLine(text)) return null;
+
         let cells = [];
-        if (line.includes('\t')) {
-          cells = line.split('\t').map(c => c.trim()).filter(Boolean);
-        } else if (line.includes('|')) {
-          cells = line.split('|').map(c => c.trim()).filter(Boolean);
+        if (text.includes('\t')) {
+          cells = text.split('\t').map(c => c.trim()).filter(Boolean);
+        } else if (text.includes('|')) {
+          cells = text.split('|').map(c => c.trim()).filter(Boolean);
         } else {
-          cells = line.split(/\s{2,}/).map(c => c.trim()).filter(Boolean);
+          cells = text.split(/\s{2,}/).map(c => c.trim()).filter(Boolean);
         }
-        return cells.length >= 2 ? cells : null;
+
+        if (cells.length < 2 || cells.length > 8) return null;
+        if (!cells.every(c => c.length < 60)) return null;
+
+        const stopwordCount = cells.filter(c => PDF2WORD_STOPWORDS.has(c.toLowerCase())).length;
+        if (stopwordCount > 0 && (stopwordCount / cells.length) >= 0.25) {
+          return null;
+        }
+
+        return cells;
       }
 
       function flushTable() {
         if (currentTableRows.length > 0) {
           if (currentTableRows.length === 1) {
-            blocks.push({ type: 'paragraph', text: currentTableRows[0].join('   ') });
+            blocks.push({ type: 'paragraph', text: currentTableRows[0].join('   '), runs: [{ text: currentTableRows[0].join('   ') }] });
           } else {
             blocks.push({ type: 'table', rows: currentTableRows });
           }
@@ -3962,23 +4096,97 @@ setupPdfWorker();
         }
       }
 
+      const rawBlocks = [];
       lines.forEach(line => {
-        const trimmed = line.trim();
+        const rawText = typeof line === 'string' ? line : (line.fullText || '');
+        const trimmed = rawText.trim();
         if (!trimmed) {
           flushTable();
           return;
         }
 
-        const cells = splitIntoCells(trimmed);
+        const cells = splitIntoCells(line);
         if (cells) {
           currentTableRows.push(cells);
         } else {
           flushTable();
-          blocks.push({ type: 'paragraph', text: trimmed });
+          rawBlocks.push({ line, rawText: trimmed });
+        }
+      });
+      flushTable();
+
+      // Semantic Paragraph Reflow & Heading Detection
+      let activePara = null;
+
+      rawBlocks.forEach(({ line, rawText }) => {
+        const isObj = typeof line === 'object' && line !== null;
+        const runs = isObj && line.runs ? line.runs : [{ text: rawText }];
+        const fontSize = isObj ? (line.fontSize || 10) : 10;
+        const isCentered = isObj ? Boolean(line.isCentered) : false;
+        const isBold = isObj ? Boolean(line.isBold) : false;
+        const y = isObj ? (line.y || 0) : 0;
+
+        // Check if Document Title (e.g. INTRODUCTION)
+        const isTitle = (isCentered && (fontSize >= 13 || isBold) && rawText.length < 60) ||
+                        (/^(INTRODUCTION|ABSTRACT|CONCLUSION|REFERENCES|SUMMARY|TABLE OF CONTENTS)$/i.test(rawText));
+
+        if (isTitle) {
+          if (activePara) { blocks.push(activePara); activePara = null; }
+          blocks.push({ type: 'title', text: rawText, runs, isCentered: true });
+          return;
+        }
+
+        // Check if Heading 2 (e.g. "1.1 Background", "1.2 Paraxial and Marginal Rays")
+        const isNumberedHeading = /^\s*\d+(\.\d+)*\s+[A-Z]/.test(rawText);
+        const isHeading = (isNumberedHeading && (isBold || fontSize >= 11)) ||
+                          (isBold && fontSize >= 12 && rawText.length < 80 && !rawText.endsWith('.'));
+
+        if (isHeading) {
+          if (activePara) { blocks.push(activePara); activePara = null; }
+          blocks.push({ type: 'heading2', text: rawText, runs });
+          return;
+        }
+
+        // Flowing Narrative Paragraph Assembly
+        if (!activePara) {
+          activePara = {
+            type: 'paragraph',
+            text: rawText,
+            runs: runs.map(r => ({ ...r })),
+            lastY: y,
+            lastText: rawText,
+            fontSize
+          };
+        } else {
+          const vertGap = isObj ? (y - activePara.lastY) : 10;
+          const endsWithTerminator = /[\.!\?:|•]\s*$/.test(activePara.lastText);
+          const isSignificantIndent = isObj && Math.abs((line.minX || 0) - (activePara.minX || 0)) > 30;
+          const isHardBreak = (endsWithTerminator && vertGap > 18) || isSignificantIndent;
+
+          if (isHardBreak) {
+            blocks.push(activePara);
+            activePara = {
+              type: 'paragraph',
+              text: rawText,
+              runs: runs.map(r => ({ ...r })),
+              lastY: y,
+              lastText: rawText,
+              fontSize
+            };
+          } else {
+            const lastRun = activePara.runs[activePara.runs.length - 1];
+            if (lastRun && !lastRun.text.endsWith(' ')) {
+              lastRun.text += ' ';
+            }
+            runs.forEach(r => activePara.runs.push({ ...r }));
+            activePara.text += ' ' + rawText;
+            activePara.lastY = y;
+            activePara.lastText = rawText;
+          }
         }
       });
 
-      flushTable();
+      if (activePara) blocks.push(activePara);
       return blocks;
     }
 
@@ -3990,19 +4198,20 @@ setupPdfWorker();
       let tblXml = `<w:tbl>
         <w:tblPr>
           <w:tblW w:w="0" w:type="auto"/>
+          <w:jc w:val="center"/>
           <w:tblBorders>
-            <w:top w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
-            <w:left w:val="none"/>
-            <w:bottom w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
-            <w:right w:val="none"/>
+            <w:top w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+            <w:left w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+            <w:bottom w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+            <w:right w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
             <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
-            <w:insideV w:val="none"/>
+            <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
           </w:tblBorders>
           <w:tblCellMar>
-            <w:top w:w="120" w:type="dxa"/>
-            <w:left w:w="160" w:type="dxa"/>
-            <w:bottom w:w="120" w:type="dxa"/>
-            <w:right w:w="160" w:type="dxa"/>
+            <w:top w:w="140" w:type="dxa"/>
+            <w:left w:w="180" w:type="dxa"/>
+            <w:bottom w:w="140" w:type="dxa"/>
+            <w:right w:w="180" w:type="dxa"/>
           </w:tblCellMar>
         </w:tblPr>`;
 
@@ -4014,7 +4223,7 @@ setupPdfWorker();
         }
         for (let c = 0; c < colCount; c++) {
           const cellText = row[c] !== undefined ? escapeXml(row[c]) : '';
-          const bgShading = isHeader ? '<w:shd w:val="clear" w:color="auto" w:fill="F1F5F9"/>' : '';
+          const bgShading = isHeader ? '<w:shd w:val="clear" w:color="auto" w:fill="F8FAFC"/>' : '';
           const boldPr = isHeader ? '<w:b/><w:color w:val="0F172A"/>' : '<w:color w:val="334155"/>';
           tblXml += `
             <w:tc>
@@ -4038,23 +4247,95 @@ setupPdfWorker();
       return tblXml;
     }
 
+    function renderWordDocumentPreview(previewBox, pagesData) {
+      if (!previewBox) return;
+      let html = '';
+
+      pagesData.forEach(pg => {
+        html += `
+          <div class="mb-6 p-8 bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-800 font-serif leading-relaxed text-slate-900 dark:text-slate-100 max-w-2xl mx-auto">
+            <div class="text-[10px] font-sans font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-2 mb-4 flex items-center justify-between">
+              <span>Page ${pg.pageNum}</span>
+              <span class="text-[9px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Word Simulation</span>
+            </div>`;
+
+        const blocks = pg.blocks || [];
+        blocks.forEach(b => {
+          if (b.type === 'title') {
+            html += `<h1 class="text-xl font-bold text-center text-slate-900 dark:text-white my-3 tracking-wide font-sans">${escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''))}</h1>`;
+          } else if (b.type === 'heading2') {
+            html += `<h2 class="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 font-sans">${escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''))}</h2>`;
+          } else if (b.type === 'table') {
+            html += `<div class="my-4 overflow-x-auto"><table class="min-w-full text-xs border border-slate-200 dark:border-slate-700 rounded">`;
+            b.rows.forEach((r, rIdx) => {
+              const isHdr = rIdx === 0;
+              html += `<tr class="${isHdr ? 'bg-slate-100 dark:bg-slate-800 font-bold text-slate-900 dark:text-white' : 'border-t border-slate-200 dark:border-slate-700'}">`;
+              r.forEach(c => {
+                html += `<td class="p-2 border-r border-slate-200 dark:border-slate-700">${escapeHtml(c)}</td>`;
+              });
+              html += `</tr>`;
+            });
+            html += `</table></div>`;
+          } else {
+            html += `<p class="text-xs mb-3 text-justify leading-relaxed text-slate-700 dark:text-slate-300">`;
+            const runs = b.runs || [{ text: b.text || '' }];
+            runs.forEach(r => {
+              let t = escapeHtml(r.text);
+              if (r.bold) t = `<strong class="font-bold text-slate-900 dark:text-white">${t}</strong>`;
+              if (r.italic) t = `<em>${t}</em>`;
+              html += t;
+            });
+            html += `</p>`;
+          }
+        });
+
+        html += `</div>`;
+      });
+
+      previewBox.innerHTML = html;
+    }
+
     async function executeConvertPdfToWord() {
       if (!pdf2wordState.pagesData.length) return;
       try {
         let docXmlBody = '';
+        
         pdf2wordState.pagesData.forEach((pg, pIdx) => {
-          docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="2563EB"/></w:rPr><w:t>Page ${pg.pageNum}</w:t></w:r></w:p>`;
-
-          const blocks = detectContentBlocks(pg.lines);
+          const blocks = pg.blocks && pg.blocks.length ? pg.blocks : detectContentBlocks(pg.lines, pg.pageWidth);
+          
           blocks.forEach(b => {
             if (b.type === 'table') {
               docXmlBody += formatOpenXmlTable(b.rows);
-              docXmlBody += `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>`;
+              docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/></w:pPr></w:p>`;
+            } else if (b.type === 'title') {
+              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr>`;
+              const runs = b.runs || [{ text: b.text || '' }];
+              runs.forEach(r => {
+                docXmlBody += `<w:r><w:rPr><w:b/><w:sz w:val="${r.size || 32}"/><w:color w:val="0F172A"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
+              });
+              docXmlBody += `</w:p>`;
+            } else if (b.type === 'heading2') {
+              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:spacing w:before="200" w:after="80"/></w:pPr>`;
+              const runs = b.runs || [{ text: b.text || '' }];
+              runs.forEach(r => {
+                docXmlBody += `<w:r><w:rPr><w:b/><w:sz w:val="${r.size || 26}"/><w:color w:val="0F172A"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
+              });
+              docXmlBody += `</w:p>`;
             } else {
-              docXmlBody += `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr><w:r><w:t xml:space="preserve">${escapeXml(b.text)}</w:t></w:r></w:p>`;
+              docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/><w:jc w:val="both"/></w:pPr>`;
+              const runs = b.runs && b.runs.length ? b.runs : [{ text: b.text || '' }];
+              runs.forEach(r => {
+                let rPr = '<w:rPr>';
+                if (r.bold) rPr += '<w:b/>';
+                if (r.italic) rPr += '<w:i/>';
+                rPr += '</w:rPr>';
+                docXmlBody += `<w:r>${rPr}<w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
+              });
+              docXmlBody += `</w:p>`;
             }
           });
 
+          // Insert genuine Word page break between pages
           if (pIdx < pdf2wordState.pagesData.length - 1) {
             docXmlBody += `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
           }
@@ -4093,11 +4374,55 @@ setupPdfWorker();
   <w:docDefaults>
     <w:rPrDefault>
       <w:rPr>
-        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
         <w:sz w:val="22"/>
+        <w:szCs w:val="22"/>
+        <w:color w:val="1E293B"/>
+        <w:lang w:val="en-US"/>
       </w:rPr>
     </w:rPrDefault>
+    <w:pPrDefault>
+      <w:pPr>
+        <w:spacing w:after="120" w:line="276" w:lineRule="auto"/>
+      </w:pPr>
+    </w:pPrDefault>
   </w:docDefaults>
+  <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:qFormat/>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr>
+      <w:keepNext/>
+      <w:spacing w:before="240" w:after="120"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+      <w:b/>
+      <w:sz w:val="32"/>
+      <w:color w:val="0F172A"/>
+    </w:rPr>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:basedOn w:val="Normal"/>
+    <w:next w:val="Normal"/>
+    <w:qFormat/>
+    <w:pPr>
+      <w:keepNext/>
+      <w:spacing w:before="180" w:after="80"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>
+      <w:b/>
+      <w:sz w:val="26"/>
+      <w:color w:val="0F172A"/>
+    </w:rPr>
+  </w:style>
 </w:styles>`;
 
       const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
