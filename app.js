@@ -4344,11 +4344,19 @@ setupPdfWorker();
           });
         }
 
-        const isScannedDocument = totalParagraphs === 0 || (totalParagraphs <= 2 && doc.numPages === 1 && pdf2wordState.pagesData.every(pg => (pg.lines || []).length <= 2));
+        const isGarbledOrLowQuality = pdf2wordState.pagesData.some(pg => {
+          const allText = (pg.lines || []).map(l => l.text || '').join(' ');
+          if (allText.length < 80) return true;
+          const words = allText.split(/\s+/).filter(Boolean);
+          const noisyWords = words.filter(w => /[^a-zA-Z0-9\s]{2,}|\.[a-zA-Z]|\b[a-z]\b/i.test(w));
+          return (noisyWords.length / Math.max(1, words.length)) > 0.12;
+        });
+
+        const isScannedDocument = totalParagraphs === 0 || isGarbledOrLowQuality || (totalParagraphs <= 2 && doc.numPages === 1 && pdf2wordState.pagesData.every(pg => (pg.lines || []).length <= 2));
 
         if (isScannedDocument) {
           if (statsEl) {
-            statsEl.textContent = `${doc.numPages} page(s) • 📸 Scanned PDF (No selectable text) • AI OCR Mode Activated (Editable Word)`;
+            statsEl.textContent = `${doc.numPages} page(s) • 📸 Scanned PDF Detected • AI OCR Mode Activated (Editable Word)`;
           }
           setPdf2WordMode('ocr');
         } else {
