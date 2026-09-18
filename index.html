@@ -2475,19 +2475,45 @@
         </div>
 
         <!-- Mode Switcher -->
-        <div class="flex flex-wrap items-center justify-between bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 mb-5 gap-3">
+        <div class="flex flex-wrap items-center justify-between bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 mb-3 gap-3">
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Conversion Mode:</span>
-            <div class="inline-flex p-0.5 bg-slate-200 dark:bg-slate-700 rounded-lg" role="group">
+            <div class="inline-flex p-0.5 bg-slate-200 dark:bg-slate-700 rounded-lg flex-wrap" role="group">
               <button id="pdf2word-mode-visual-btn" data-action="set-pdf2word-mode" data-mode="visual" class="px-3 py-1.5 rounded-md text-xs font-bold transition bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs flex items-center gap-1.5">
                 <span>🎯</span> <span>1:1 Visual Match (Exact PDF Replica)</span>
+              </button>
+              <button id="pdf2word-mode-ocr-btn" data-action="set-pdf2word-mode" data-mode="ocr" class="px-3 py-1.5 rounded-md text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5">
+                <span>🔍</span> <span>OCR (Scanned to Editable Text)</span>
               </button>
               <button id="pdf2word-mode-text-btn" data-action="set-pdf2word-mode" data-mode="text" class="px-3 py-1.5 rounded-md text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5">
                 <span>✍️</span> <span>Editable Flowing Text</span>
               </button>
             </div>
           </div>
-          <span id="pdf2word-mode-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Preserves 100% exact layout, logos, boxes, checkboxes &amp; forms identical to PDF.</span>
+          <div class="flex items-center gap-3">
+            <div id="pdf2word-ocr-lang-wrapper" class="hidden flex items-center gap-1.5">
+              <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase">Lang:</span>
+              <select id="pdf2word-ocr-lang-select" class="text-xs font-semibold py-1 px-2 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+                <option value="eng">English (eng)</option>
+                <option value="spa">Español (spa)</option>
+                <option value="fra">Français (fra)</option>
+                <option value="deu">Deutsch (deu)</option>
+                <option value="hin">Hindi (hin)</option>
+              </select>
+            </div>
+            <span id="pdf2word-mode-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Preserves 100% exact layout, logos, boxes, checkboxes &amp; forms identical to PDF.</span>
+          </div>
+        </div>
+
+        <!-- OCR Action / Progress Banner -->
+        <div id="pdf2word-ocr-banner" class="hidden mb-4 p-3 bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-xl flex items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-blue-600 dark:text-blue-400 font-bold" id="pdf2word-ocr-icon">🔍</span>
+            <span id="pdf2word-ocr-status-text" class="text-slate-700 dark:text-slate-200 font-medium">Extract editable text from scanned pages using in-browser AI OCR</span>
+          </div>
+          <button id="pdf2word-start-ocr-btn" data-action="start-pdf2word-ocr" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold rounded-lg shadow-2xs transition flex items-center gap-1.5">
+            <span>⚡</span> <span>Run OCR Now</span>
+          </button>
         </div>
 
         <div class="flex items-center justify-between mb-3">
