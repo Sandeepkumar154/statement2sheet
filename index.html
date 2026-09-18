@@ -2444,6 +2444,22 @@
           </div>
         </div>
 
+        <!-- Mode Switcher -->
+        <div class="flex flex-wrap items-center justify-between bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 mb-5 gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Conversion Mode:</span>
+            <div class="inline-flex p-0.5 bg-slate-200 dark:bg-slate-700 rounded-lg" role="group">
+              <button id="pdf2word-mode-visual-btn" data-action="set-pdf2word-mode" data-mode="visual" class="px-3 py-1.5 rounded-md text-xs font-bold transition bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs flex items-center gap-1.5">
+                <span>🎯</span> <span>1:1 Visual Match (Exact PDF Replica)</span>
+              </button>
+              <button id="pdf2word-mode-text-btn" data-action="set-pdf2word-mode" data-mode="text" class="px-3 py-1.5 rounded-md text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5">
+                <span>✍️</span> <span>Editable Flowing Text</span>
+              </button>
+            </div>
+          </div>
+          <span id="pdf2word-mode-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Preserves 100% exact layout, logos, boxes, checkboxes &amp; forms identical to PDF.</span>
+        </div>
+
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Simulated Word Document Preview</span>
