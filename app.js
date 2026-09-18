@@ -4050,11 +4050,13 @@ setupPdfWorker();
     let pdf2wordState = {
       file: null,
       doc: null,
-      mode: 'visual', // 'visual' | 'ocr' | 'text'
+      mode: 'ocr', // 'ocr' | 'text' | 'visual'
       pagesData: [],
       pageImages: [],
       ocrPagesData: [],
-      hasOcrRun: false
+      hasOcrRun: false,
+      isOcrRunning: false,
+      ocrPromise: null
     };
 
     function initPdf2WordToolListeners() {
@@ -4096,19 +4098,19 @@ setupPdfWorker();
       if (mode === 'ocr') {
         if (ocrBanner) ocrBanner.classList.remove('hidden');
         if (ocrLangWrapper) ocrLangWrapper.classList.remove('hidden');
-        if (descEl) descEl.textContent = 'Engages AI OCR (Tesseract.js) to recognize and convert scanned image text into editable Word paragraphs.';
+        if (descEl) descEl.textContent = 'Engages AI OCR (Tesseract.js) to recognize and convert scanned image text into editable Word paragraphs & tables.';
         
         // If OCR has not run yet and we have a document, automatically run OCR!
-        if (!pdf2wordState.hasOcrRun && pdf2wordState.doc) {
-          runPdf2WordOcr();
+        if (!pdf2wordState.hasOcrRun && pdf2wordState.doc && !pdf2wordState.isOcrRunning) {
+          runPdf2WordOcr().catch(e => console.warn('Auto OCR error:', e));
         }
       } else {
         if (ocrBanner) ocrBanner.classList.add('hidden');
         if (ocrLangWrapper) ocrLangWrapper.classList.add('hidden');
         if (descEl) {
           descEl.textContent = mode === 'visual'
-            ? 'Preserves 100% exact layout, logos, boxes, checkboxes & forms identical to PDF.'
-            : 'Extracts flowing editable paragraphs, detected fonts & OpenXML tables.';
+            ? 'Embeds high-res page images into Word (replicates exact form lines, but text is non-editable images).'
+            : 'Extracts flowing editable paragraphs, detected fonts & OpenXML tables directly from PDF text.';
         }
       }
 
@@ -4118,6 +4120,11 @@ setupPdfWorker();
 
     async function runPdf2WordOcr() {
       if (!pdf2wordState.doc) return;
+      if (pdf2wordState.isOcrRunning && pdf2wordState.ocrPromise) {
+        return await pdf2wordState.ocrPromise;
+      }
+
+      pdf2wordState.isOcrRunning = true;
       const statusText = document.getElementById('pdf2word-ocr-status-text');
       const startOcrBtn = document.getElementById('pdf2word-start-ocr-btn');
       const icon = document.getElementById('pdf2word-ocr-icon');
@@ -4128,75 +4135,110 @@ setupPdfWorker();
         startOcrBtn.classList.add('opacity-50', 'cursor-not-allowed');
       }
       if (icon) icon.className = 'animate-spin text-blue-600 dark:text-blue-400';
-      if (statusText) statusText.textContent = `Loading AI OCR engine (${lang})...`;
+      if (statusText) statusText.textContent = `Loading in-browser AI OCR engine (${lang})...`;
 
-      try {
-        await ensureTesseract();
-        const worker = await Tesseract.createWorker(lang);
+      pdf2wordState.ocrPromise = (async () => {
+        try {
+          await ensureTesseract();
+          const worker = await Tesseract.createWorker(lang);
 
-        const doc = pdf2wordState.doc;
-        const ocrPages = [];
-        const maxPages = Math.min(doc.numPages, 10);
+          const doc = pdf2wordState.doc;
+          const ocrPages = [];
+          const maxPages = Math.min(doc.numPages, 10);
 
-        for (let p = 1; p <= maxPages; p++) {
-          if (statusText) statusText.textContent = `Running OCR (${lang}) on page ${p} of ${maxPages}...`;
-          const page = await doc.getPage(p);
-          const viewport = page.getViewport({ scale: 2.0 });
+          for (let p = 1; p <= maxPages; p++) {
+            if (statusText) statusText.textContent = `Running AI OCR (${lang}) on page ${p} of ${maxPages}...`;
+            const page = await doc.getPage(p);
+            const viewport = page.getViewport({ scale: 2.0 });
 
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const ctx = canvas.getContext('2d');
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
 
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          if (typeof preprocessCanvasContrast === 'function') {
-            preprocessCanvasContrast(ctx, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            if (typeof preprocessCanvasContrast === 'function') {
+              preprocessCanvasContrast(ctx, canvas.width, canvas.height);
+            }
+
+            const { data } = await worker.recognize(canvas);
+            const text = data?.text || '';
+            const ocrLines = data?.lines || [];
+
+            const cleanLines = ocrLines.map(l => {
+              const bbox = l.bbox || {};
+              const x0 = typeof bbox.x0 === 'number' ? bbox.x0 : 0;
+              const y0 = typeof bbox.y0 === 'number' ? bbox.y0 : 0;
+              const x1 = typeof bbox.x1 === 'number' ? bbox.x1 : 0;
+              const y1 = typeof bbox.y1 === 'number' ? bbox.y1 : 0;
+              const h = Math.max(12, y1 - y0);
+              const fontSize = Math.max(9, Math.round(h * 0.75));
+              const lText = (l.text || '').trim();
+              return {
+                text: lText,
+                x: x0,
+                y: y0,
+                minX: x0,
+                maxX: x1,
+                width: Math.max(10, x1 - x0),
+                height: h,
+                fontSize,
+                isBold: /bold|black/i.test(l.font_name || '') || (lText.length > 3 && lText.toUpperCase() === lText && !/\d/.test(lText)),
+                confidence: l.confidence
+              };
+            }).filter(l => l.text.length > 0);
+
+            let blocks = detectContentBlocks(cleanLines, viewport.width);
+            if (!blocks.length && text.trim().length > 0) {
+              const rawParas = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+              blocks = rawParas.map(pStr => ({
+                type: 'paragraph',
+                text: pStr,
+                runs: [{ text: pStr, fontSize: 11 }]
+              }));
+            }
+
+            ocrPages.push({
+              pageNum: p,
+              pageWidth: viewport.width,
+              pageHeight: viewport.height,
+              blocks,
+              rawText: text
+            });
           }
 
-          const { data: { text, lines: ocrLines } } = await worker.recognize(canvas);
+          await worker.terminate();
 
-          const cleanLines = (ocrLines || []).map(l => ({
-            text: (l.text || '').trim(),
-            confidence: l.confidence,
-            fontSize: Math.round((l.bbox.y1 - l.bbox.y0) / 2) || 12,
-            isBold: /bold|black/i.test(l.font_name || '') || (l.text.toUpperCase() === l.text && l.text.length > 3)
-          })).filter(l => l.text.length > 0);
+          pdf2wordState.ocrPagesData = ocrPages;
+          pdf2wordState.hasOcrRun = true;
 
-          const blocks = detectContentBlocks(cleanLines, viewport.width);
-          ocrPages.push({
-            pageNum: p,
-            pageWidth: viewport.width,
-            pageHeight: viewport.height,
-            blocks,
-            rawText: text
-          });
+          if (statusText) statusText.textContent = `✓ OCR Complete (${maxPages} page(s) recognized)! Converted to editable Word text.`;
+          if (icon) icon.className = 'text-emerald-500 font-bold';
+          if (startOcrBtn) {
+            startOcrBtn.disabled = false;
+            startOcrBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            startOcrBtn.innerHTML = '<span>🔄</span> <span>Re-run OCR</span>';
+          }
+
+          // Update preview with OCR result
+          const previewBox = document.getElementById('pdf2word-preview-box');
+          renderWordDocumentPreview(previewBox, pdf2wordState.pagesData, pdf2wordState.pageImages, 'ocr', pdf2wordState.ocrPagesData);
+        } catch (err) {
+          console.error('PDF to Word OCR error:', err);
+          if (statusText) statusText.textContent = `OCR Failed: ${err.message}`;
+          if (icon) icon.className = 'text-rose-500 font-bold';
+          if (startOcrBtn) {
+            startOcrBtn.disabled = false;
+            startOcrBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+          throw err;
+        } finally {
+          pdf2wordState.isOcrRunning = false;
+          pdf2wordState.ocrPromise = null;
         }
+      })();
 
-        await worker.terminate();
-
-        pdf2wordState.ocrPagesData = ocrPages;
-        pdf2wordState.hasOcrRun = true;
-
-        if (statusText) statusText.textContent = `✓ OCR Complete (${maxPages} page(s) recognized)! Converted to editable Word text.`;
-        if (icon) icon.className = 'text-emerald-500 font-bold';
-        if (startOcrBtn) {
-          startOcrBtn.disabled = false;
-          startOcrBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-          startOcrBtn.innerHTML = '<span>🔄</span> <span>Re-run OCR</span>';
-        }
-
-        // Update preview with OCR result
-        const previewBox = document.getElementById('pdf2word-preview-box');
-        renderWordDocumentPreview(previewBox, pdf2wordState.pagesData, pdf2wordState.pageImages, 'ocr', pdf2wordState.ocrPagesData);
-      } catch (err) {
-        console.error('PDF to Word OCR error:', err);
-        if (statusText) statusText.textContent = `OCR Failed: ${err.message}`;
-        if (icon) icon.className = 'text-rose-500 font-bold';
-        if (startOcrBtn) {
-          startOcrBtn.disabled = false;
-          startOcrBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-      }
+      return await pdf2wordState.ocrPromise;
     }
 
     async function loadPdf2WordFile(file) {
@@ -4207,11 +4249,13 @@ setupPdfWorker();
         pdf2wordState = {
           file,
           doc,
-          mode: 'visual',
+          mode: 'ocr',
           pagesData: [],
           pageImages: [],
           ocrPagesData: [],
-          hasOcrRun: false
+          hasOcrRun: false,
+          isOcrRunning: false,
+          ocrPromise: null
         };
 
         const card = document.getElementById('pdf2word-controls-card');
@@ -4300,12 +4344,19 @@ setupPdfWorker();
           });
         }
 
-        if (statsEl) {
-          statsEl.textContent = `${doc.numPages} page(s) • 100% 1:1 Layout & Forms Ready • ${totalParagraphs} paragraphs`;
-        }
+        const isScannedDocument = totalParagraphs === 0 || (totalParagraphs <= 2 && doc.numPages === 1 && pdf2wordState.pagesData.every(pg => (pg.lines || []).length <= 2));
 
-        // Default to Visual Mode (iLovePDF exact match)
-        setPdf2WordMode('visual');
+        if (isScannedDocument) {
+          if (statsEl) {
+            statsEl.textContent = `${doc.numPages} page(s) • 📸 Scanned PDF (No selectable text) • AI OCR Mode Activated (Editable Word)`;
+          }
+          setPdf2WordMode('ocr');
+        } else {
+          if (statsEl) {
+            statsEl.textContent = `${doc.numPages} page(s) • Digital PDF • ${totalParagraphs} editable paragraphs & tables ready`;
+          }
+          setPdf2WordMode('text');
+        }
       } catch (err) {
         console.error('PDF to Word load error:', err);
         alert('Failed to parse PDF for Word conversion: ' + err.message);
@@ -4789,9 +4840,61 @@ setupPdfWorker();
 
     async function executeConvertPdfToWord() {
       if (!pdf2wordState.file) return;
+      const convertBtn = document.querySelector('[data-action="run-pdf2word"]');
+      const origBtnHtml = convertBtn ? convertBtn.innerHTML : '';
+
       try {
+        if (convertBtn) {
+          convertBtn.disabled = true;
+          convertBtn.innerHTML = '<span>⏳</span> <span>Converting to Word (.docx)...</span>';
+        }
+
         let docXmlBody = '';
         const mode = pdf2wordState.mode;
+
+        // OCR Mode Export
+        if (mode === 'ocr') {
+          if (pdf2wordState.isOcrRunning && pdf2wordState.ocrPromise) {
+            if (convertBtn) convertBtn.innerHTML = '<span>🔍</span> <span>Waiting for AI OCR...</span>';
+            await pdf2wordState.ocrPromise;
+          } else if (!pdf2wordState.hasOcrRun || !pdf2wordState.ocrPagesData.length) {
+            if (convertBtn) convertBtn.innerHTML = '<span>🔍</span> <span>Running AI OCR Recognition...</span>';
+            await runPdf2WordOcr();
+          }
+
+          const ocrPages = pdf2wordState.ocrPagesData || [];
+          ocrPages.forEach((pg, pIdx) => {
+            const blocks = pg.blocks || [];
+            if (blocks.length === 0 && pg.rawText) {
+              const rawParas = pg.rawText.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+              rawParas.forEach(pText => {
+                docXmlBody += `<w:p><w:pPr><w:spacing w:after="140" w:line="260" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(pText)}</w:t></w:r></w:p>`;
+              });
+            } else {
+              blocks.forEach(b => {
+                if (b.type === 'title') {
+                  docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+                } else if (b.type === 'heading2') {
+                  docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+                } else if (b.type === 'table') {
+                  docXmlBody += formatOpenXmlTable(b.rows);
+                  docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/></w:pPr></w:p>`;
+                } else {
+                  docXmlBody += `<w:p><w:pPr><w:spacing w:after="140" w:line="260" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+                }
+              });
+            }
+
+            if (pIdx < ocrPages.length - 1) {
+              docXmlBody += `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
+            }
+          });
+
+          const docxBlob = await buildOpenXmlDocxBlob(docXmlBody, 'Calibri', []);
+          const fileName = (pdf2wordState.file ? pdf2wordState.file.name.replace(/\.pdf$/i, '') : 'document') + '_ocr.docx';
+          downloadTrackedBlob(docxBlob, fileName);
+          return;
+        }
 
         if (mode === 'visual' && pdf2wordState.pageImages.length > 0) {
           // 1:1 Visual Fidelity Mode (Identical to PDF - iLovePDF Quality)
@@ -4857,65 +4960,19 @@ setupPdfWorker();
           return;
         }
 
-        // OCR Mode Export
-        if (mode === 'ocr') {
-          if (!pdf2wordState.hasOcrRun || !pdf2wordState.ocrPagesData.length) {
-            await runPdf2WordOcr();
-          }
-
-          const ocrPages = pdf2wordState.ocrPagesData || [];
-          ocrPages.forEach((pg, pIdx) => {
-            const blocks = pg.blocks || [];
-            blocks.forEach(b => {
-              if (b.type === 'title') {
-                docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
-              } else if (b.type === 'heading2') {
-                docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
-              } else if (b.type === 'table') {
-                docXmlBody += formatOpenXmlTable(b.rows);
-                docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/></w:pPr></w:p>`;
-              } else {
-                docXmlBody += `<w:p><w:pPr><w:spacing w:after="140" w:line="260" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
-              }
-            });
-
-            if (pIdx < ocrPages.length - 1) {
-              docXmlBody += `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
-            }
-          });
-
-          const docxBlob = await buildOpenXmlDocxBlob(docXmlBody, 'Calibri', []);
-          const fileName = (pdf2wordState.file ? pdf2wordState.file.name.replace(/\.pdf$/i, '') : 'document') + '_ocr.docx';
-          downloadTrackedBlob(docxBlob, fileName);
-          return;
-        }
-
         // Editable Text Mode (Flowing text & OpenXML tables)
         const docFontFamily = detectDocumentFontFamily(pdf2wordState.pagesData);
 
         pdf2wordState.pagesData.forEach((pg, pIdx) => {
           const blocks = pg.blocks && pg.blocks.length ? pg.blocks : detectContentBlocks(pg.lines, pg.pageWidth);
-          
           blocks.forEach(b => {
-            if (b.type === 'table') {
+            if (b.type === 'title') {
+              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+            } else if (b.type === 'heading2') {
+              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+            } else if (b.type === 'table') {
               docXmlBody += formatOpenXmlTable(b.rows);
               docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/></w:pPr></w:p>`;
-            } else if (b.type === 'title') {
-              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr>`;
-              const runs = b.runs || [{ text: b.text || '' }];
-              runs.forEach(r => {
-                const sz = r.fontSize ? Math.round(r.fontSize * 2) : 28;
-                docXmlBody += `<w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
-              });
-              docXmlBody += `</w:p>`;
-            } else if (b.type === 'heading2') {
-              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr>`;
-              const runs = b.runs || [{ text: b.text || '' }];
-              runs.forEach(r => {
-                const sz = r.fontSize ? Math.round(r.fontSize * 2) : 24;
-                docXmlBody += `<w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(r.text)}</w:t></w:r>`;
-              });
-              docXmlBody += `</w:p>`;
             } else {
               let pPr = '<w:pPr><w:spacing w:after="140" w:line="260" w:lineRule="auto"/><w:jc w:val="both"/>';
               if (b.firstLineIndentTwips && b.firstLineIndentTwips >= 200 && b.firstLineIndentTwips <= 1440) {
@@ -4947,6 +5004,11 @@ setupPdfWorker();
       } catch (err) {
         console.error('PDF to Word build error:', err);
         alert('Failed to generate Word document: ' + err.message);
+      } finally {
+        if (convertBtn) {
+          convertBtn.disabled = false;
+          convertBtn.innerHTML = origBtnHtml;
+        }
       }
     }
 
