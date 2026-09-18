@@ -1481,7 +1481,73 @@ async function runTests() {
     throw new Error('Object URL registry failed to return to zero after download timeout!');
   }
 
-  console.log('\n--- 12. Checking Console CSP Violations ---');
+  console.log('\n--- 12. Testing Overscroll History Navigation (Swipe-to-Navigate) & History Sync ---');
+  const overscrollRes = await evaluate(`(async () => {
+    const mc = document.getElementById('main-content');
+    const leftInd = document.getElementById('overscroll-indicator-left');
+    const rightInd = document.getElementById('overscroll-indicator-right');
+    const leftLabel = document.getElementById('overscroll-label-left');
+
+    // 0. Ensure clean baseline at Dashboard:
+    const dashBtn = document.querySelector('[data-tool="dashboard"]');
+    if (dashBtn) dashBtn.click();
+    await new Promise(r => setTimeout(r, 400));
+
+    // 1. Boundary check on Dashboard:
+    document.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 101, clientX: 50, clientY: 200, bubbles: true }));
+    document.dispatchEvent(new PointerEvent('pointermove', { pointerId: 101, clientX: 120, clientY: 200, bubbles: true }));
+    const boundaryTransform = mc.style.transform;
+    const boundaryOpacity = leftInd ? leftInd.style.opacity : '0';
+    const isBoundaryClass = leftInd ? leftInd.classList.contains('overscroll-indicator-boundary') : false;
+    const boundaryLabel = leftLabel ? leftLabel.textContent : '';
+    document.dispatchEvent(new PointerEvent('pointerup', { pointerId: 101, clientX: 120, clientY: 200, bubbles: true }));
+    await new Promise(r => setTimeout(r, 200));
+
+    // 2. Click tool 'merge'
+    const mergeBtn = document.querySelector('[data-tool="merge"]');
+    if (mergeBtn) mergeBtn.click();
+    await new Promise(r => setTimeout(r, 500));
+    const isMergeOpen = !document.getElementById('view-merge').classList.contains('hidden');
+
+    // 3. Mouse/pointer swipe Back from merge
+    document.dispatchEvent(new PointerEvent('pointerdown', { pointerId: 102, pointerType: 'mouse', button: 0, clientX: 50, clientY: 250, bubbles: true }));
+    document.dispatchEvent(new PointerEvent('pointermove', { pointerId: 102, pointerType: 'mouse', clientX: 150, clientY: 250, bubbles: true }));
+    const activeClassDuring = leftInd ? leftInd.classList.contains('overscroll-indicator-active') : false;
+    document.dispatchEvent(new PointerEvent('pointerup', { pointerId: 102, pointerType: 'mouse', clientX: 150, clientY: 250, bubbles: true }));
+    await new Promise(r => setTimeout(r, 600));
+    const isBackOnDash = !document.getElementById('view-dashboard').classList.contains('hidden');
+
+    // 4. Trackpad Wheel forward gesture
+    window.dispatchEvent(new WheelEvent('wheel', { deltaX: 35, deltaY: 0, bubbles: true }));
+    window.dispatchEvent(new WheelEvent('wheel', { deltaX: 35, deltaY: 0, bubbles: true }));
+    await new Promise(r => setTimeout(r, 700));
+    const isForwardOnMerge = !document.getElementById('view-merge').classList.contains('hidden');
+
+    // 5. Mobile Touch swipe back gesture
+    const touch1 = new Touch({ identifier: 103, target: document.body, clientX: 40, clientY: 200 });
+    const touch2 = new Touch({ identifier: 103, target: document.body, clientX: 140, clientY: 200 });
+    document.dispatchEvent(new TouchEvent('touchstart', { touches: [touch1], changedTouches: [touch1], bubbles: true }));
+    document.dispatchEvent(new TouchEvent('touchmove', { touches: [touch2], changedTouches: [touch2], bubbles: true }));
+    document.dispatchEvent(new TouchEvent('touchend', { touches: [], changedTouches: [touch2], bubbles: true }));
+    await new Promise(r => setTimeout(r, 600));
+    const isFinallyOnDash = !document.getElementById('view-dashboard').classList.contains('hidden');
+
+    return {
+      boundaryOk: isBoundaryClass && !!boundaryTransform,
+      boundaryLabel,
+      isMergeOpen,
+      activeClassDuring,
+      isBackOnDash,
+      isForwardOnMerge,
+      isFinallyOnDash
+    };
+  })()`);
+  console.log('✓ Overscroll History Navigation (Swipe-to-Navigate):', overscrollRes);
+  if (!overscrollRes.boundaryOk || !overscrollRes.isBackOnDash || !overscrollRes.isForwardOnMerge || !overscrollRes.isFinallyOnDash) {
+    throw new Error('Overscroll History Navigation verification failed!');
+  }
+
+  console.log('\n--- 13. Checking Console CSP Violations ---');
   console.log('Total CSP Violations:', cspViolations.length);
   if (cspViolations.length > 0) throw new Error('CSP violations detected in browser console!');
 
@@ -1491,7 +1557,7 @@ async function runTests() {
   try { fs.rmSync(USER_DATA_DIR, { recursive: true, force: true }); } catch (e) {}
 
   console.log('\n=============================================================');
-  console.log('🎉 ALL 12 SECURITY & FUNCTIONAL TEST SUITES PASSED (100%)!');
+  console.log('🎉 ALL 13 SECURITY & FUNCTIONAL TEST SUITES PASSED (100%)!');
   console.log('=============================================================');
 }
 
