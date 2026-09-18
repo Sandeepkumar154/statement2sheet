@@ -1,4 +1,4 @@
-const CACHE_NAME = 's2s-cache-v3';
+const CACHE_NAME = 's2s-cache-v4';
 
 const LOCAL_ASSETS = [
   './',

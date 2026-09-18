@@ -337,6 +337,23 @@ setupPdfWorker();
     
         // ================= MODULE: PORTAL VIEW SWITCHER (iLovePDF Style) =================
     let currentPortalTool = 'dashboard';
+    let portalHistoryIndex = 0;
+    let portalTransitionTimer = null;
+
+    function getPortalViewElement(toolName) {
+      if (!toolName) return null;
+      if (toolName === 'dashboard') {
+        return document.getElementById('view-dashboard');
+      } else if (toolName === 'excel') {
+        if (!AppState.transactions || AppState.transactions.length === 0) {
+          return document.getElementById('intake-section');
+        } else {
+          return document.getElementById('workspace-section');
+        }
+      } else {
+        return document.getElementById(`view-${toolName}`);
+      }
+    }
 
     
     // Navigation Controller: Return to Intake Screen
@@ -474,8 +491,15 @@ setupPdfWorker();
       });
     }
 
-    function switchPortalTool(toolName) {
-      currentPortalTool = toolName;
+    function switchPortalTool(toolName, options = {}) {
+      const prevTool = currentPortalTool;
+      const prevEl = getPortalViewElement(prevTool);
+      const nextEl = getPortalViewElement(toolName);
+
+      if (prevTool === toolName && !options.force && nextEl && !nextEl.classList.contains('hidden')) {
+        return;
+      }
+
       closeMegaMenu();
       const convertMenu = document.getElementById('convert-pdf-dropdown');
       if (convertMenu) convertMenu.classList.add('hidden');
@@ -494,14 +518,59 @@ setupPdfWorker();
         activeNavBtn.classList.add('bg-emerald-50', 'dark:bg-emerald-950/80', 'text-emerald-700', 'dark:text-emerald-300', 'font-bold', 'border', 'border-emerald-200', 'dark:border-emerald-800');
       }
 
-      // Hide all main views
-      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown', 'crop', 'extract-images', 'compare', 'rotate', 'redact', 'pdf2word', 'office2pdf', 'pdfa', 'digitalsign', 'summarize', 'repair', 'editpdf', 'formfill', 'pptx2pdf', 'pdf2pptx', 'scan2pdf'];
+      // Determine transition direction:
+      // If going to dashboard, it's Back; otherwise Front, unless explicitly specified
+      const isBack = typeof options.isBack === 'boolean'
+        ? options.isBack
+        : (toolName === 'dashboard');
+
+      // Update browser history (pushState) unless this call originated from popstate
+      if (!options.fromPopState && typeof window !== 'undefined' && window.history && window.history.pushState) {
+        portalHistoryIndex++;
+        const stateObj = { tool: toolName, historyIndex: portalHistoryIndex };
+        const newHash = toolName === 'dashboard' ? (window.location.pathname + window.location.search) : ('#' + toolName);
+        try {
+          window.history.pushState(stateObj, '', newHash);
+        } catch (e) {
+          // safe fallback for restricted sandbox or file:// environments
+        }
+      }
+
+      currentPortalTool = toolName;
+
       if (toolName === 'dashboard') {
         loadRecentFiles();
       }
+
+      function cleanupViewStyles(el) {
+        if (!el) return;
+        el.style.position = '';
+        el.style.top = '';
+        el.style.left = '';
+        el.style.width = '';
+        el.style.margin = '';
+        el.style.pointerEvents = '';
+        el.style.zIndex = '';
+        el.classList.remove(
+          'animate-slide-in-front', 'animate-slide-out-left',
+          'animate-slide-in-left', 'animate-slide-out-back',
+          'animate-view-slide-in', 'animate-view-slide-back'
+        );
+      }
+
+      if (portalTransitionTimer) {
+        clearTimeout(portalTransitionTimer);
+        portalTransitionTimer = null;
+      }
+
+      // Hide all other views immediately
+      const allViews = ['dashboard', 'merge', 'split', 'organize', 'unlock', 'watermark', 'pagenumber', 'pdf2img', 'img2pdf', 'compress', 'sign', 'protect', 'markdown', 'crop', 'extract-images', 'compare', 'rotate', 'redact', 'pdf2word', 'office2pdf', 'pdfa', 'digitalsign', 'summarize', 'repair', 'editpdf', 'formfill', 'pptx2pdf', 'pdf2pptx', 'scan2pdf'];
       allViews.forEach(v => {
         const el = document.getElementById(`view-${v}`);
-        if (el) el.classList.add('hidden');
+        if (el && el !== prevEl && el !== nextEl) {
+          el.classList.add('hidden');
+          cleanupViewStyles(el);
+        }
       });
 
       const intakeSection = document.getElementById('intake-section');
@@ -509,49 +578,129 @@ setupPdfWorker();
       const processingSection = document.getElementById('processing-section');
       const workspaceSection = document.getElementById('workspace-section');
 
-      if (toolName === 'dashboard') {
-        const dashboard = document.getElementById('view-dashboard');
-        if (dashboard) {
-          dashboard.classList.remove('hidden');
-          dashboard.classList.remove('animate-view-slide-back', 'animate-view-slide-in');
-          void dashboard.offsetWidth;
-          dashboard.classList.add('animate-view-slide-back');
-        }
-        if (intakeSection) intakeSection.classList.add('hidden');
+      if (toolName !== 'excel') {
+        if (intakeSection && intakeSection !== prevEl) intakeSection.classList.add('hidden');
         if (previewStage) previewStage.classList.add('hidden');
         if (processingSection) processingSection.classList.add('hidden');
-        if (workspaceSection) workspaceSection.classList.add('hidden');
-      } else if (toolName === 'excel') {
-        if (!AppState.transactions || AppState.transactions.length === 0) {
-          if (intakeSection) {
-            intakeSection.classList.remove('hidden');
-            intakeSection.classList.remove('animate-view-slide-in', 'animate-view-slide-back');
-            void intakeSection.offsetWidth;
-            intakeSection.classList.add('animate-view-slide-in');
-          }
-        } else {
-          if (workspaceSection) {
-            workspaceSection.classList.remove('hidden');
-            workspaceSection.classList.remove('animate-view-slide-in', 'animate-view-slide-back');
-            void workspaceSection.offsetWidth;
-            workspaceSection.classList.add('animate-view-slide-in');
-          }
-        }
-      } else {
-        if (intakeSection) intakeSection.classList.add('hidden');
-        if (previewStage) previewStage.classList.add('hidden');
-        if (processingSection) processingSection.classList.add('hidden');
-        if (workspaceSection) workspaceSection.classList.add('hidden');
-
-        const targetView = document.getElementById(`view-${toolName}`);
-        if (targetView) {
-          targetView.classList.remove('hidden');
-          targetView.classList.remove('animate-view-slide-in', 'animate-view-slide-back');
-          void targetView.offsetWidth;
-          targetView.classList.add('animate-view-slide-in');
-        }
+        if (workspaceSection && workspaceSection !== prevEl) workspaceSection.classList.add('hidden');
       }
-      if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+      if (!nextEl) return;
+
+      // Next view is immediately unhidden
+      nextEl.classList.remove('hidden');
+      cleanupViewStyles(nextEl);
+
+      if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+
+      const outAnim = isBack ? 'animate-slide-out-back' : 'animate-slide-out-left';
+      const inAnim = isBack ? 'animate-slide-in-left' : 'animate-slide-in-front';
+
+      if (prevEl && prevEl !== nextEl && !prevEl.classList.contains('hidden') && !options.noAnimate) {
+        cleanupViewStyles(prevEl);
+
+        const prevTop = prevEl.offsetTop;
+        const prevLeft = prevEl.offsetLeft;
+        const prevWidth = prevEl.offsetWidth;
+
+        prevEl.style.position = 'absolute';
+        if (typeof prevTop === 'number') prevEl.style.top = prevTop + 'px';
+        if (typeof prevLeft === 'number') prevEl.style.left = prevLeft + 'px';
+        if (prevWidth) prevEl.style.width = prevWidth + 'px';
+        prevEl.style.margin = '0';
+        prevEl.style.pointerEvents = 'none';
+        prevEl.style.zIndex = '1';
+
+        nextEl.style.position = 'relative';
+        nextEl.style.zIndex = '2';
+
+        void prevEl.offsetWidth;
+        void nextEl.offsetWidth;
+
+        prevEl.classList.add(outAnim);
+        nextEl.classList.add(inAnim);
+
+        portalTransitionTimer = setTimeout(() => {
+          if (prevEl) {
+            prevEl.classList.add('hidden');
+            cleanupViewStyles(prevEl);
+          }
+          if (nextEl) {
+            cleanupViewStyles(nextEl);
+          }
+          portalTransitionTimer = null;
+        }, 320);
+      } else {
+        if (prevEl && prevEl !== nextEl) {
+          prevEl.classList.add('hidden');
+          cleanupViewStyles(prevEl);
+        }
+        nextEl.classList.add(inAnim);
+        portalTransitionTimer = setTimeout(() => {
+          cleanupViewStyles(nextEl);
+          portalTransitionTimer = null;
+        }, 320);
+      }
+    }
+
+    function initNavigationHistoryAndGestures() {
+      if (typeof window === 'undefined') return;
+
+      // 1. Initial Hash Route Support & State Alignment
+      const initialHash = (window.location.hash || '').replace(/^#/, '');
+      const validInitialTool = initialHash && getPortalViewElement(initialHash) ? initialHash : 'dashboard';
+
+      if (window.history && window.history.replaceState) {
+        try {
+          window.history.replaceState(
+            { tool: validInitialTool, historyIndex: 0 },
+            '',
+            validInitialTool === 'dashboard' ? (window.location.pathname + window.location.search) : ('#' + validInitialTool)
+          );
+        } catch (e) {}
+      }
+
+      if (validInitialTool !== 'dashboard') {
+        switchPortalTool(validInitialTool, { noAnimate: true, fromPopState: true });
+      }
+
+      // 2. Popstate Listener for Browser Back/Forward buttons
+      window.addEventListener('popstate', (e) => {
+        const state = e.state;
+        const targetTool = (state && state.tool) || ((window.location.hash || '').replace(/^#/, '')) || 'dashboard';
+        const newHistoryIndex = (state && typeof state.historyIndex === 'number') ? state.historyIndex : 0;
+        const isBack = newHistoryIndex <= portalHistoryIndex;
+        portalHistoryIndex = newHistoryIndex;
+
+        switchPortalTool(targetTool, { fromPopState: true, isBack: isBack });
+      });
+
+      // 3. Touch Edge Swipe Gesture (Swipe right from left edge to go back)
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchStartTime = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        if (!e.changedTouches || e.changedTouches.length !== 1) return;
+        if (currentPortalTool === 'dashboard') return;
+
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        const elapsedTime = Date.now() - touchStartTime;
+
+        if (touchStartX < 75 && deltaX > 75 && Math.abs(deltaY) < 65 && elapsedTime < 500) {
+          switchPortalTool('dashboard', { isBack: true });
+        }
+      }, { passive: true });
     }
 
     // ================= MODULE: UNIVERSAL SPATIAL GEOMETRY TABLE EXTRACTOR =================
@@ -9620,7 +9769,8 @@ setupPdfWorker();
       initI18n();
       initGlobalKeyboardShortcuts();
       loadRecentFiles();
-      switchPortalTool('dashboard');
+      switchPortalTool('dashboard', { force: true, noAnimate: true });
+      initNavigationHistoryAndGestures();
       initOnboarding();
     }
 
