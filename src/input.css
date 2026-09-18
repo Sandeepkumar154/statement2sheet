@@ -32,8 +32,8 @@ svg {
 
 @keyframes slideInFromRight {
   0% {
-    opacity: 0;
-    transform: translate3d(80px, 0, 0);
+    opacity: 0.1;
+    transform: translate3d(40px, 0, 0);
   }
   100% {
     opacity: 1;
@@ -48,14 +48,14 @@ svg {
   }
   100% {
     opacity: 0;
-    transform: translate3d(-80px, 0, 0);
+    transform: translate3d(-40px, 0, 0);
   }
 }
 
 @keyframes slideInFromLeft {
   0% {
-    opacity: 0;
-    transform: translate3d(-80px, 0, 0);
+    opacity: 0.1;
+    transform: translate3d(-40px, 0, 0);
   }
   100% {
     opacity: 1;
@@ -70,7 +70,7 @@ svg {
   }
   100% {
     opacity: 0;
-    transform: translate3d(80px, 0, 0);
+    transform: translate3d(40px, 0, 0);
   }
 }
 
@@ -79,20 +79,20 @@ svg {
 }
 .animate-slide-in-front,
 .animate-view-slide-in {
-  animation: slideInFromRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: slideInFromRight 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
   will-change: transform, opacity;
 }
 .animate-slide-out-left {
-  animation: slideOutToLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: slideOutToLeft 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
   will-change: transform, opacity;
 }
 .animate-slide-in-left,
 .animate-view-slide-back {
-  animation: slideInFromLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: slideInFromLeft 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
   will-change: transform, opacity;
 }
 .animate-slide-out-back {
-  animation: slideOutToRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: slideOutToRight 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
   will-change: transform, opacity;
 }
 
@@ -111,20 +111,31 @@ html, body {
 }
 
 .overscroll-spring-back {
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
   will-change: transform;
 }
 
 .overscroll-indicator-active {
-  transform: translateY(-50%) scale(1.08) !important;
-  border-color: rgba(16, 185, 129, 0.8) !important;
-  box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.4) !important;
+  transform: translateY(-50%) scale(1.15) !important;
+  border-color: rgba(16, 185, 129, 0.9) !important;
+  box-shadow: 0 14px 32px -4px rgba(16, 185, 129, 0.45), 0 0 0 4px rgba(16, 185, 129, 0.2) !important;
+  background-color: rgba(16, 185, 129, 0.95) !important;
+  color: #ffffff !important;
+}
+
+.overscroll-indicator-active #overscroll-arrow-left,
+.overscroll-indicator-active #overscroll-arrow-right {
+  background: transparent !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transform: scale(1.15) !important;
 }
 
 .overscroll-indicator-boundary {
-  opacity: 0.75 !important;
-  border-color: rgba(148, 163, 184, 0.5) !important;
-  box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.12) !important;
+  opacity: 0.5 !important;
+  transform: translateY(-50%) scale(0.9) !important;
+  border-color: rgba(148, 163, 184, 0.4) !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Executive Theme Ambient Lighting & Glassmorphism */

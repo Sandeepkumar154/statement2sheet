@@ -693,9 +693,9 @@ setupPdfWorker();
       });
 
       // 3. Overscroll Navigation Gliding Engine (Touchscreen, Trackpad, Magic Mouse & Mouse Drag)
-      const THRESHOLD = 45; // Effortless activation distance in pixels
-      const RUBBER_BAND = 0.35; // Tactile glide resistance
-      const MAX_GLIDE = 85; // Maximum displacement in pixels
+      const THRESHOLD = 40; // Effortless activation distance in pixels
+      const RUBBER_BAND = 0.22; // Tactile glide resistance
+      const MAX_GLIDE = 42; // Maximum displacement in pixels
 
       const mainContent = document.getElementById('main-content');
       const leftIndicator = document.getElementById('overscroll-indicator-left');
@@ -753,8 +753,8 @@ setupPdfWorker();
 
         // Boundary resistance check: if user pulls past edge of history, offer soft tactile spring feedback
         const isBoundary = (isBackDirection && !backAllowed) || (isForwardDirection && !forwardAllowed);
-        const effectiveMax = isBoundary ? 22 : MAX_GLIDE;
-        const effectiveResistance = isBoundary ? 0.15 : RUBBER_BAND;
+        const effectiveMax = isBoundary ? 16 : MAX_GLIDE;
+        const effectiveResistance = isBoundary ? 0.12 : RUBBER_BAND;
         const clampedDelta = Math.sign(deltaX) * Math.min(absX * effectiveResistance, effectiveMax);
 
         mainContent.classList.remove('overscroll-spring-back');
@@ -768,108 +768,99 @@ setupPdfWorker();
           // Left-to-right swipe (Back)
           if (rightIndicator) {
             rightIndicator.style.opacity = '0';
-            rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.9)';
+            rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.85)';
           }
 
           if (backAllowed) {
             leftIndicator.classList.remove('overscroll-indicator-boundary');
             leftIndicator.style.opacity = `${progress}`;
-            const posX = Math.min(absX * 0.35, 24);
-            leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(${0.88 + progress * 0.18})`;
+            const posX = Math.min(absX * 0.45, 20);
+            leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(${0.9 + progress * 0.18})`;
 
             if (isTriggered) {
               leftIndicator.classList.add('overscroll-indicator-active');
               if (leftLabel) leftLabel.textContent = 'Release for Back';
-              if (leftArrow) leftArrow.style.transform = 'scale(1.25)';
             } else {
               leftIndicator.classList.remove('overscroll-indicator-active');
               if (leftLabel) leftLabel.textContent = 'Back';
-              if (leftArrow) leftArrow.style.transform = 'scale(1)';
             }
           } else {
             // Tactile feedback at Dashboard boundary
             leftIndicator.classList.remove('overscroll-indicator-active');
             leftIndicator.classList.add('overscroll-indicator-boundary');
-            leftIndicator.style.opacity = `${Math.min(progress * 0.7, 0.75)}`;
-            const posX = Math.min(absX * 0.2, 12);
-            leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(0.95)`;
+            leftIndicator.style.opacity = `${Math.min(progress * 0.7, 0.55)}`;
+            const posX = Math.min(absX * 0.2, 10);
+            leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(0.9)`;
             if (leftLabel) leftLabel.textContent = 'At Dashboard';
-            if (leftArrow) leftArrow.style.transform = 'scale(0.9)';
           }
         } else if (isForwardDirection && rightIndicator) {
           // Right-to-left swipe (Forward)
           if (leftIndicator) {
             leftIndicator.style.opacity = '0';
-            leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.9)';
+            leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.85)';
           }
 
           if (forwardAllowed) {
             rightIndicator.classList.remove('overscroll-indicator-boundary');
             rightIndicator.style.opacity = `${progress}`;
-            const posX = Math.min(absX * 0.35, 24);
-            rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(${0.88 + progress * 0.18})`;
+            const posX = Math.min(absX * 0.45, 20);
+            rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(${0.9 + progress * 0.18})`;
 
             if (isTriggered) {
               rightIndicator.classList.add('overscroll-indicator-active');
               if (rightLabel) rightLabel.textContent = 'Release for Forward';
-              if (rightArrow) rightArrow.style.transform = 'scale(1.25)';
             } else {
               rightIndicator.classList.remove('overscroll-indicator-active');
               if (rightLabel) rightLabel.textContent = 'Forward';
-              if (rightArrow) rightArrow.style.transform = 'scale(1)';
             }
           } else {
             // Tactile feedback at forward boundary
             rightIndicator.classList.remove('overscroll-indicator-active');
             rightIndicator.classList.add('overscroll-indicator-boundary');
-            rightIndicator.style.opacity = `${Math.min(progress * 0.7, 0.75)}`;
-            const posX = Math.min(absX * 0.2, 12);
-            rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(0.95)`;
+            rightIndicator.style.opacity = `${Math.min(progress * 0.7, 0.55)}`;
+            const posX = Math.min(absX * 0.2, 10);
+            rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(0.9)`;
             if (rightLabel) rightLabel.textContent = 'End of History';
-            if (rightArrow) rightArrow.style.transform = 'scale(0.9)';
           }
         }
       }
 
-      function resetOverscrollVisuals(animate = true) {
+      function resetOverscrollVisuals() {
         if (!mainContent) return;
 
-        if (animate) {
-          mainContent.classList.remove('overscroll-gliding');
-          mainContent.classList.add('overscroll-spring-back');
-          mainContent.style.transform = 'translate3d(0, 0, 0)';
+        mainContent.classList.remove('overscroll-gliding');
+        mainContent.classList.add('overscroll-spring-back');
+        mainContent.style.transform = 'translate3d(0, 0, 0)';
 
-          if (leftIndicator) {
-            leftIndicator.style.opacity = '0';
-            leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.9)';
-            leftIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
-          }
-          if (rightIndicator) {
-            rightIndicator.style.opacity = '0';
-            rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.9)';
-            rightIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
-          }
-
+        if (leftIndicator) {
+          leftIndicator.style.transition = 'all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1)';
+          leftIndicator.style.opacity = '0';
+          leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.85)';
           setTimeout(() => {
-            if (mainContent) {
-              mainContent.classList.remove('overscroll-spring-back');
-              mainContent.style.transform = '';
+            if (leftIndicator) {
+              leftIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
+              leftIndicator.style.transition = '';
             }
-          }, 280);
-        } else {
-          mainContent.classList.remove('overscroll-gliding', 'overscroll-spring-back');
-          mainContent.style.transform = '';
-          if (leftIndicator) {
-            leftIndicator.style.opacity = '0';
-            leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.9)';
-            leftIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
-          }
-          if (rightIndicator) {
-            rightIndicator.style.opacity = '0';
-            rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.9)';
-            rightIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
-          }
+          }, 300);
         }
+        if (rightIndicator) {
+          rightIndicator.style.transition = 'all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1)';
+          rightIndicator.style.opacity = '0';
+          rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.85)';
+          setTimeout(() => {
+            if (rightIndicator) {
+              rightIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
+              rightIndicator.style.transition = '';
+            }
+          }, 300);
+        }
+
+        setTimeout(() => {
+          if (mainContent) {
+            mainContent.classList.remove('overscroll-spring-back');
+            mainContent.style.transform = '';
+          }
+        }, 320);
       }
 
       // 3A. Tri-Modal Unified Pointer Engine (Touchscreens & Desktop Mouse Drag)
@@ -928,16 +919,14 @@ setupPdfWorker();
 
         if (isHorizontalSwipe && Math.abs(currentPointerDeltaX) >= THRESHOLD) {
           const goBack = currentPointerDeltaX > 0;
-          resetOverscrollVisuals(false);
+          resetOverscrollVisuals();
           if (goBack && canGoBack()) {
             executeBack();
           } else if (!goBack && canGoForward()) {
             executeForward();
-          } else {
-            resetOverscrollVisuals(true);
           }
         } else {
-          resetOverscrollVisuals(true);
+          resetOverscrollVisuals();
         }
 
         isHorizontalSwipe = false;
@@ -993,16 +982,14 @@ setupPdfWorker();
 
         if (touchHorizontal && Math.abs(touchDeltaX) >= THRESHOLD) {
           const goBack = touchDeltaX > 0;
-          resetOverscrollVisuals(false);
+          resetOverscrollVisuals();
           if (goBack && canGoBack()) {
             executeBack();
           } else if (!goBack && canGoForward()) {
             executeForward();
-          } else {
-            resetOverscrollVisuals(true);
           }
         } else {
-          resetOverscrollVisuals(true);
+          resetOverscrollVisuals();
         }
 
         touchHorizontal = false;
@@ -1037,16 +1024,14 @@ setupPdfWorker();
             // Finger(s) lifted from trackpad / magic mouse
             if (Math.abs(wheelDeltaAccumulator) >= THRESHOLD) {
               const goBack = wheelDeltaAccumulator > 0;
-              resetOverscrollVisuals(false);
+              resetOverscrollVisuals();
               if (goBack && canGoBack()) {
                 executeBack();
               } else if (!goBack && canGoForward()) {
                 executeForward();
-              } else {
-                resetOverscrollVisuals(true);
               }
             } else {
-              resetOverscrollVisuals(true);
+              resetOverscrollVisuals();
             }
             wheelDeltaAccumulator = 0;
           }, 180);
@@ -12829,7 +12814,7 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
         navigator.serviceWorker.register('./sw.js').then((reg) => {
           const badge = document.getElementById('offline-status-badge');
           if (badge) {
-            badge.title = 'PWA Offline Cache Active (s2s-cache-v6)';
+            badge.title = 'PWA Offline Cache Active (s2s-cache-v7)';
           }
 
           try {
