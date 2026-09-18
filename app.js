@@ -4050,10 +4050,11 @@ setupPdfWorker();
     let pdf2wordState = {
       file: null,
       doc: null,
-      mode: 'visual', // 'visual' (1:1 visual match with exact design/forms) or 'text' (editable flowing text)
+      mode: 'visual', // 'visual' | 'ocr' | 'text'
       pagesData: [],
       pageImages: [],
-      extractedImages: []
+      ocrPagesData: [],
+      hasOcrRun: false
     };
 
     function initPdf2WordToolListeners() {
@@ -4075,27 +4076,127 @@ setupPdfWorker();
     }
 
     function setPdf2WordMode(mode) {
-      if (mode !== 'visual' && mode !== 'text') return;
+      if (mode !== 'visual' && mode !== 'ocr' && mode !== 'text') return;
       pdf2wordState.mode = mode;
 
       const visualBtn = document.getElementById('pdf2word-mode-visual-btn');
+      const ocrBtn = document.getElementById('pdf2word-mode-ocr-btn');
       const textBtn = document.getElementById('pdf2word-mode-text-btn');
       const descEl = document.getElementById('pdf2word-mode-desc');
+      const ocrBanner = document.getElementById('pdf2word-ocr-banner');
+      const ocrLangWrapper = document.getElementById('pdf2word-ocr-lang-wrapper');
 
-      if (visualBtn && textBtn) {
-        if (mode === 'visual') {
-          visualBtn.className = 'px-3 py-1.5 rounded-md text-xs font-bold transition bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs flex items-center gap-1.5';
-          textBtn.className = 'px-3 py-1.5 rounded-md text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5';
-          if (descEl) descEl.textContent = 'Preserves 100% exact layout, logos, boxes, checkboxes & forms identical to PDF.';
-        } else {
-          textBtn.className = 'px-3 py-1.5 rounded-md text-xs font-bold transition bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs flex items-center gap-1.5';
-          visualBtn.className = 'px-3 py-1.5 rounded-md text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5';
-          if (descEl) descEl.textContent = 'Extracts flowing editable paragraphs, detected fonts & OpenXML tables.';
+      const defaultBtnClass = 'px-3 py-1.5 rounded-md text-xs font-bold transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5';
+      const activeBtnClass = 'px-3 py-1.5 rounded-md text-xs font-bold transition bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs flex items-center gap-1.5';
+
+      if (visualBtn) visualBtn.className = mode === 'visual' ? activeBtnClass : defaultBtnClass;
+      if (ocrBtn) ocrBtn.className = mode === 'ocr' ? activeBtnClass : defaultBtnClass;
+      if (textBtn) textBtn.className = mode === 'text' ? activeBtnClass : defaultBtnClass;
+
+      if (mode === 'ocr') {
+        if (ocrBanner) ocrBanner.classList.remove('hidden');
+        if (ocrLangWrapper) ocrLangWrapper.classList.remove('hidden');
+        if (descEl) descEl.textContent = 'Engages AI OCR (Tesseract.js) to recognize and convert scanned image text into editable Word paragraphs.';
+        
+        // If OCR has not run yet and we have a document, automatically run OCR!
+        if (!pdf2wordState.hasOcrRun && pdf2wordState.doc) {
+          runPdf2WordOcr();
+        }
+      } else {
+        if (ocrBanner) ocrBanner.classList.add('hidden');
+        if (ocrLangWrapper) ocrLangWrapper.classList.add('hidden');
+        if (descEl) {
+          descEl.textContent = mode === 'visual'
+            ? 'Preserves 100% exact layout, logos, boxes, checkboxes & forms identical to PDF.'
+            : 'Extracts flowing editable paragraphs, detected fonts & OpenXML tables.';
         }
       }
 
       const previewBox = document.getElementById('pdf2word-preview-box');
-      renderWordDocumentPreview(previewBox, pdf2wordState.pagesData, pdf2wordState.pageImages, pdf2wordState.mode);
+      renderWordDocumentPreview(previewBox, pdf2wordState.pagesData, pdf2wordState.pageImages, pdf2wordState.mode, pdf2wordState.ocrPagesData);
+    }
+
+    async function runPdf2WordOcr() {
+      if (!pdf2wordState.doc) return;
+      const statusText = document.getElementById('pdf2word-ocr-status-text');
+      const startOcrBtn = document.getElementById('pdf2word-start-ocr-btn');
+      const icon = document.getElementById('pdf2word-ocr-icon');
+      const lang = document.getElementById('pdf2word-ocr-lang-select')?.value || 'eng';
+
+      if (startOcrBtn) {
+        startOcrBtn.disabled = true;
+        startOcrBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      if (icon) icon.className = 'animate-spin text-blue-600 dark:text-blue-400';
+      if (statusText) statusText.textContent = `Loading AI OCR engine (${lang})...`;
+
+      try {
+        await ensureTesseract();
+        const worker = await Tesseract.createWorker(lang);
+
+        const doc = pdf2wordState.doc;
+        const ocrPages = [];
+        const maxPages = Math.min(doc.numPages, 10);
+
+        for (let p = 1; p <= maxPages; p++) {
+          if (statusText) statusText.textContent = `Running OCR (${lang}) on page ${p} of ${maxPages}...`;
+          const page = await doc.getPage(p);
+          const viewport = page.getViewport({ scale: 2.0 });
+
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          if (typeof preprocessCanvasContrast === 'function') {
+            preprocessCanvasContrast(ctx, canvas.width, canvas.height);
+          }
+
+          const { data: { text, lines: ocrLines } } = await worker.recognize(canvas);
+
+          const cleanLines = (ocrLines || []).map(l => ({
+            text: (l.text || '').trim(),
+            confidence: l.confidence,
+            fontSize: Math.round((l.bbox.y1 - l.bbox.y0) / 2) || 12,
+            isBold: /bold|black/i.test(l.font_name || '') || (l.text.toUpperCase() === l.text && l.text.length > 3)
+          })).filter(l => l.text.length > 0);
+
+          const blocks = detectContentBlocks(cleanLines, viewport.width);
+          ocrPages.push({
+            pageNum: p,
+            pageWidth: viewport.width,
+            pageHeight: viewport.height,
+            blocks,
+            rawText: text
+          });
+        }
+
+        await worker.terminate();
+
+        pdf2wordState.ocrPagesData = ocrPages;
+        pdf2wordState.hasOcrRun = true;
+
+        if (statusText) statusText.textContent = `✓ OCR Complete (${maxPages} page(s) recognized)! Converted to editable Word text.`;
+        if (icon) icon.className = 'text-emerald-500 font-bold';
+        if (startOcrBtn) {
+          startOcrBtn.disabled = false;
+          startOcrBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          startOcrBtn.innerHTML = '<span>🔄</span> <span>Re-run OCR</span>';
+        }
+
+        // Update preview with OCR result
+        const previewBox = document.getElementById('pdf2word-preview-box');
+        renderWordDocumentPreview(previewBox, pdf2wordState.pagesData, pdf2wordState.pageImages, 'ocr', pdf2wordState.ocrPagesData);
+      } catch (err) {
+        console.error('PDF to Word OCR error:', err);
+        if (statusText) statusText.textContent = `OCR Failed: ${err.message}`;
+        if (icon) icon.className = 'text-rose-500 font-bold';
+        if (startOcrBtn) {
+          startOcrBtn.disabled = false;
+          startOcrBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+      }
     }
 
     async function loadPdf2WordFile(file) {
@@ -4109,7 +4210,8 @@ setupPdfWorker();
           mode: 'visual',
           pagesData: [],
           pageImages: [],
-          extractedImages: []
+          ocrPagesData: [],
+          hasOcrRun: false
         };
 
         const card = document.getElementById('pdf2word-controls-card');
@@ -4347,7 +4449,7 @@ setupPdfWorker();
 
         // 2. Headings Detection
         const isDocTitle = i === 0 && line.fontSize && line.fontSize >= 13;
-        const isHeading2 = !isDocTitle && line.fontSize && line.fontSize >= 11 && (line.items ? line.items.some(it => it.isBold) : false);
+        const isHeading2 = !isDocTitle && line.fontSize && line.fontSize >= 11 && (line.items ? line.items.some(it => it.isBold) : (line.isBold || false));
 
         if (isDocTitle) {
           blocks.push({
@@ -4378,7 +4480,7 @@ setupPdfWorker();
           if (!nextT) break;
 
           const nextIsTable = checkIsTableLine(nextL);
-          const nextIsHeading = nextL.fontSize && nextL.fontSize >= 11 && (nextL.items ? nextL.items.some(it => it.isBold) : false);
+          const nextIsHeading = nextL.fontSize && nextL.fontSize >= 11 && (nextL.items ? nextL.items.some(it => it.isBold) : (nextL.isBold || false));
 
           if (nextIsTable || nextIsHeading) break;
 
@@ -4560,7 +4662,7 @@ setupPdfWorker();
       return tblXml;
     }
 
-    function renderWordDocumentPreview(previewBox, pagesData, pageImages, mode = 'visual') {
+    function renderWordDocumentPreview(previewBox, pagesData, pageImages, mode = 'visual', ocrPagesData = []) {
       if (!previewBox) return;
 
       if (mode === 'visual' && pageImages && pageImages.length) {
@@ -4575,6 +4677,59 @@ setupPdfWorker();
               </div>
               <img src="${img.dataUrl}" alt="Page ${p}" class="w-full h-auto rounded border border-slate-200 dark:border-slate-700 shadow-sm pointer-events-none" />
             </div>`;
+        });
+        previewBox.innerHTML = html;
+        return;
+      }
+
+      // OCR Mode Preview
+      if (mode === 'ocr') {
+        const sourcePages = ocrPagesData && ocrPagesData.length ? ocrPagesData : [];
+        if (!sourcePages.length) {
+          previewBox.innerHTML = `
+            <div class="p-8 text-center text-slate-500 dark:text-slate-400">
+              <div class="w-12 h-12 mx-auto mb-3 bg-blue-100 dark:bg-blue-950/60 text-blue-600 rounded-full flex items-center justify-center text-xl">🔍</div>
+              <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">Ready to OCR Scanned Document</h4>
+              <p class="text-xs mt-1 mb-4 max-w-sm mx-auto">Click "Run OCR Now" in the blue banner above to extract all text, headings, and lines from your scanned image into editable Word text.</p>
+              <button data-action="start-pdf2word-ocr" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition">⚡ Start AI OCR Now</button>
+            </div>`;
+          return;
+        }
+
+        let html = '';
+        sourcePages.forEach(pg => {
+          html += `
+            <div class="mb-6 p-8 sm:p-12 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 font-sans leading-relaxed text-black dark:text-white max-w-3xl mx-auto">
+              <div class="text-[10px] font-sans font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800 pb-2 mb-6 flex items-center justify-between">
+                <span>Page ${pg.pageNum}</span>
+                <span class="text-[9px] bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded font-mono">🔍 AI OCR Recognized Text</span>
+              </div>`;
+
+          const blocks = pg.blocks || [];
+          blocks.forEach(b => {
+            if (b.type === 'title') {
+              const titleText = escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''));
+              html += `<h1 class="text-xl font-bold text-center text-black dark:text-white my-4 tracking-wide">${titleText}</h1>`;
+            } else if (b.type === 'heading2') {
+              const headingText = escapeHtml(b.text || (b.runs || []).map(r => r.text).join(''));
+              html += `<h2 class="text-base font-bold text-black dark:text-white mt-5 mb-2">${headingText}</h2>`;
+            } else if (b.type === 'table') {
+              html += `<div class="my-4 overflow-x-auto"><table class="min-w-full text-xs border border-black dark:border-slate-700">`;
+              b.rows.forEach((r, rIdx) => {
+                const isHdr = rIdx === 0;
+                html += `<tr class="${isHdr ? 'bg-slate-100 dark:bg-slate-800 font-bold text-black dark:text-white' : 'border-t border-black dark:border-slate-700'}">`;
+                r.forEach(c => {
+                  html += `<td class="p-2 border-r border-black dark:border-slate-700 text-black dark:text-white h-7">${escapeHtml(c)}</td>`;
+                });
+                html += `</tr>`;
+              });
+              html += `</table></div>`;
+            } else {
+              html += `<p class="text-xs sm:text-sm mb-3 text-justify leading-relaxed text-black dark:text-slate-100">${escapeHtml(b.text || '')}</p>`;
+            }
+          });
+
+          html += `</div>`;
         });
         previewBox.innerHTML = html;
         return;
@@ -4636,9 +4791,9 @@ setupPdfWorker();
       if (!pdf2wordState.file) return;
       try {
         let docXmlBody = '';
-        const isVisualMode = pdf2wordState.mode === 'visual' && pdf2wordState.pageImages.length > 0;
+        const mode = pdf2wordState.mode;
 
-        if (isVisualMode) {
+        if (mode === 'visual' && pdf2wordState.pageImages.length > 0) {
           // 1:1 Visual Fidelity Mode (Identical to PDF - iLovePDF Quality)
           const imagesToEmbed = [];
           const maxW_EMU = 6858000; // 7.5 in (10800 dxa)
@@ -4698,6 +4853,39 @@ setupPdfWorker();
 
           const docxBlob = await buildOpenXmlDocxBlob(docXmlBody, 'Calibri', imagesToEmbed, true);
           const fileName = (pdf2wordState.file ? pdf2wordState.file.name.replace(/\.pdf$/i, '') : 'document') + '.docx';
+          downloadTrackedBlob(docxBlob, fileName);
+          return;
+        }
+
+        // OCR Mode Export
+        if (mode === 'ocr') {
+          if (!pdf2wordState.hasOcrRun || !pdf2wordState.ocrPagesData.length) {
+            await runPdf2WordOcr();
+          }
+
+          const ocrPages = pdf2wordState.ocrPagesData || [];
+          ocrPages.forEach((pg, pIdx) => {
+            const blocks = pg.blocks || [];
+            blocks.forEach(b => {
+              if (b.type === 'title') {
+                docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+              } else if (b.type === 'heading2') {
+                docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+              } else if (b.type === 'table') {
+                docXmlBody += formatOpenXmlTable(b.rows);
+                docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/></w:pPr></w:p>`;
+              } else {
+                docXmlBody += `<w:p><w:pPr><w:spacing w:after="140" w:line="260" w:lineRule="auto"/><w:jc w:val="both"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+              }
+            });
+
+            if (pIdx < ocrPages.length - 1) {
+              docXmlBody += `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
+            }
+          });
+
+          const docxBlob = await buildOpenXmlDocxBlob(docXmlBody, 'Calibri', []);
+          const fileName = (pdf2wordState.file ? pdf2wordState.file.name.replace(/\.pdf$/i, '') : 'document') + '_ocr.docx';
           downloadTrackedBlob(docxBlob, fileName);
           return;
         }
@@ -11905,6 +12093,9 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           if (mode && typeof setPdf2WordMode === 'function') setPdf2WordMode(mode);
           break;
         }
+        case 'start-pdf2word-ocr':
+          runPdf2WordOcr();
+          break;
         case 'run-pdf2word':
           executeConvertPdfToWord();
           break;
