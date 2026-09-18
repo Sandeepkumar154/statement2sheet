@@ -2916,9 +2916,20 @@ setupPdfWorker();
       totalPages: 1
     };
 
+    let cropDragState = {
+      isDragging: false,
+      mode: null, // 'draw' | 'move' | 'resize'
+      handle: null, // 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
+      startX: 0,
+      startY: 0,
+      initialBox: { left: 0, top: 0, width: 0, height: 0 },
+      containerRect: null
+    };
+
     function initCropToolListeners() {
       const dropZone = document.getElementById('crop-drop-zone');
       const input = document.getElementById('crop-file-input');
+      const stage = document.getElementById('crop-stage-container');
       if (!dropZone || !input) return;
 
       dropZone.addEventListener('click', (e) => { if (e.target !== input) input.click(); });
@@ -2943,6 +2954,194 @@ setupPdfWorker();
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', updateCropOverlay);
       });
+
+      if (stage) {
+        stage.addEventListener('mousedown', handleCropPointerDown);
+        stage.addEventListener('touchstart', handleCropPointerDown, { passive: false });
+      }
+    }
+
+    function handleCropPointerDown(e) {
+      const container = document.getElementById('crop-stage-container');
+      const box = document.getElementById('crop-selection-box');
+      if (!container || !box) return;
+
+      const rect = container.getBoundingClientRect();
+      cropDragState.containerRect = rect;
+      if (rect.width <= 0 || rect.height <= 0) return;
+
+      const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+      const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+      const relX = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      const relY = Math.max(0, Math.min(rect.height, clientY - rect.top));
+
+      const target = e.target;
+      const handleEl = target.closest ? target.closest('.crop-handle') : null;
+
+      // Current box geometry in pixels relative to container
+      const curLeftP = parseFloat(box.style.left) || 0;
+      const curTopP = parseFloat(box.style.top) || 0;
+      const curWidthP = parseFloat(box.style.width) || 100;
+      const curHeightP = parseFloat(box.style.height) || 100;
+
+      const boxLeft = (curLeftP / 100) * rect.width;
+      const boxTop = (curTopP / 100) * rect.height;
+      const boxWidth = (curWidthP / 100) * rect.width;
+      const boxHeight = (curHeightP / 100) * rect.height;
+
+      cropDragState.initialBox = { left: boxLeft, top: boxTop, width: boxWidth, height: boxHeight };
+      cropDragState.startX = relX;
+      cropDragState.startY = relY;
+      cropDragState.isDragging = true;
+
+      if (handleEl) {
+        // Resizing via handle
+        e.preventDefault();
+        e.stopPropagation();
+        cropDragState.mode = 'resize';
+        cropDragState.handle = handleEl.dataset.handle;
+      } else if (target === box || (box.contains && box.contains(target))) {
+        // Dragging existing box
+        e.preventDefault();
+        e.stopPropagation();
+        cropDragState.mode = 'move';
+      } else {
+        // Freehand draw new crop box
+        e.preventDefault();
+        cropDragState.mode = 'draw';
+        setCropBoxPixels(relX, relY, 0, 0, rect);
+      }
+
+      window.addEventListener('mousemove', handleCropPointerMove);
+      window.addEventListener('mouseup', handleCropPointerUp);
+      window.addEventListener('touchmove', handleCropPointerMove, { passive: false });
+      window.addEventListener('touchend', handleCropPointerUp);
+    }
+
+    function handleCropPointerMove(e) {
+      if (!cropDragState.isDragging || !cropDragState.containerRect) return;
+      e.preventDefault();
+
+      const rect = cropDragState.containerRect;
+      const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+      const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+      const relX = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      const relY = Math.max(0, Math.min(rect.height, clientY - rect.top));
+
+      const dx = relX - cropDragState.startX;
+      const dy = relY - cropDragState.startY;
+      const init = cropDragState.initialBox;
+
+      if (cropDragState.mode === 'draw') {
+        const left = Math.min(cropDragState.startX, relX);
+        const top = Math.min(cropDragState.startY, relY);
+        const width = Math.max(10, Math.abs(relX - cropDragState.startX));
+        const height = Math.max(10, Math.abs(relY - cropDragState.startY));
+        setCropBoxPixels(left, top, width, height, rect);
+      } else if (cropDragState.mode === 'move') {
+        let newLeft = init.left + dx;
+        let newTop = init.top + dy;
+        newLeft = Math.max(0, Math.min(rect.width - init.width, newLeft));
+        newTop = Math.max(0, Math.min(rect.height - init.height, newTop));
+        setCropBoxPixels(newLeft, newTop, init.width, init.height, rect);
+      } else if (cropDragState.mode === 'resize') {
+        let newLeft = init.left;
+        let newTop = init.top;
+        let newWidth = init.width;
+        let newHeight = init.height;
+        const minSize = 20;
+
+        switch (cropDragState.handle) {
+          case 'e':
+            newWidth = Math.max(minSize, Math.min(rect.width - init.left, init.width + dx));
+            break;
+          case 's':
+            newHeight = Math.max(minSize, Math.min(rect.height - init.top, init.height + dy));
+            break;
+          case 'w': {
+            const potLeft = Math.max(0, Math.min(init.left + init.width - minSize, init.left + dx));
+            newWidth = (init.left + init.width) - potLeft;
+            newLeft = potLeft;
+            break;
+          }
+          case 'n': {
+            const potTop = Math.max(0, Math.min(init.top + init.height - minSize, init.top + dy));
+            newHeight = (init.top + init.height) - potTop;
+            newTop = potTop;
+            break;
+          }
+          case 'se':
+            newWidth = Math.max(minSize, Math.min(rect.width - init.left, init.width + dx));
+            newHeight = Math.max(minSize, Math.min(rect.height - init.top, init.height + dy));
+            break;
+          case 'sw': {
+            const potLeft = Math.max(0, Math.min(init.left + init.width - minSize, init.left + dx));
+            newWidth = (init.left + init.width) - potLeft;
+            newLeft = potLeft;
+            newHeight = Math.max(minSize, Math.min(rect.height - init.top, init.height + dy));
+            break;
+          }
+          case 'ne': {
+            newWidth = Math.max(minSize, Math.min(rect.width - init.left, init.width + dx));
+            const potTop = Math.max(0, Math.min(init.top + init.height - minSize, init.top + dy));
+            newHeight = (init.top + init.height) - potTop;
+            newTop = potTop;
+            break;
+          }
+          case 'nw': {
+            const potLeft = Math.max(0, Math.min(init.left + init.width - minSize, init.left + dx));
+            newWidth = (init.left + init.width) - potLeft;
+            newLeft = potLeft;
+            const potTop = Math.max(0, Math.min(init.top + init.height - minSize, init.top + dy));
+            newHeight = (init.top + init.height) - potTop;
+            newTop = potTop;
+            break;
+          }
+        }
+        setCropBoxPixels(newLeft, newTop, newWidth, newHeight, rect);
+      }
+    }
+
+    function handleCropPointerUp() {
+      if (cropDragState.isDragging) {
+        cropDragState.isDragging = false;
+        cropDragState.mode = null;
+        cropDragState.handle = null;
+      }
+      window.removeEventListener('mousemove', handleCropPointerMove);
+      window.removeEventListener('mouseup', handleCropPointerUp);
+      window.removeEventListener('touchmove', handleCropPointerMove);
+      window.removeEventListener('touchend', handleCropPointerUp);
+    }
+
+    function setCropBoxPixels(leftPx, topPx, widthPx, heightPx, rect) {
+      const box = document.getElementById('crop-selection-box');
+      if (!box || !rect || rect.width <= 0 || rect.height <= 0) return;
+
+      const leftP = Math.max(0, Math.min(95, (leftPx / rect.width) * 100));
+      const topP = Math.max(0, Math.min(95, (topPx / rect.height) * 100));
+      const widthP = Math.max(5, Math.min(100 - leftP, (widthPx / rect.width) * 100));
+      const heightP = Math.max(5, Math.min(100 - topP, (heightPx / rect.height) * 100));
+
+      const rightP = Math.max(0, 100 - (leftP + widthP));
+      const bottomP = Math.max(0, 100 - (topP + heightP));
+
+      box.style.left = leftP + '%';
+      box.style.top = topP + '%';
+      box.style.width = widthP + '%';
+      box.style.height = heightP + '%';
+
+      // Sync numeric inset inputs
+      const t = document.getElementById('crop-inset-top');
+      const b = document.getElementById('crop-inset-bottom');
+      const l = document.getElementById('crop-inset-left');
+      const r = document.getElementById('crop-inset-right');
+      if (t) t.value = Math.round(topP * 10) / 10;
+      if (b) b.value = Math.round(bottomP * 10) / 10;
+      if (l) l.value = Math.round(leftP * 10) / 10;
+      if (r) r.value = Math.round(rightP * 10) / 10;
     }
 
     async function loadCropFile(file) {
@@ -3009,10 +3208,10 @@ setupPdfWorker();
     function updateCropOverlay() {
       const box = document.getElementById('crop-selection-box');
       if (!box) return;
-      const top = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-top')?.value || 0)));
-      const bottom = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-bottom')?.value || 0)));
-      const left = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-left')?.value || 0)));
-      const right = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-right')?.value || 0)));
+      const top = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-top')?.value || 0)));
+      const bottom = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-bottom')?.value || 0)));
+      const left = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-left')?.value || 0)));
+      const right = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-right')?.value || 0)));
 
       box.style.top = top + '%';
       box.style.left = left + '%';
@@ -3028,10 +3227,10 @@ setupPdfWorker();
       try {
         await ensurePdfLib();
         const pdfDoc = await PDFLib.PDFDocument.load(cropState.pdfBytes.slice(0), { ignoreEncryption: true });
-        const topP = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-top')?.value || 0))) / 100;
-        const bottomP = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-bottom')?.value || 0))) / 100;
-        const leftP = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-left')?.value || 0))) / 100;
-        const rightP = Math.min(45, Math.max(0, parseFloat(document.getElementById('crop-inset-right')?.value || 0))) / 100;
+        const topP = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-top')?.value || 0))) / 100;
+        const bottomP = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-bottom')?.value || 0))) / 100;
+        const leftP = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-left')?.value || 0))) / 100;
+        const rightP = Math.min(95, Math.max(0, parseFloat(document.getElementById('crop-inset-right')?.value || 0))) / 100;
 
         const applyAll = document.getElementById('crop-apply-all-pages')?.checked ?? true;
         const pages = applyAll ? pdfDoc.getPages() : [pdfDoc.getPages()[cropState.currentPage - 1]];
