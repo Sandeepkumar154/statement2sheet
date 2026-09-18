@@ -526,14 +526,13 @@ setupPdfWorker();
         ? options.isBack
         : (toolName === 'dashboard');
 
-      // Update browser history (pushState) unless this call originated from popstate
-      if (!options.fromPopState && typeof window !== 'undefined' && window.history && window.history.pushState) {
-        if (!options.fromGesture) {
-          portalHistoryIndex++;
-          portalHistoryStack[portalHistoryIndex] = toolName;
-          portalHistoryStack.length = portalHistoryIndex + 1;
-          maxPortalHistoryIndex = portalHistoryIndex;
-        }
+      // Update browser history (pushState) unless this call originated from popstate or gestures
+      if (!options.fromPopState && !options.fromGesture && typeof window !== 'undefined' && window.history && window.history.pushState) {
+        portalHistoryIndex++;
+        portalHistoryStack[portalHistoryIndex] = toolName;
+        portalHistoryStack.length = portalHistoryIndex + 1;
+        maxPortalHistoryIndex = portalHistoryIndex;
+
         const stateObj = { tool: toolName, historyIndex: portalHistoryIndex };
         const newHash = toolName === 'dashboard' ? (window.location.pathname + window.location.search) : ('#' + toolName);
         try {
@@ -670,14 +669,17 @@ setupPdfWorker();
       }
 
       if (validInitialTool !== 'dashboard') {
-        portalHistoryStack[0] = 'dashboard';
-        portalHistoryStack[1] = validInitialTool;
+        portalHistoryStack = ['dashboard', validInitialTool];
         portalHistoryIndex = 1;
         maxPortalHistoryIndex = 1;
         switchPortalTool(validInitialTool, { noAnimate: true, fromPopState: true });
+      } else {
+        portalHistoryStack = ['dashboard'];
+        portalHistoryIndex = 0;
+        maxPortalHistoryIndex = 0;
       }
 
-      // 2. Popstate Listener for Browser Back/Forward buttons
+      // 2. Popstate Listener for Browser Back/Forward buttons and native gestures
       window.addEventListener('popstate', (e) => {
         const state = e.state;
         const targetTool = (state && state.tool) || ((window.location.hash || '').replace(/^#/, '')) || 'dashboard';
@@ -685,13 +687,15 @@ setupPdfWorker();
         const isBack = newHistoryIndex <= portalHistoryIndex;
         portalHistoryIndex = newHistoryIndex;
 
-        switchPortalTool(targetTool, { fromPopState: true, isBack: isBack });
+        if (currentPortalTool !== targetTool) {
+          switchPortalTool(targetTool, { fromPopState: true, isBack: isBack });
+        }
       });
 
-      // 3. Overscroll Navigation Gliding Engine (Touchscreen, Trackpad & Magic Mouse)
-      const THRESHOLD = 70; // pixels to activate navigation
-      const RUBBER_BAND = 0.35; // tactile glide resistance
-      const MAX_GLIDE = 100; // maximum visual displacement in px
+      // 3. Overscroll Navigation Gliding Engine (Touchscreen, Trackpad, Magic Mouse & Mouse Drag)
+      const THRESHOLD = 45; // Effortless activation distance in pixels
+      const RUBBER_BAND = 0.35; // Tactile glide resistance
+      const MAX_GLIDE = 85; // Maximum displacement in pixels
 
       const mainContent = document.getElementById('main-content');
       const leftIndicator = document.getElementById('overscroll-indicator-left');
@@ -702,7 +706,7 @@ setupPdfWorker();
       const rightArrow = document.getElementById('overscroll-arrow-right');
 
       function canGoBack() {
-        return currentPortalTool !== 'dashboard' || portalHistoryIndex > 0;
+        return currentPortalTool !== 'dashboard';
       }
 
       function canGoForward() {
@@ -714,8 +718,16 @@ setupPdfWorker();
           const target = portalHistoryStack[portalHistoryIndex - 1] || 'dashboard';
           portalHistoryIndex--;
           switchPortalTool(target, { isBack: true, fromGesture: true });
+          if (typeof window !== 'undefined' && window.history && typeof window.history.back === 'function') {
+            try { window.history.back(); } catch (e) {}
+          }
         } else if (currentPortalTool !== 'dashboard') {
           switchPortalTool('dashboard', { isBack: true, fromGesture: true });
+          if (window.history && window.history.replaceState) {
+            try {
+              window.history.replaceState({ tool: 'dashboard', historyIndex: 0 }, '', window.location.pathname + window.location.search);
+            } catch (e) {}
+          }
         }
       }
 
@@ -724,54 +736,97 @@ setupPdfWorker();
           const target = portalHistoryStack[portalHistoryIndex + 1];
           portalHistoryIndex++;
           switchPortalTool(target, { isBack: false, fromGesture: true });
+          if (typeof window !== 'undefined' && window.history && typeof window.history.forward === 'function') {
+            try { window.history.forward(); } catch (e) {}
+          }
         }
       }
 
       function updateOverscrollVisuals(deltaX) {
         if (!mainContent) return;
 
-        const clampedDelta = Math.sign(deltaX) * Math.min(Math.abs(deltaX) * RUBBER_BAND, MAX_GLIDE);
+        const absX = Math.abs(deltaX);
+        const isBackDirection = deltaX > 0;
+        const isForwardDirection = deltaX < 0;
+        const backAllowed = canGoBack();
+        const forwardAllowed = canGoForward();
+
+        // Boundary resistance check: if user pulls past edge of history, offer soft tactile spring feedback
+        const isBoundary = (isBackDirection && !backAllowed) || (isForwardDirection && !forwardAllowed);
+        const effectiveMax = isBoundary ? 22 : MAX_GLIDE;
+        const effectiveResistance = isBoundary ? 0.15 : RUBBER_BAND;
+        const clampedDelta = Math.sign(deltaX) * Math.min(absX * effectiveResistance, effectiveMax);
+
         mainContent.classList.remove('overscroll-spring-back');
         mainContent.classList.add('overscroll-gliding');
         mainContent.style.transform = `translate3d(${clampedDelta}px, 0, 0)`;
 
-        const absX = Math.abs(deltaX);
         const progress = Math.min(absX / THRESHOLD, 1);
         const isTriggered = absX >= THRESHOLD;
 
-        if (deltaX > 0 && leftIndicator) {
-          // Going Back (left-to-right)
-          leftIndicator.style.opacity = `${progress}`;
-          const posX = Math.min(absX * 0.35, 24);
-          leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(${0.85 + progress * 0.2})`;
-
-          if (rightIndicator) rightIndicator.style.opacity = '0';
-
-          if (isTriggered) {
-            leftIndicator.classList.add('overscroll-indicator-active');
-            if (leftLabel) leftLabel.textContent = 'Release for Back';
-            if (leftArrow) leftArrow.style.transform = 'scale(1.25)';
-          } else {
-            leftIndicator.classList.remove('overscroll-indicator-active');
-            if (leftLabel) leftLabel.textContent = 'Back';
-            if (leftArrow) leftArrow.style.transform = 'scale(1)';
+        if (isBackDirection && leftIndicator) {
+          // Left-to-right swipe (Back)
+          if (rightIndicator) {
+            rightIndicator.style.opacity = '0';
+            rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.9)';
           }
-        } else if (deltaX < 0 && rightIndicator && canGoForward()) {
-          // Going Forward (right-to-left)
-          rightIndicator.style.opacity = `${progress}`;
-          const posX = Math.min(absX * 0.35, 24);
-          rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(${0.85 + progress * 0.2})`;
 
-          if (leftIndicator) leftIndicator.style.opacity = '0';
+          if (backAllowed) {
+            leftIndicator.classList.remove('overscroll-indicator-boundary');
+            leftIndicator.style.opacity = `${progress}`;
+            const posX = Math.min(absX * 0.35, 24);
+            leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(${0.88 + progress * 0.18})`;
 
-          if (isTriggered) {
-            rightIndicator.classList.add('overscroll-indicator-active');
-            if (rightLabel) rightLabel.textContent = 'Release for Forward';
-            if (rightArrow) rightArrow.style.transform = 'scale(1.25)';
+            if (isTriggered) {
+              leftIndicator.classList.add('overscroll-indicator-active');
+              if (leftLabel) leftLabel.textContent = 'Release for Back';
+              if (leftArrow) leftArrow.style.transform = 'scale(1.25)';
+            } else {
+              leftIndicator.classList.remove('overscroll-indicator-active');
+              if (leftLabel) leftLabel.textContent = 'Back';
+              if (leftArrow) leftArrow.style.transform = 'scale(1)';
+            }
           } else {
+            // Tactile feedback at Dashboard boundary
+            leftIndicator.classList.remove('overscroll-indicator-active');
+            leftIndicator.classList.add('overscroll-indicator-boundary');
+            leftIndicator.style.opacity = `${Math.min(progress * 0.7, 0.75)}`;
+            const posX = Math.min(absX * 0.2, 12);
+            leftIndicator.style.transform = `translate3d(${posX}px, -50%, 0) scale(0.95)`;
+            if (leftLabel) leftLabel.textContent = 'At Dashboard';
+            if (leftArrow) leftArrow.style.transform = 'scale(0.9)';
+          }
+        } else if (isForwardDirection && rightIndicator) {
+          // Right-to-left swipe (Forward)
+          if (leftIndicator) {
+            leftIndicator.style.opacity = '0';
+            leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.9)';
+          }
+
+          if (forwardAllowed) {
+            rightIndicator.classList.remove('overscroll-indicator-boundary');
+            rightIndicator.style.opacity = `${progress}`;
+            const posX = Math.min(absX * 0.35, 24);
+            rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(${0.88 + progress * 0.18})`;
+
+            if (isTriggered) {
+              rightIndicator.classList.add('overscroll-indicator-active');
+              if (rightLabel) rightLabel.textContent = 'Release for Forward';
+              if (rightArrow) rightArrow.style.transform = 'scale(1.25)';
+            } else {
+              rightIndicator.classList.remove('overscroll-indicator-active');
+              if (rightLabel) rightLabel.textContent = 'Forward';
+              if (rightArrow) rightArrow.style.transform = 'scale(1)';
+            }
+          } else {
+            // Tactile feedback at forward boundary
             rightIndicator.classList.remove('overscroll-indicator-active');
-            if (rightLabel) rightLabel.textContent = 'Forward';
-            if (rightArrow) rightArrow.style.transform = 'scale(1)';
+            rightIndicator.classList.add('overscroll-indicator-boundary');
+            rightIndicator.style.opacity = `${Math.min(progress * 0.7, 0.75)}`;
+            const posX = Math.min(absX * 0.2, 12);
+            rightIndicator.style.transform = `translate3d(-${posX}px, -50%, 0) scale(0.95)`;
+            if (rightLabel) rightLabel.textContent = 'End of History';
+            if (rightArrow) rightArrow.style.transform = 'scale(0.9)';
           }
         }
       }
@@ -787,17 +842,19 @@ setupPdfWorker();
           if (leftIndicator) {
             leftIndicator.style.opacity = '0';
             leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.9)';
-            leftIndicator.classList.remove('overscroll-indicator-active');
+            leftIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
           }
           if (rightIndicator) {
             rightIndicator.style.opacity = '0';
             rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.9)';
-            rightIndicator.classList.remove('overscroll-indicator-active');
+            rightIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
           }
 
           setTimeout(() => {
-            mainContent.classList.remove('overscroll-spring-back');
-            mainContent.style.transform = '';
+            if (mainContent) {
+              mainContent.classList.remove('overscroll-spring-back');
+              mainContent.style.transform = '';
+            }
           }, 280);
         } else {
           mainContent.classList.remove('overscroll-gliding', 'overscroll-spring-back');
@@ -805,84 +862,155 @@ setupPdfWorker();
           if (leftIndicator) {
             leftIndicator.style.opacity = '0';
             leftIndicator.style.transform = 'translate3d(-48px, -50%, 0) scale(0.9)';
-            leftIndicator.classList.remove('overscroll-indicator-active');
+            leftIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
           }
           if (rightIndicator) {
             rightIndicator.style.opacity = '0';
             rightIndicator.style.transform = 'translate3d(48px, -50%, 0) scale(0.9)';
-            rightIndicator.classList.remove('overscroll-indicator-active');
+            rightIndicator.classList.remove('overscroll-indicator-active', 'overscroll-indicator-boundary');
           }
         }
       }
 
-      // 3A. Mobile Touch Gestures
-      let touchStartX = 0;
-      let touchStartY = 0;
-      let currentTouchDeltaX = 0;
+      // 3A. Tri-Modal Unified Pointer Engine (Touchscreens & Desktop Mouse Drag)
+      let pointerStartX = 0;
+      let pointerStartY = 0;
+      let activePointerId = null;
+      let isPointerTracking = false;
       let isHorizontalSwipe = false;
-      let isTouchActive = false;
+      let currentPointerDeltaX = 0;
 
-      document.addEventListener('touchstart', (e) => {
-        if (!e.touches || e.touches.length !== 1) return;
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        currentTouchDeltaX = 0;
+      function isInteractiveTarget(target) {
+        if (!target || !target.closest) return false;
+        return !!target.closest('input, button, select, textarea, a, [contenteditable="true"], canvas, .crop-handle, .signature-pad, #mega-menu-dropdown, #app-launcher-dropdown');
+      }
+
+      document.addEventListener('pointerdown', (e) => {
+        // Ignore secondary mouse clicks
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        // Ignore clicks on inputs, buttons, sliders, links, or drawing canvases
+        if (isInteractiveTarget(e.target)) return;
+
+        pointerStartX = e.clientX;
+        pointerStartY = e.clientY;
+        activePointerId = e.pointerId;
+        isPointerTracking = true;
         isHorizontalSwipe = false;
-        isTouchActive = true;
+        currentPointerDeltaX = 0;
       }, { passive: true });
 
-      document.addEventListener('touchmove', (e) => {
-        if (!isTouchActive || !e.touches || e.touches.length !== 1) return;
+      document.addEventListener('pointermove', (e) => {
+        if (!isPointerTracking || e.pointerId !== activePointerId) return;
 
-        const diffX = e.touches[0].clientX - touchStartX;
-        const diffY = e.touches[0].clientY - touchStartY;
+        const diffX = e.clientX - pointerStartX;
+        const diffY = e.clientY - pointerStartY;
 
         if (!isHorizontalSwipe) {
-          if (Math.abs(diffX) > 10) {
-            if (Math.abs(diffX) > Math.abs(diffY) * 1.2) {
+          if (Math.abs(diffX) > 8) {
+            if (Math.abs(diffX) >= Math.abs(diffY) * 0.8) {
               isHorizontalSwipe = true;
-            } else {
-              isTouchActive = false;
+            } else if (Math.abs(diffY) > 16) {
+              isPointerTracking = false;
               return;
             }
           }
         }
 
         if (isHorizontalSwipe) {
-          if (diffX > 0 && !canGoBack()) return;
-          if (diffX < 0 && !canGoForward()) return;
-
-          currentTouchDeltaX = diffX;
-          updateOverscrollVisuals(currentTouchDeltaX);
+          currentPointerDeltaX = diffX;
+          updateOverscrollVisuals(currentPointerDeltaX);
         }
       }, { passive: true });
 
-      document.addEventListener('touchend', () => {
-        if (!isTouchActive) return;
-        isTouchActive = false;
+      function endPointerGesture() {
+        if (!isPointerTracking) return;
+        isPointerTracking = false;
 
-        if (isHorizontalSwipe && Math.abs(currentTouchDeltaX) >= THRESHOLD) {
-          const goBack = currentTouchDeltaX > 0;
+        if (isHorizontalSwipe && Math.abs(currentPointerDeltaX) >= THRESHOLD) {
+          const goBack = currentPointerDeltaX > 0;
           resetOverscrollVisuals(false);
           if (goBack && canGoBack()) {
             executeBack();
           } else if (!goBack && canGoForward()) {
             executeForward();
+          } else {
+            resetOverscrollVisuals(true);
           }
         } else {
           resetOverscrollVisuals(true);
         }
 
         isHorizontalSwipe = false;
-        currentTouchDeltaX = 0;
+        currentPointerDeltaX = 0;
+        activePointerId = null;
+      }
+
+      document.addEventListener('pointerup', endPointerGesture, { passive: true });
+      document.addEventListener('pointercancel', endPointerGesture, { passive: true });
+
+      // Fallback for Touch Event environments where Pointer Events may be restricted
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchTracking = false;
+      let touchHorizontal = false;
+      let touchDeltaX = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        if (isPointerTracking || !e.touches || e.touches.length !== 1) return;
+        if (isInteractiveTarget(e.target)) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchTracking = true;
+        touchHorizontal = false;
+        touchDeltaX = 0;
       }, { passive: true });
 
-      document.addEventListener('touchcancel', () => {
-        isTouchActive = false;
-        isHorizontalSwipe = false;
-        currentTouchDeltaX = 0;
-        resetOverscrollVisuals(true);
+      document.addEventListener('touchmove', (e) => {
+        if (!touchTracking || isPointerTracking || !e.touches || e.touches.length !== 1) return;
+        const diffX = e.touches[0].clientX - touchStartX;
+        const diffY = e.touches[0].clientY - touchStartY;
+
+        if (!touchHorizontal) {
+          if (Math.abs(diffX) > 8) {
+            if (Math.abs(diffX) >= Math.abs(diffY) * 0.8) {
+              touchHorizontal = true;
+            } else if (Math.abs(diffY) > 16) {
+              touchTracking = false;
+              return;
+            }
+          }
+        }
+
+        if (touchHorizontal) {
+          touchDeltaX = diffX;
+          updateOverscrollVisuals(touchDeltaX);
+        }
       }, { passive: true });
+
+      function endTouchGesture() {
+        if (!touchTracking || isPointerTracking) return;
+        touchTracking = false;
+
+        if (touchHorizontal && Math.abs(touchDeltaX) >= THRESHOLD) {
+          const goBack = touchDeltaX > 0;
+          resetOverscrollVisuals(false);
+          if (goBack && canGoBack()) {
+            executeBack();
+          } else if (!goBack && canGoForward()) {
+            executeForward();
+          } else {
+            resetOverscrollVisuals(true);
+          }
+        } else {
+          resetOverscrollVisuals(true);
+        }
+
+        touchHorizontal = false;
+        touchDeltaX = 0;
+      }
+
+      document.addEventListener('touchend', endTouchGesture, { passive: true });
+      document.addEventListener('touchcancel', endTouchGesture, { passive: true });
 
       // 3B. Trackpad & Magic Mouse Wheel Gestures (Two-finger swipe / Magic Mouse swipe)
       let wheelDeltaAccumulator = 0;
@@ -894,16 +1022,14 @@ setupPdfWorker();
 
         // Filter: Must be dominantly horizontal
         if (absX > absY && absX > 2) {
-          // Left-to-right swipe (Back) in browsers produces negative deltaX
-          // Right-to-left swipe (Forward) produces positive deltaX
-          // We invert so positive = Back, negative = Forward
+          // Left-to-right swipe produces negative deltaX in standard trackpad natural scroll
           const normalizedDelta = -e.deltaX;
+          wheelDeltaAccumulator += normalizedDelta;
 
-          const projectedDelta = wheelDeltaAccumulator + normalizedDelta;
-          if (projectedDelta > 0 && !canGoBack()) return;
-          if (projectedDelta < 0 && !canGoForward()) return;
+          // Clamp accumulator
+          if (wheelDeltaAccumulator > 150) wheelDeltaAccumulator = 150;
+          if (wheelDeltaAccumulator < -150) wheelDeltaAccumulator = -150;
 
-          wheelDeltaAccumulator = projectedDelta;
           updateOverscrollVisuals(wheelDeltaAccumulator);
 
           clearTimeout(wheelEndTimeout);
@@ -916,12 +1042,14 @@ setupPdfWorker();
                 executeBack();
               } else if (!goBack && canGoForward()) {
                 executeForward();
+              } else {
+                resetOverscrollVisuals(true);
               }
             } else {
               resetOverscrollVisuals(true);
             }
             wheelDeltaAccumulator = 0;
-          }, 140);
+          }, 180);
         }
       }, { passive: true });
     }
@@ -9992,7 +10120,7 @@ setupPdfWorker();
       initI18n();
       initGlobalKeyboardShortcuts();
       loadRecentFiles();
-      switchPortalTool('dashboard', { force: true, noAnimate: true });
+      switchPortalTool('dashboard', { force: true, noAnimate: true, fromPopState: true });
       initOverscrollHistoryNavigation();
       initOnboarding();
     }
@@ -12688,12 +12816,25 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
     function initServiceWorker() {
       if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
 
+      let hadController = Boolean(navigator.serviceWorker.controller);
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (hadController && !window.__s2sReloading) {
+          window.__s2sReloading = true;
+          window.location.reload();
+        }
+        hadController = true;
+      });
+
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
           const badge = document.getElementById('offline-status-badge');
           if (badge) {
-            badge.title = 'PWA Offline Cache Active (s2s-cache-v1)';
+            badge.title = 'PWA Offline Cache Active (s2s-cache-v6)';
           }
+
+          try {
+            reg.update();
+          } catch (e) {}
 
           reg.addEventListener('updatefound', () => {
             const installing = reg.installing;
