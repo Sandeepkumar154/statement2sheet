@@ -1,4 +1,4 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -94,6 +94,23 @@ svg {
 .animate-slide-out-back {
   animation: slideOutToRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   will-change: transform, opacity;
+}
+
+/* Overscroll History Navigation (Swipe-to-Navigate) */
+.overscroll-gliding {
+  will-change: transform;
+  transition: none !important;
+}
+
+.overscroll-spring-back {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+.overscroll-indicator-active {
+  transform: translateY(-50%) scale(1.08) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.35) !important;
 }
 
 /* Executive Theme Ambient Lighting & Glassmorphism */
