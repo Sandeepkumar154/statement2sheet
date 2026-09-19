@@ -7,7 +7,11 @@ const LOCAL_ASSETS = [
   './app.js',
   './pdf-security.js',
   './manifest.webmanifest',
-  './icon.svg'
+  './icon.svg',
+  './logo-mark.png',
+  './logo-horizontal.png',
+  './logo.png',
+  './icon.png'
 ];
 
 const CDN_ASSETS = [
