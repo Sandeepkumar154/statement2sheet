@@ -1,4 +1,4 @@
-const CACHE_NAME = 'zeropdf-cache-v1';
+const CACHE_NAME = 'zeropdf-cache-v3';
 
 const LOCAL_ASSETS = [
   './',
@@ -60,14 +60,29 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  // 1. Navigation requests: Network-First so users always get the latest HTML/UI on deploy
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match('./index.html').then((cached) => cached || caches.match('./'));
+      })
+    );
+    return;
+  }
+
+  // 2. Asset requests: Cache-First with Network fallback (ensures instant load + offline resilience)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // 1. Strict Cache-First: return immediately without background network revalidation
       if (cachedResponse) {
         return cachedResponse;
       }
 
-      // 2. Cache-miss: fetch from network, cache response, and return
       return fetch(event.request).then((networkResponse) => {
         if (networkResponse && (networkResponse.status === 200 || networkResponse.type === 'opaque')) {
           const responseClone = networkResponse.clone();

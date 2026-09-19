@@ -132,8 +132,8 @@ function setupPdfWorker() {
 }
 setupPdfWorker();
     
-    // Initial Theme Setup
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    // Initial Theme Setup: Default to clean, pleasant light atmosphere (matching iLovePDF) unless explicitly toggled to dark
+    if (localStorage.theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
