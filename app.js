@@ -50,6 +50,10 @@ const VENDOR_LIBS = {
     src: 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
     integrity: 'sha384-Cck14aA9cifjYolcnjebXRfWGkz5ltHMBiG4px/j8GS+xQcb7OhNQWZYyWjQ+UwQ',
     isLoaded: () => typeof PptxGenJS !== 'undefined'
+  },
+  pdfSecurity: {
+    src: './pdf-security.js',
+    isLoaded: () => typeof PDFEncrypt !== 'undefined' && typeof PDFDecrypt !== 'undefined'
   }
 };
 
@@ -92,6 +96,12 @@ async function ensureXlsx() {
 async function ensurePdfLib() {
   if (typeof PDFLib !== 'undefined') return;
   await loadVendorScript('pdfLib');
+}
+
+async function ensurePdfSecurity() {
+  await ensurePdfLib();
+  if (typeof PDFEncrypt !== 'undefined' && typeof PDFDecrypt !== 'undefined') return;
+  await loadVendorScript('pdfSecurity');
 }
 
 async function ensureJsPdf() {
@@ -2226,19 +2236,49 @@ setupPdfWorker();
 
     async function executeUnlockPdf() {
       if (!unlockFile) return;
-      const pwd = document.getElementById('unlock-password-input').value;
+      const pwd = (document.getElementById('unlock-password-input') || {}).value || '';
       const errBox = document.getElementById('unlock-error-box');
-      errBox.classList.add('hidden');
+      if (errBox) errBox.classList.add('hidden');
 
       try {
-        await ensurePdfLib();
+        await ensurePdfSecurity();
         const bytes = await unlockFile.arrayBuffer();
-        const doc = await PDFLib.PDFDocument.load(bytes, { password: pwd });
-        const unlockedBytes = await doc.save();
+        const encInfo = await PDFDecrypt.isEncrypted(bytes);
+        let unlockedBytes;
+
+        if (encInfo && encInfo.encrypted) {
+          if (!pwd) {
+            if (errBox) {
+              errBox.classList.remove('hidden');
+              errBox.innerText = 'Please enter the password to unlock this document.';
+            }
+            return;
+          }
+          unlockedBytes = await PDFDecrypt.decryptPDF(bytes, pwd);
+        } else {
+          // Document is not password protected
+          const doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+          unlockedBytes = await doc.save();
+          if (typeof showNotification === 'function') {
+            showNotification('Document is not password protected.', 'info');
+          }
+        }
+
         triggerDownload(new Blob([unlockedBytes], { type: 'application/pdf' }), `unlocked_${unlockFile.name}`);
+        if (typeof showNotification === 'function') {
+          showNotification('🔓 Document successfully unlocked and downloaded!', 'success');
+        }
       } catch (e) {
-        errBox.classList.remove('hidden');
-        errBox.innerText = 'Incorrect password or unsupported encryption: ' + e.message;
+        console.error('Unlock error:', e);
+        if (errBox) {
+          errBox.classList.remove('hidden');
+          const msg = e.message || '';
+          if (msg.includes('Incorrect password')) {
+            errBox.innerText = 'Incorrect password. Please verify the document password and try again.';
+          } else {
+            errBox.innerText = 'Failed to unlock PDF: ' + msg;
+          }
+        }
       }
     }
 
@@ -3201,7 +3241,7 @@ setupPdfWorker();
       if (batchBtn) batchBtn.disabled = true;
 
       try {
-        await ensurePdfLib();
+        await ensurePdfSecurity();
         const zipEntries = [];
 
         for (let i = 0; i < batchProtectQueue.length; i++) {
@@ -3211,11 +3251,8 @@ setupPdfWorker();
 
           try {
             const buf = await item.file.arrayBuffer();
-            const doc = await PDFLib.PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
-            doc.setTitle('Protected Document');
-            doc.setSubject(`Encrypted Document - Passkey Protected`);
-            const outBytes = await doc.save();
-            zipEntries.push({ path: `protected_${item.file.name}`, content: outBytes });
+            const encBytes = await PDFEncrypt.encryptPDF(buf, pass1, { algorithm: 'AES-256' });
+            zipEntries.push({ path: `protected_${item.file.name}`, content: encBytes });
             item.status = 'done';
           } catch (e) {
             console.error('Batch protect error:', item.file.name, e);
@@ -3276,14 +3313,9 @@ setupPdfWorker();
       if (errBox) errBox.classList.add('hidden');
 
       try {
-        await ensurePdfLib();
-        const pdfDoc = await PDFLib.PDFDocument.load(protectFileState.buffer);
-        pdfDoc.setTitle('Protected Document');
-        pdfDoc.setAuthor('Statement2Sheet Encrypted');
-        pdfDoc.setSubject('Secured Client-Side');
-
-        const pdfBytes = await pdfDoc.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        await ensurePdfSecurity();
+        const encBytes = await PDFEncrypt.encryptPDF(protectFileState.buffer, pass1, { algorithm: 'AES-256' });
+        const blob = new Blob([encBytes], { type: 'application/pdf' });
         downloadTrackedBlob(blob, 'protected_' + protectFileState.file.name);
 
         if (typeof showNotification === 'function') {
@@ -3293,7 +3325,12 @@ setupPdfWorker();
         }
       } catch (err) {
         console.error('Protect execution error:', err);
-        alert('Failed to encrypt PDF: ' + err.message);
+        if (errBox) {
+          errBox.textContent = 'Failed to encrypt PDF: ' + err.message;
+          errBox.classList.remove('hidden');
+        } else {
+          alert('Failed to encrypt PDF: ' + err.message);
+        }
       }
     }
 
