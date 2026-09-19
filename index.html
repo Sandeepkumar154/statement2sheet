@@ -109,7 +109,7 @@
   <meta name="theme-color" content="#0f172a" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-canvas dark:bg-canvas-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
   <!-- ================= PRIVACY & SECURITY BANNER ================= -->
   <div class="bg-slate-900 dark:bg-black text-slate-300 text-xs py-2 px-4 text-center border-b border-slate-800 flex items-center justify-center gap-2" role="region" aria-label="Privacy Notice">
@@ -118,22 +118,17 @@
   </div>
 
   <!-- ================= NAVIGATION / HEADER (iLovePDF Style) ================= -->
-  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-2xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between relative">
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 sticky top-0 z-50 transition-colors shadow-2xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between relative">
       
-      <!-- Brand Logo -->
-      <a href="#" data-tool="dashboard" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-xl group transition shrink-0" aria-label="ZeroPDF Home">
-        <!-- Precision Geometric Monogram Icon -->
-        <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform flex-shrink-0" aria-hidden="true">
-          <svg class="w-5 h-5 text-white dark:text-slate-900" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 11.8C10.8 10.3 8.5 10.8 8.5 12.5C8.5 14.3 12 17 12 17C12 17 15.5 14.3 15.5 12.5C15.5 10.8 13.2 10.3 12 11.8Z" fill="#10B981"/>
-          </svg>
+      <!-- Brand Logo (ZeroPDF Iconic Brand) -->
+      <a href="#" data-tool="dashboard" class="flex items-center space-x-2.5 focus:outline-none focus:ring-2 focus:ring-rose-500 rounded-xl group transition shrink-0" aria-label="ZeroPDF Home">
+        <div class="w-9 h-9 rounded-xl bg-ilove-red flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform flex-shrink-0" aria-hidden="true">
+          <span class="text-white font-black text-lg tracking-tighter">0</span>
         </div>
         <div class="flex flex-col">
-          <span class="text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-            Zero<span class="text-emerald-600 dark:text-emerald-400">PDF</span>
+          <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+            Zero<span class="text-ilove-red">PDF</span>
           </span>
           <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase -mt-0.5">
             Zero Servers • 100% Private
@@ -161,20 +156,20 @@
       </div>
 
       <!-- Center Navigation Links (iLovePDF Style) -->
-      <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-bold tracking-wider uppercase">
-        <button data-tool="merge" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_merge">
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-[13px] font-bold tracking-wide uppercase">
+        <button data-tool="merge" class="text-slate-700 dark:text-slate-200 hover:text-ilove-red px-3.5 py-2 rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_merge">
           Merge PDF
         </button>
-        <button data-tool="split" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_split">
+        <button data-tool="split" class="text-slate-700 dark:text-slate-200 hover:text-ilove-red px-3.5 py-2 rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_split">
           Split PDF
         </button>
-        <button data-tool="compress" class="text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_compress">
+        <button data-tool="compress" class="text-slate-700 dark:text-slate-200 hover:text-ilove-red px-3.5 py-2 rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800" data-i18n="nav_compress">
           Compress PDF
         </button>
         
         <!-- Convert PDF Dropdown -->
         <div class="relative" id="dropdown-convert-container">
-          <button data-action="toggle-convert-dropdown" class="flex items-center gap-1 text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg transition hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button data-action="toggle-convert-dropdown" class="flex items-center gap-1 text-slate-700 dark:text-slate-200 hover:text-ilove-red px-3.5 py-2 rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800">
             <span data-i18n="nav_convert">Convert PDF</span>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
           </button>
@@ -195,7 +190,7 @@
         </div>
 
         <!-- All PDF Tools Mega Menu Trigger -->
-        <button id="mega-menu-trigger" data-action="toggle-mega-menu" class="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-extrabold px-3 py-2 rounded-xl transition hover:bg-rose-50 dark:hover:bg-rose-950/50">
+        <button id="mega-menu-trigger" data-action="toggle-mega-menu" class="flex items-center gap-1.5 text-ilove-red font-extrabold px-3.5 py-2 rounded-xl transition hover:bg-rose-50 dark:hover:bg-rose-950/50">
           <span data-i18n="nav_all_tools">ALL PDF TOOLS</span>
           <svg id="mega-chevron" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
         </button>
@@ -290,118 +285,105 @@
     <div id="mega-menu-backdrop" class="fixed inset-0 top-[65px] bg-slate-950/40 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none z-40" data-action="close-mega-menu" aria-hidden="true"></div>
 
     <!-- ================= ALL PDF TOOLS MEGA MENU (Exact iLovePDF Architecture) ================= -->
-    <div id="mega-menu-dropdown" class="hidden absolute top-full left-1/2 -translate-x-1/2 w-[98vw] max-w-7xl mt-2 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 select-none transition-all duration-300 transform -translate-y-4 opacity-0 pointer-events-none">
-      <!-- Triangle Indicator Pointer matching iLovePDF -->
-      <div class="hidden lg:block absolute -top-2 right-[28%] w-4 h-4 bg-white dark:bg-slate-900 border-t border-l border-slate-200 dark:border-slate-800 rotate-45 pointer-events-none"></div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-5 text-xs">
+    <div id="mega-menu-dropdown" class="hidden absolute top-full left-1/2 -translate-x-1/2 w-[98vw] max-w-6xl mt-2 z-50 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 select-none transition-all duration-300 transform -translate-y-4 opacity-0 pointer-events-none">
+      <!-- Pointer -->
+      <div class="hidden lg:block absolute -top-2 right-[24%] w-4 h-4 bg-white dark:bg-slate-900 border-t border-l border-slate-200 dark:border-slate-800 rotate-45 pointer-events-none"></div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs">
         
-        <!-- Col 1: Organize PDF -->
-        <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">ORGANIZE PDF</h4>
-          <ul class="space-y-2">
-            <li><button data-tool="merge" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">📑</span> Merge PDF</button></li>
-            <li><button data-tool="split" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✂️</span> Split PDF</button></li>
-            <li><button data-tool="organize" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🔄</span> Organize Pages</button></li>
-            <li><button data-tool="rotate" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">🔁</span> Rotate PDF</button></li>
-            <li><button data-tool="crop" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">✂</span> Crop PDF</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 2: Optimize PDF -->
-        <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">OPTIMIZE PDF</h4>
-          <ul class="space-y-2">
-            <li><button data-tool="compress" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">🗜️</span> Compress PDF</button></li>
-            <li><button data-tool="repair" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-[10px]">🛠️</span> Repair PDF</button></li>
-            <li><button data-tool="redact" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">⬛</span> Redact PDF</button></li>
-            <li><button data-tool="pdfa" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">🏛️</span> Convert PDF/A</button></li>
-            <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">🔍</span> OCR / Text Extract</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 3: Convert To PDF -->
-        <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">CONVERT TO PDF</h4>
-          <ul class="space-y-2">
-            <li><button data-tool="img2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-[10px]">📸</span> JPG / PNG to PDF</button></li>
-            <li><button data-tool="office2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📑</span> Office &amp; HTML to PDF</button></li>
-            <li><button data-tool="pptx2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center text-[10px]">📊</span> PowerPoint to PDF</button></li>
-            <li><button data-tool="scan2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📷</span> Scan to PDF</button></li>
-            <li><button data-tool="img2pdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-yellow-50 dark:bg-yellow-950 text-yellow-600 flex items-center justify-center text-[10px]">🧾</span> Receipts to PDF</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Convert From PDF -->
-        <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">CONVERT FROM PDF</h4>
-          <ul class="space-y-2">
-            <li><button data-tool="excel" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-[10px]">📊</span> PDF to Excel</button></li>
-            <li><button data-tool="pdf2word" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">📝</span> PDF to Word (.docx)</button></li>
-            <li><button data-tool="pdf2pptx" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">📽️</span> PDF to PowerPoint</button></li>
-            <li><button data-tool="pdf2img" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-fuchsia-50 dark:bg-fuchsia-950 text-fuchsia-600 flex items-center justify-center text-[10px]">🖼️</span> PDF to JPG / PNG</button></li>
-            <li><button data-tool="extract-images" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-lime-50 dark:bg-lime-950 text-lime-600 flex items-center justify-center text-[10px]">📷</span> Extract Images</button></li>
-            <li><button data-tool="markdown" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center text-[10px]">📋</span> PDF to Markdown</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 5: Edit PDF -->
-        <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">EDIT PDF</h4>
-          <ul class="space-y-2">
-            <li><button data-tool="pagenumber" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px]">🔢</span> Add Page Numbers</button></li>
-            <li><button data-tool="watermark" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center text-[10px]">🏷️</span> Add Watermark</button></li>
-            <li><button data-tool="sign" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-[10px]">✍️</span> Sign PDF</button></li>
-            <li><button data-tool="digitalsign" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-[10px]">🔐</span> Digital PKI Sign</button></li>
-            <li><button data-tool="editpdf" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-violet-50 dark:bg-violet-950 text-violet-600 flex items-center justify-center text-[10px]">✏️</span> Edit PDF (Annotations)</button></li>
-            <li><button data-tool="formfill" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">📋</span> Fill PDF Forms</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 6: PDF Security & Review -->
-        <div>
-          <h4 class="font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[10px] mb-3">SECURITY &amp; REVIEW</h4>
-          <ul class="space-y-2">
-            <li><button data-tool="unlock" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center text-[10px]">🔓</span> Unlock PDF</button></li>
-            <li><button data-tool="protect" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-[10px]">🔒</span> Protect PDF</button></li>
-            <li><button data-tool="compare" class="flex items-center gap-2 text-slate-700 dark:text-slate-200 hover:text-rose-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center text-[10px]">⚖️</span> Compare PDF (Diff)</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 7 & 8: Banking & Intelligence (Our Killer Feature!) -->
-        <div class="col-span-2 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800/60">
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 text-[10px]">FINANCIAL &amp; AI INTELLIGENCE</h4>
-            <span class="text-[9px] font-black uppercase bg-emerald-500 text-white px-1.5 py-0.5 rounded">Our Edge</span>
+        <!-- Column 1: ORGANIZE PDF & EDIT PDF -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">ORGANIZE PDF</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="merge" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-red text-white flex items-center justify-center text-xs shadow-2xs">📑</span> Merge PDF</button></li>
+              <li><button data-tool="split" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-red text-white flex items-center justify-center text-xs shadow-2xs">✂️</span> Split PDF</button></li>
+              <li><button data-tool="organize" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-amber text-white flex items-center justify-center text-xs shadow-2xs">🔄</span> Organize PDF</button></li>
+              <li><button data-tool="scan2pdf" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-ppt text-white flex items-center justify-center text-xs shadow-2xs">📷</span> Scan to PDF</button></li>
+            </ul>
           </div>
-          <ul class="space-y-2.5">
-            <li>
-              <button data-tool="excel" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
-                <span class="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs">📊</span>
-                <div>
-                  <div>Bank Statement to 3-Sheet Excel</div>
-                  <div class="text-[10px] text-slate-400 font-normal">Opening/closing balance reconciliation</div>
-                </div>
-              </button>
-            </li>
-            <li>
-              <button data-tool="excel" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
-                <span class="w-6 h-6 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 flex items-center justify-center text-xs">⚡</span>
-                <div>
-                  <div>QuickBooks (.QBO) WebConnect</div>
-                  <div class="text-[10px] text-slate-400 font-normal">Instant sync for accountants &amp; Xero</div>
-                </div>
-              </button>
-            </li>
-            <li>
-              <button data-tool="excel" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition">
-                <span class="w-6 h-6 rounded-lg bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 flex items-center justify-center text-xs">📈</span>
-                <div>
-                  <div>Cashflow &amp; Expense Categorizer</div>
-                  <div class="text-[10px] text-slate-400 font-normal">Auto-categorized progress bars &amp; KPIs</div>
-                </div>
-              </button>
-            </li>
-          </ul>
+
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">EDIT PDF</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="rotate" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">🔁</span> Rotate PDF</button></li>
+              <li><button data-tool="pagenumber" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">🔢</span> Add page numbers</button></li>
+              <li><button data-tool="watermark" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">🏷️</span> Add watermark</button></li>
+              <li><button data-tool="crop" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">📐</span> Crop PDF</button></li>
+              <li><button data-tool="editpdf" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">✏️</span> Edit PDF</button></li>
+              <li><button data-tool="formfill" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">📋</span> PDF Forms</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 2: OPTIMIZE PDF & PDF SECURITY -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">OPTIMIZE PDF</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="compress" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-green text-white flex items-center justify-center text-xs shadow-2xs">🗜️</span> Compress PDF</button></li>
+              <li><button data-tool="repair" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-green text-white flex items-center justify-center text-xs shadow-2xs">🛠️</span> Repair PDF</button></li>
+              <li><button data-tool="markdown" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-green text-white flex items-center justify-center text-xs shadow-2xs">🔍</span> OCR PDF</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">PDF SECURITY</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="unlock" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-blue text-white flex items-center justify-center text-xs shadow-2xs">🔓</span> Unlock PDF</button></li>
+              <li><button data-tool="protect" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-blue text-white flex items-center justify-center text-xs shadow-2xs">🔒</span> Protect PDF</button></li>
+              <li><button data-tool="sign" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-blue text-white flex items-center justify-center text-xs shadow-2xs">✍️</span> Sign PDF</button></li>
+              <li><button data-tool="redact" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-slate text-white flex items-center justify-center text-xs shadow-2xs">⬛</span> Redact PDF</button></li>
+              <li><button data-tool="compare" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-blue text-white flex items-center justify-center text-xs shadow-2xs">⚖️</span> Compare PDF</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 3: CONVERT TO PDF & CONVERT FROM PDF -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">CONVERT TO PDF</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="img2pdf" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-amber text-white flex items-center justify-center text-xs shadow-2xs">📸</span> JPG to PDF</button></li>
+              <li><button data-tool="office2pdf" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-word text-white flex items-center justify-center text-xs shadow-2xs">📝</span> WORD to PDF</button></li>
+              <li><button data-tool="pptx2pdf" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-ppt text-white flex items-center justify-center text-xs shadow-2xs">📊</span> POWERPOINT to PDF</button></li>
+              <li><button data-tool="office2pdf" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-excel text-white flex items-center justify-center text-xs shadow-2xs">📈</span> EXCEL to PDF</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">CONVERT FROM PDF</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="pdf2img" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-amber text-white flex items-center justify-center text-xs shadow-2xs">🖼️</span> PDF to JPG</button></li>
+              <li><button data-tool="pdf2word" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-word text-white flex items-center justify-center text-xs shadow-2xs">📝</span> PDF to WORD</button></li>
+              <li><button data-tool="pdf2pptx" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-ppt text-white flex items-center justify-center text-xs shadow-2xs">📽️</span> PDF to POWERPOINT</button></li>
+              <li><button data-tool="excel" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-excel text-white flex items-center justify-center text-xs shadow-2xs">📊</span> PDF to EXCEL</button></li>
+              <li><button data-tool="pdfa" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-blue text-white flex items-center justify-center text-xs shadow-2xs">🏛️</span> PDF to PDF/A</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 4: PDF INTELLIGENCE & BANKING -->
+        <div class="space-y-6">
+          <div>
+            <h4 class="font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-[11px] mb-3">PDF INTELLIGENCE</h4>
+            <ul class="space-y-1.5">
+              <li><button data-tool="summarize" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-indigo text-white flex items-center justify-center text-xs shadow-2xs">✨</span> AI Summarizer</button></li>
+              <li><button data-tool="markdown" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-indigo text-white flex items-center justify-center text-xs shadow-2xs">📋</span> PDF to Markdown</button></li>
+              <li><button data-tool="digitalsign" class="w-full flex items-center gap-2.5 p-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-ilove-red hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold transition text-left"><span class="w-6 h-6 rounded-md bg-ilove-purple text-white flex items-center justify-center text-xs shadow-2xs">🔐</span> Digital PKI Seal</button></li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
+            <div class="flex items-center justify-between mb-2.5">
+              <h4 class="font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 text-[10px]">FINANCIAL INTELLIGENCE</h4>
+              <span class="text-[9px] font-black uppercase bg-emerald-600 text-white px-1.5 py-0.5 rounded">Our Edge</span>
+            </div>
+            <ul class="space-y-2">
+              <li><button data-tool="excel" class="w-full text-left flex items-center gap-2 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition"><span class="w-5 h-5 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px]">📊</span> 3-Sheet Bank Excel</button></li>
+              <li><button data-tool="excel" class="w-full text-left flex items-center gap-2 text-slate-800 dark:text-white hover:text-emerald-600 font-bold transition"><span class="w-5 h-5 rounded bg-teal-100 text-teal-700 flex items-center justify-center text-[10px]">⚡</span> QuickBooks (.QBO)</button></li>
+            </ul>
+          </div>
         </div>
 
       </div>
@@ -414,51 +396,42 @@
     <!-- ================= VIEW 0: ALL TOOLS DASHBOARD (Exact iLovePDF Architecture & Clean 21-Card Grid) ================= -->
         <section id="view-dashboard" class="max-w-7xl mx-auto mb-12 animate-fadeIn">
       
-      <!-- Hero Section (Executive Tier-1 Theme) -->
-      <div class="hero-mesh-bg rounded-3xl p-6 sm:p-12 mb-10 border border-slate-200/80 dark:border-slate-800/80 shadow-xs relative overflow-hidden text-center max-w-5xl mx-auto">
+      <!-- Hero Section (Clean, Open & Spacious Atmosphere matching Screenshot 2) -->
+      <div class="py-6 sm:py-10 text-center max-w-4xl mx-auto">
         
         <!-- Enterprise Security Trust Pill -->
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-5 shadow-2xs">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 mb-4 shadow-2xs">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span data-i18n="hero_badge">🔒 100% In-Browser Privacy · Zero Cloud Uploads</span>
         </div>
 
-        <!-- Grand Executive Headline -->
+        <!-- Grand Headline -->
         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-slate-900 dark:text-white" data-i18n="hero_title">
-          Every Tool You Need for PDFs &amp; Financial Records
+          Every tool you need to work with PDFs in one place
         </h1>
-        <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-4 max-w-3xl mx-auto leading-relaxed" data-i18n="hero_subtitle">
-          30 enterprise-grade document tools running 100% in your browser memory. Merge, split, compress, edit, convert, and audit bank statements with zero server risk.
+        <p class="text-slate-500 dark:text-slate-400 text-sm sm:text-base mt-3.5 max-w-2xl mx-auto leading-relaxed" data-i18n="hero_subtitle">
+          Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.
         </p>
 
-        <!-- Quick-Action Universal Dropzone directly in Hero -->
-        <div id="hero-quick-drop" data-action="trigger-universal-upload" class="mt-8 max-w-xl mx-auto p-5 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-400 rounded-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-md transition-all cursor-pointer group shadow-2xs">
-          <div class="flex items-center justify-center gap-3.5">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-inner">
-              📄
-            </div>
-            <div class="text-left">
-              <div class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition" data-i18n="hero_drop_title">
-                Drop any PDF, Bank Statement, Office Deck, or Image here
-              </div>
-              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" data-i18n="hero_drop_sub">
-                Instant local in-memory processing · Zero bytes uploaded to any server
-              </div>
-            </div>
-            <span class="hidden sm:inline-flex px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition" data-i18n="hero_drop_btn">Select Document</span>
+        <!-- Sleek Quick-Action Universal Dropzone Pill directly in Hero -->
+        <div id="hero-quick-drop" data-action="trigger-universal-upload" class="mt-6 mb-7 inline-flex items-center justify-between gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:border-ilove-red hover:shadow-md transition cursor-pointer group text-xs text-slate-600 dark:text-slate-300">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📄</span>
+            <span class="font-semibold group-hover:text-ilove-red transition" data-i18n="hero_drop_title">Select PDF files or drop files here</span>
           </div>
+          <span class="hidden sm:inline-flex px-3 py-1 bg-ilove-red hover:bg-ilove-red/90 text-white rounded-full text-[11px] font-bold shadow-2xs transition" data-i18n="hero_drop_btn">Select Document</span>
         </div>
 
-        <!-- Segmented Filter Control Bar -->
-        <div class="mt-8 inline-flex items-center justify-center gap-1.5 p-1.5 bg-slate-100/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-slate-800 flex-wrap shadow-2xs" id="dashboard-filter-bar">
-          <button data-filter="all" id="dash-filter-all" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs transition" data-i18n="filter_all">All Tools</button>
-          <button data-filter="banking" id="dash-filter-banking" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_banking">Banking &amp; Finance</button>
-          <button data-filter="organize" id="dash-filter-organize" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_organize">Organize PDF</button>
-          <button data-filter="optimize" id="dash-filter-optimize" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_optimize">Optimize PDF</button>
-          <button data-filter="convert" id="dash-filter-convert" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_convert">Convert PDF</button>
-          <button data-filter="edit" id="dash-filter-edit" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_edit">Edit &amp; Fill</button>
-          <button data-filter="security" id="dash-filter-security" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_security">PDF Security</button>
-          <button data-filter="intelligence" id="dash-filter-intelligence" class="dash-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition" data-i18n="filter_intelligence">AI &amp; Intelligence</button>
+        <!-- Segmented Filter Control Bar (Exact Screenshot 2 Pills) -->
+        <div class="flex items-center justify-center gap-2 flex-wrap" id="dashboard-filter-bar">
+          <button data-filter="all" id="dash-filter-all" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm transition" data-i18n="filter_all">All</button>
+          <button data-filter="banking" id="dash-filter-banking" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_banking">Workflows</button>
+          <button data-filter="organize" id="dash-filter-organize" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_organize">Organize PDF</button>
+          <button data-filter="optimize" id="dash-filter-optimize" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_optimize">Optimize PDF</button>
+          <button data-filter="convert" id="dash-filter-convert" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_convert">Convert PDF</button>
+          <button data-filter="edit" id="dash-filter-edit" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_edit">Edit PDF</button>
+          <button data-filter="security" id="dash-filter-security" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_security">PDF Security</button>
+          <button data-filter="intelligence" id="dash-filter-intelligence" class="dash-filter-btn px-4 py-2 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition" data-i18n="filter_intelligence">PDF Intelligence</button>
         </div>
 
         <!-- Recent Files Tray -->
@@ -473,448 +446,279 @@
         </div>
       </div>
 
-      <!-- ================= 30-CARD TOOL GRID ================= -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-5" id="tools-grid-container">
+      <!-- ================= 30-CARD TOOL GRID (Exact iLovePDF Pleasant Atmosphere Architecture) ================= -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5 mt-6" id="tools-grid-container">
 
         <!-- Card 1: Merge PDF -->
-        <div data-category="organize" data-tool="merge" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition" data-i18n="card_merge_title">Merge PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_merge_desc">Combine PDFs in the order you want with the easiest PDF merger available.</p>
+        <div data-category="organize" data-tool="merge" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-red text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
-            <span data-i18n="card_merge_action">Combine</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_merge_title">Merge PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_merge_desc">Combine PDFs in the order you want with the easiest PDF merger available.</p>
         </div>
 
         <!-- Card 2: Split PDF -->
-        <div data-category="organize" data-tool="split" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition" data-i18n="card_split_title">Split PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_split_desc">Separate one page or a whole set for easy conversion into independent PDF files.</p>
+        <div data-category="organize" data-tool="split" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-red text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
-            <span data-i18n="card_split_action">Separate</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_split_title">Split PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_split_desc">Separate one page or a whole set for easy conversion into independent PDF files.</p>
         </div>
 
         <!-- Card 3: Compress PDF -->
-        <div data-category="optimize" data-tool="compress" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition" data-i18n="card_compress_title">Compress PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_compress_desc">Reduce file size while optimizing for maximal PDF quality in local memory.</p>
+        <div data-category="optimize" data-tool="compress" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-green text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
-            <span data-i18n="card_compress_action">Compress</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_compress_title">Compress PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_compress_desc">Reduce file size while optimizing for maximal PDF quality in local memory.</p>
         </div>
 
-        <!-- Card 4: PDF to Excel (3-Sheet Reconciled) -->
-        <div data-category="convert banking" data-tool="excel" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              </div>
-              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Popular</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition" data-i18n="card_excel_title">PDF to Excel</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_excel_desc">Pull data straight from PDFs into Excel spreadsheets with balance reconciliation.</p>
+        <!-- Card 4: PDF to Word -->
+        <div data-category="convert" data-tool="pdf2word" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-word text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-black text-xl">
+            W
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
-            <span data-i18n="card_excel_action">Convert</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_pdf2word_title">PDF to Word</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_pdf2word_desc">Easily convert your PDF files into easy to edit DOC and DOCX documents with near 100% accuracy.</p>
         </div>
 
-        <!-- Card 5: Bank Statement Converter -->
-        <div data-category="banking" data-tool="excel" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition" data-i18n="card_bankstmt_title">Bank Statement to Excel</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_bankstmt_desc">Multi-bank statement parser: parses any format into 3-sheet Excel with math audit.</p>
+        <!-- Card 5: PDF to PowerPoint -->
+        <div data-category="convert" data-tool="pdf2pptx" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-ppt text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-black text-xl">
+            P
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
-            <span data-i18n="card_bankstmt_action">Parse</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_pdf2pptx_title">PDF to PowerPoint</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_pdf2pptx_desc">Turn your PDF documents into Microsoft PowerPoint (.pptx) slide decks instantly.</p>
         </div>
 
-        <!-- Card 6: QuickBooks (.QBO) Export -->
-        <div data-category="banking intelligence" data-tool="excel" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition" data-i18n="card_qbo_title">QuickBooks (.QBO)</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_qbo_desc">Export PDF statements directly into WebConnect OFX/QBO format for QuickBooks and Xero.</p>
+        <!-- Card 6: PDF to Excel -->
+        <div data-category="convert banking" data-tool="excel" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-excel text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-black text-xl">
+            X
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
-            <span data-i18n="card_qbo_action">Export QBO</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_excel_title">PDF to Excel</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_excel_desc">Pull data straight from PDFs into Excel spreadsheets in a few short seconds.</p>
         </div>
 
-        <!-- Card 7: Organize & Rotate -->
-        <div data-category="organize edit" data-tool="organize" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition" data-i18n="card_organize_title">Organize PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_organize_desc">Sort, add, rotate, and delete PDF pages. Drag and drop the page thumbnails to organize.</p>
+        <!-- Card 7: Word to PDF -->
+        <div data-category="convert" data-tool="office2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-word text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-amber-600 transition">
-            <span data-i18n="card_organize_action">Organize</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_office2pdf_title">Word to PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_office2pdf_desc">Make DOC, DOCX, and text files easy to read by converting them to PDF.</p>
         </div>
 
-        <!-- Card 8: PDF to JPG / PNG -->
-        <div data-category="convert" data-tool="pdf2img" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-fuchsia-50 dark:bg-fuchsia-950/80 text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-fuchsia-600 transition" data-i18n="card_pdf2img_title">PDF to JPG</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_pdf2img_desc">Convert each PDF page into a JPG or PNG or extract all images contained in a PDF.</p>
+        <!-- Card 8: PowerPoint to PDF -->
+        <div data-category="convert" data-tool="pptx2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-ppt text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-fuchsia-600 transition">
-            <span data-i18n="card_pdf2img_action">Render</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_pptx2pdf_title">PowerPoint to PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_pptx2pdf_desc">Make PPT and PPTX slideshows easy to view by converting them to PDF.</p>
         </div>
 
-        <!-- Card 9: Image to PDF -->
-        <div data-category="convert" data-tool="img2pdf" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition" data-i18n="card_img2pdf_title">JPG to PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_img2pdf_desc">Convert JPG images to PDF in seconds. Easily adjust orientation and margins.</p>
+        <!-- Card 9: Excel to PDF -->
+        <div data-category="convert" data-tool="office2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-excel text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-orange-600 transition">
-            <span data-i18n="card_img2pdf_action">Create</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition">Excel to PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3">Make EXCEL spreadsheets easy to read by converting them to PDF.</p>
         </div>
 
-        <!-- Card 10: Sign PDF -->
-        <div data-category="edit security" data-tool="sign" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition" data-i18n="card_sign_title">Sign PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_sign_desc">Sign yourself or request electronic signatures from others. Stamp signatures on any page.</p>
+        <!-- Card 10: Edit PDF -->
+        <div data-category="edit" data-tool="editpdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-purple text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">
-            <span data-i18n="card_sign_action">Sign</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_editpdf_title">Edit PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_editpdf_desc">Add text, images, shapes or annotations to a PDF document in local RAM.</p>
         </div>
 
-        <!-- Card 11: Watermark PDF -->
-        <div data-category="edit security" data-tool="watermark" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-cyan-50 dark:bg-cyan-950/80 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition" data-i18n="card_watermark_title">Watermark</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_watermark_desc">Stamp an image or text over your PDF in seconds. Choose typography, transparency and position.</p>
+        <!-- Card 11: PDF to JPG -->
+        <div data-category="convert" data-tool="pdf2img" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-amber text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-cyan-600 transition">
-            <span data-i18n="card_watermark_action">Stamp</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_pdf2img_title">PDF to JPG</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_pdf2img_desc">Convert each PDF page into a JPG or extract all images contained in a PDF.</p>
         </div>
 
-        <!-- Card 12: Rotate PDF -->
-        <div data-category="organize edit" data-tool="rotate" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition" data-i18n="card_rotate_title">Rotate PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_rotate_desc">Rotate your PDFs the way you need them. Batch rotate all or specific pages by 90°, 180°, or 270°.</p>
+        <!-- Card 12: JPG to PDF -->
+        <div data-category="convert" data-tool="img2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-amber text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
-            <span data-i18n="card_rotate_action">Rotate</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_img2pdf_title">JPG to PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_img2pdf_desc">Convert JPG images to PDF in seconds. Easily adjust orientation and margins.</p>
         </div>
 
-        <!-- Card 13: Add Page Numbers -->
-        <div data-category="edit" data-tool="pagenumber" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition" data-i18n="card_pagenumber_title">Page Numbers</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_pagenumber_desc">Add page numbers into PDFs with ease. Choose your positions, dimensions, and typography.</p>
+        <!-- Card 13: Sign PDF -->
+        <div data-category="edit security" data-tool="sign" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-blue text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition">
-            <span data-i18n="card_pagenumber_action">Number</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_sign_title">Sign PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_sign_desc">Sign yourself or request electronic signatures. Stamp signatures on any page.</p>
         </div>
 
-        <!-- Card 14: Unlock PDF -->
-        <div data-category="security" data-tool="unlock" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition" data-i18n="card_unlock_title">Unlock PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_unlock_desc">Remove PDF password security, giving you the freedom to use your PDFs as you want.</p>
+        <!-- Card 14: Watermark -->
+        <div data-category="edit security" data-tool="watermark" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-purple text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
-            <span data-i18n="card_unlock_action">Unlock</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_watermark_title">Watermark</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_watermark_desc">Stamp an image or text over your PDF in seconds. Choose typography and opacity.</p>
         </div>
 
-        <!-- Card 15: Protect PDF -->
-        <div data-category="security" data-tool="protect" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 transition" data-i18n="card_protect_title">Protect PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_protect_desc">Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access.</p>
+        <!-- Card 15: Rotate PDF -->
+        <div data-category="organize edit" data-tool="rotate" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-purple text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition">
-            <span data-i18n="card_protect_action">Protect</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_rotate_title">Rotate PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_rotate_desc">Rotate your PDFs the way you need them. Even rotate multiple PDFs at once!</p>
         </div>
 
-        <!-- Card 16: PDF to Word (.docx) -->
-        <div data-category="convert" data-tool="pdf2word" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition" data-i18n="card_pdf2word_title">PDF to Word</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_pdf2word_desc">Convert PDF documents into fully editable Microsoft Word (.docx) documents locally.</p>
+        <!-- Card 16: HTML to PDF -->
+        <div data-category="convert" data-tool="office2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-amber text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-bold text-sm">
+            &lt;/&gt;
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">
-            <span data-i18n="card_pdf2word_action">To Word</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition">HTML to PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3">Convert webpages in HTML to PDF. Copy and paste code and convert with a click.</p>
         </div>
 
-        <!-- Card 17: Compare PDF (Diff) -->
-        <div data-category="security intelligence" data-tool="compare" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition" data-i18n="card_compare_title">Compare PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_compare_desc">Compare two PDF versions side-by-side with visual pixel diff overlay and text delta analysis.</p>
+        <!-- Card 17: Unlock PDF -->
+        <div data-category="security" data-tool="unlock" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-blue text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
-            <span data-i18n="card_compare_action">Compare</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_unlock_title">Unlock PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_unlock_desc">Remove PDF password security, giving you the freedom to use your PDFs as you want.</p>
         </div>
 
-        <!-- Card 18: Redact PDF -->
-        <div data-category="security edit" data-tool="redact" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition" data-i18n="card_redact_title">Redact PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_redact_desc">Permanently black out sensitive text, PII, and financial numbers via 300 DPI raster flattening.</p>
+        <!-- Card 18: Protect PDF -->
+        <div data-category="security" data-tool="protect" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-blue text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
-            <span data-i18n="card_redact_action">Redact</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_protect_title">Protect PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_protect_desc">Protect PDF files with AES-256 encryption. Prevent unauthorized access with passwords.</p>
         </div>
 
-        <!-- Card 19: Crop PDF -->
-        <div data-category="organize edit" data-tool="crop" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition" data-i18n="card_crop_title">Crop PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_crop_desc">Interactive draggable visual box & margin trimmer to crop document boundaries or tables.</p>
+        <!-- Card 19: PDF to PDF/A -->
+        <div data-category="convert security" data-tool="pdfa" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-blue text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-bold text-sm">
+            /A
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
-            <span data-i18n="card_crop_action">Crop</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_pdfa_title">PDF to PDF/A</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_pdfa_desc">Convert PDF documents to PDF/A for ISO-standardized archiving and preservation.</p>
         </div>
 
-        <!-- Card 20: AI Document Summarizer -->
-        <div data-category="intelligence" data-tool="summarize" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition" data-i18n="card_summarize_title">Document Summarizer</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_summarize_desc">100% private local in-browser extractive NLP summary, key metrics, and financial bullet points.</p>
+        <!-- Card 20: Repair PDF -->
+        <div data-category="optimize" data-tool="repair" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-green text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
-            <span data-i18n="card_summarize_action">Summarize</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_repair_title">Repair PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_repair_desc">Repair damaged or corrupt PDFs and recover pages without uploading to any server.</p>
         </div>
 
-        <!-- Card 21: Extract Images from PDF -->
-        <div data-category="convert" data-tool="extract-images" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-lime-50 dark:bg-lime-950/80 text-lime-600 dark:text-lime-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-lime-600 transition" data-i18n="card_extractimg_title">Extract Images</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_extractimg_desc">Extract all embedded photos, scanned checks, and logos from PDF into standalone image files.</p>
+        <!-- Card 21: Page Numbers -->
+        <div data-category="edit" data-tool="pagenumber" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-purple text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-bold text-sm">
+            1 2 3
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-lime-600 transition">
-            <span data-i18n="card_extractimg_action">Extract</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_pagenumber_title">Page numbers</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_pagenumber_desc">Add page numbers into PDFs with ease. Choose positions, typography, and format.</p>
         </div>
 
-        <!-- Card 22: Office & HTML to PDF -->
-        <div data-category="convert" data-tool="office2pdf" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition" data-i18n="card_office2pdf_title">Office & HTML to PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_office2pdf_desc">Convert Excel (.xlsx), CSV, TXT, or HTML markup directly into crisp, paginated PDF documents.</p>
+        <!-- Card 22: Scan to PDF -->
+        <div data-category="convert" data-tool="scan2pdf" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-ppt text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
-            <span data-i18n="card_office2pdf_action">Convert</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_scan2pdf_title">Scan to PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_scan2pdf_desc">Capture physical documents with your webcam or phone camera directly into a PDF.</p>
         </div>
 
-        <!-- Card 23: PDF/A ISO 19005-1 Archival -->
-        <div data-category="convert security" data-tool="pdfa" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition" data-i18n="card_pdfa_title">PDF/A ISO 19005-1</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_pdfa_desc">Inject ISO 19005-1 XMP conformance packet & sRGB OutputIntent for legal long-term archiving.</p>
+        <!-- Card 23: OCR PDF -->
+        <div data-category="convert optimize" data-tool="markdown" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-green text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform font-bold text-xs">
+            OCR
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
-            <span data-i18n="card_pdfa_action">Archive</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_ocr_title">OCR PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_ocr_desc">Easily convert scanned PDFs and non-selectable text into searchable text and markdown.</p>
         </div>
 
-        <!-- Card 24: Digital PKI Sign -->
-        <div data-category="security edit" data-tool="digitalsign" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition" data-i18n="card_digitalsign_title">Digital PKI Sign</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_digitalsign_desc">Cryptographic SHA-256 WebCrypto signature with tamper-evident seal and verifiable audit receipt.</p>
+        <!-- Card 24: Bank Statement to Excel (Killer Feature) -->
+        <div data-category="banking convert" data-tool="excel" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-emerald-200/80 dark:border-emerald-800/80 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-excel text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-purple-600 transition">
-            <span data-i18n="card_digitalsign_action">PKI Sign</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_bankstmt_title">Bank Statement to Excel</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_bankstmt_desc">Multi-bank statement parser: parses any format into 3-sheet Excel with balance audit.</p>
         </div>
 
-        <!-- Card 25: Repair Corrupt PDF -->
-        <div data-category="optimize" data-tool="repair" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3.5 group-hover:scale-105 transition shadow-2xs">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition" data-i18n="card_repair_title">Repair PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_repair_desc">Reconstruct broken XREFs, repair damaged stream headers, and recover corrupted PDF pages safely.</p>
+        <!-- Card 25: QuickBooks (.QBO) -->
+        <div data-category="banking intelligence" data-tool="excel" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-indigo text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-amber-600 transition">
-            <span data-i18n="card_repair_action">Repair</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_qbo_title">QuickBooks (.QBO)</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_qbo_desc">Export PDF statements directly into WebConnect OFX/QBO format for QuickBooks and Xero.</p>
         </div>
 
-        <!-- Card 26: Edit PDF (Annotations & Text) -->
-        <div data-category="edit" data-tool="editpdf" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-950/80 text-violet-600 dark:text-violet-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-              </div>
-              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300">New</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-violet-600 transition" data-i18n="card_editpdf_title">Edit PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_editpdf_desc">Add text, rectangles, circles, arrows, drawings, and notes directly onto your PDF pages in local RAM.</p>
+        <!-- Card 26: Redact PDF -->
+        <div data-category="security edit" data-tool="redact" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-slate text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-violet-600 transition">
-            <span data-i18n="card_editpdf_action">Edit</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_redact_title">Redact PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_redact_desc">Permanently black out sensitive text, PII, and numbers via raster flattening.</p>
         </div>
 
-        <!-- Card 27: Fill PDF Forms -->
-        <div data-category="edit" data-tool="formfill" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-              </div>
-              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300">New</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition" data-i18n="card_formfill_title">Fill PDF Forms</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_formfill_desc">Detect and fill interactive AcroForm fields (text fields, checkboxes, dropdowns) directly in-browser.</p>
+        <!-- Card 27: Compare PDF -->
+        <div data-category="security intelligence" data-tool="compare" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-blue text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-teal-600 transition">
-            <span data-i18n="card_formfill_action">Fill Form</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_compare_title">Compare PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_compare_desc">Side-by-side visual and textual diff to instantly spot changes between two PDF versions.</p>
         </div>
 
-        <!-- Card 28: PowerPoint to PDF -->
-        <div data-category="convert" data-tool="pptx2pdf" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/80 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
-              </div>
-              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300">New</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition" data-i18n="card_pptx2pdf_title">PowerPoint to PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_pptx2pdf_desc">Convert PPTX presentations into crisp, paginated PDF documents directly in local RAM.</p>
+        <!-- Card 28: Crop PDF -->
+        <div data-category="organize edit" data-tool="crop" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-purple text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-orange-600 transition">
-            <span data-i18n="card_pptx2pdf_action">To PDF</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_crop_title">Crop PDF</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_crop_desc">Interactive draggable visual box & margin trimmer to crop document boundaries.</p>
         </div>
 
-        <!-- Card 29: PDF to PowerPoint -->
-        <div data-category="convert" data-tool="pdf2pptx" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-              </div>
-              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">New</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-rose-600 transition" data-i18n="card_pdf2pptx_title">PDF to PowerPoint</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_pdf2pptx_desc">Turn your PDF documents into Microsoft PowerPoint (.pptx) slide decks instantly.</p>
+        <!-- Card 29: Fill PDF Forms -->
+        <div data-category="edit" data-tool="formfill" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-green text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-rose-600 transition">
-            <span data-i18n="card_pdf2pptx_action">To PPTX</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_formfill_title">Fill PDF Forms</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_formfill_desc">Detect and fill interactive PDF AcroForms (text fields, checkboxes, dropdowns).</p>
         </div>
 
-        <!-- Card 30: Scan to PDF -->
-        <div data-category="convert" data-tool="scan2pdf" class="tool-card executive-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/60 dark:hover:border-indigo-500/60 rounded-2xl p-5 shadow-2xs hover:shadow-xl transition duration-200 flex flex-col justify-between relative overflow-hidden">
-          <div>
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition shadow-2xs">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">New</span>
-            </div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition" data-i18n="card_scan2pdf_title">Scan to PDF</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed" data-i18n="card_scan2pdf_desc">Capture physical documents with your webcam or phone camera directly into a PDF.</p>
+        <!-- Card 30: AI Document Summarizer -->
+        <div data-category="intelligence" data-tool="summarize" class="tool-card group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-6 shadow-2xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-200 flex flex-col justify-start">
+          <div class="w-12 h-12 rounded-xl bg-ilove-indigo text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition">
-            <span data-i18n="card_scan2pdf_action">Scan</span> <span class="group-hover:translate-x-1.5 transition-transform">&rarr;</span>
-          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white mt-4 group-hover:text-ilove-red transition" data-i18n="card_summarize_title">AI Summarizer</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed line-clamp-3" data-i18n="card_summarize_desc">100% private in-browser NLP summary, financial metrics, and executive bullet points.</p>
         </div>
 
-      </div>
       </div>
     </section>
 
