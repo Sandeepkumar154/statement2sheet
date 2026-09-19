@@ -14,5 +14,8 @@
 .bg-ilove-amber { background-color: #F39C12 !important; }
 .bg-ilove-slate { background-color: #34495E !important; }
 .bg-ilove-indigo { background-color: #6366F1 !important; }
-.bg-canvas { background-color: #f4f5f8; }
+.hover\:border-ilove-red:hover { border-color: #E5322D !important; }
+.bg-canvas { background-color: #f7f7fa; }
 .dark .dark\:bg-canvas-dark { background-color: #0b0f19; }
+.tool-card { transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important; }
+.tool-card:hover { border-color: rgba(229, 50, 45, 0.35) !important; box-shadow: 0 10px 25px -5px rgba(229, 50, 45, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important; transform: translateY(-3px) !important; }
