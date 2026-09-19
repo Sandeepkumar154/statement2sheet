@@ -1,4 +1,4 @@
-const CACHE_NAME = 's2s-cache-v8';
+const CACHE_NAME = 'zeropdf-cache-v1';
 
 const LOCAL_ASSETS = [
   './',
