@@ -407,7 +407,7 @@ async function runTests() {
     let cachedUrls = [];
     try {
       const names = await caches.keys();
-      const activeCacheName = names.find(n => n.startsWith('s2s-cache-'));
+      const activeCacheName = names.find(n => n.startsWith('zeropdf-cache-') || n.startsWith('s2s-cache-'));
       hasCache = !!activeCacheName;
       if (hasCache) {
         const cache = await caches.open(activeCacheName);

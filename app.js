@@ -2225,13 +2225,41 @@ setupPdfWorker();
       });
     }
 
+    function formatByteSize(bytes) {
+      if (!bytes || bytes <= 0) return '0 B';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
     async function handleUnlockFileSelection(file) {
       if (!await validateSinglePdfFile(file, 'Unlock')) return;
       unlockFile = file;
-      document.getElementById('unlock-doc-name').innerText = file.name;
-      document.getElementById('unlock-password-input').value = '';
-      document.getElementById('unlock-error-box').classList.add('hidden');
-      document.getElementById('unlock-controls-card').classList.remove('hidden');
+      const uploadScreen = document.getElementById('unlock-upload-screen');
+      const card = document.getElementById('unlock-controls-card');
+      const nameEl = document.getElementById('unlock-doc-name');
+      const sizeEl = document.getElementById('unlock-doc-size');
+      if (uploadScreen) uploadScreen.classList.add('hidden');
+      if (card) card.classList.remove('hidden');
+      if (nameEl) nameEl.textContent = file.name;
+      if (sizeEl) sizeEl.textContent = formatByteSize(file.size);
+      const pwdInput = document.getElementById('unlock-password-input');
+      if (pwdInput) {
+        pwdInput.value = '';
+        setTimeout(() => pwdInput.focus(), 100);
+      }
+      const errBox = document.getElementById('unlock-error-box');
+      if (errBox) errBox.classList.add('hidden');
+    }
+
+    function resetUnlockWorkspace() {
+      unlockFile = null;
+      const uploadScreen = document.getElementById('unlock-upload-screen');
+      const card = document.getElementById('unlock-controls-card');
+      const input = document.getElementById('unlock-file-input');
+      if (input) input.value = '';
+      if (uploadScreen) uploadScreen.classList.remove('hidden');
+      if (card) card.classList.add('hidden');
     }
 
     async function executeUnlockPdf() {
@@ -3270,6 +3298,27 @@ setupPdfWorker();
       }
     }
 
+    async function renderProtectThumbnail(buffer) {
+      const canvas = document.getElementById('protect-preview-canvas');
+      if (!canvas || !buffer) return;
+      try {
+        if (typeof pdfjsLib === 'undefined') return;
+        const task = pdfjsLib.getDocument({ data: buffer.slice(0) });
+        const pdf = await task.promise;
+        const pagesEl = document.getElementById('protect-doc-pages');
+        if (pagesEl) pagesEl.textContent = `${pdf.numPages} Page${pdf.numPages === 1 ? '' : 's'}`;
+
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 1.0 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+      } catch (e) {
+        console.warn('Could not render protect preview thumbnail:', e.message);
+      }
+    }
+
     async function handleProtectFileInput(file) {
       if (!await validateSinglePdfFile(file, 'Protect')) return;
       try {
@@ -3277,13 +3326,36 @@ setupPdfWorker();
         renderBatchProtectQueue();
         const buffer = await file.arrayBuffer();
         protectFileState = { file, buffer };
+        const uploadScreen = document.getElementById('protect-upload-screen');
         const card = document.getElementById('protect-controls-card');
         const nameEl = document.getElementById('protect-doc-name');
+        const sizeEl = document.getElementById('protect-doc-size');
+        if (uploadScreen) uploadScreen.classList.add('hidden');
         if (card) card.classList.remove('hidden');
         if (nameEl) nameEl.textContent = file.name;
+        if (sizeEl) sizeEl.textContent = formatByteSize(file.size);
+        renderProtectThumbnail(buffer);
       } catch (err) {
         console.error('Protect load error:', err);
         alert('Failed to load PDF file.');
+      }
+    }
+
+    function resetProtectWorkspace() {
+      protectFileState = { file: null, buffer: null };
+      batchProtectQueue = [];
+      const uploadScreen = document.getElementById('protect-upload-screen');
+      const card = document.getElementById('protect-controls-card');
+      const input = document.getElementById('protect-file-input');
+      if (input) input.value = '';
+      if (uploadScreen) uploadScreen.classList.remove('hidden');
+      if (card) card.classList.add('hidden');
+      const canvas = document.getElementById('protect-preview-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.width = 0;
+        canvas.height = 0;
       }
     }
 
@@ -12126,8 +12198,8 @@ NEWFILEVERSION:102
       watermarkFile = null;
       signFileState = { file: null, buffer: null, penColor: '#1E293B' };
       compressFileState = { file: null, buffer: null, preset: 'recommended' };
-      protectFileState = { file: null, buffer: null };
-      unlockFile = null;
+      resetProtectWorkspace();
+      resetUnlockWorkspace();
       pageNumberFile = null;
       markdownState = { file: null, text: '' };
       if (extractImagesState && extractImagesState.images) {
@@ -12705,6 +12777,12 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           break;
         case 'run-unlock':
           executeUnlockPdf();
+          break;
+        case 'reset-unlock-file':
+          resetUnlockWorkspace();
+          break;
+        case 'reset-protect-file':
+          resetProtectWorkspace();
           break;
         case 'reset-converter':
           resetConverterToIntake();

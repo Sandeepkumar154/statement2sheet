@@ -1,7 +1,7 @@
 {
-  "name": "Statement2Sheet — Universal Financial Document Utility",
-  "short_name": "Statement2Sheet",
-  "description": "100% Client-Side PDF Bank Statement to CSV/Excel Utility and Multi-Tool Suite.",
+  "name": "ZeroPDF — Private Financial & PDF Suite",
+  "short_name": "ZeroPDF",
+  "description": "100% Client-Side PDF Bank Statement to CSV/Excel Utility and Multi-Tool Suite. Zero Uploads, Zero Tracking.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
