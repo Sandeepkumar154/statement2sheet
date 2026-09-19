@@ -1,10 +1,11 @@
-const CACHE_NAME = 's2s-cache-v7';
+const CACHE_NAME = 's2s-cache-v8';
 
 const LOCAL_ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './pdf-security.js',
   './manifest.webmanifest',
   './icon.svg'
 ];

@@ -743,7 +743,7 @@ async function runTests() {
       throw new Error('PDF compress output generation failed!');
     }
 
-    // Protect
+    // Protect: Genuinely AES-256 encrypt PDF with password
     const protectRes = await evaluate('(async () => {' +
       'lastDownloadedItem = null;' +
       'const raw = atob("' + b64 + '");' +
@@ -756,46 +756,59 @@ async function runTests() {
       'if (p1) p1.value = "Pass1234";' +
       'if (p2) p2.value = "Pass1234";' +
       'await executeProtectPdf();' +
-      'await new Promise(r => setTimeout(r, 150));' +
+      'await new Promise(r => setTimeout(r, 250));' +
       'if (!lastDownloadedItem) return { success: false, error: "No protect download" };' +
       'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
-      'const doc = await PDFLib.PDFDocument.load(outBuf);' +
+      'const encCheck = await PDFDecrypt.isEncrypted(outBuf);' +
+      'let loadRejected = false;' +
+      'try {' +
+      '  await PDFLib.PDFDocument.load(outBuf);' +
+      '} catch (e) {' +
+      '  loadRejected = e.message.includes("encrypted");' +
+      '}' +
       'return {' +
         'success: true,' +
         'filename: lastDownloadedItem.filename,' +
-        'title: doc.getTitle(),' +
-        'valid: doc.getPageCount() > 0' +
+        'isEncrypted: encCheck.encrypted,' +
+        'algorithm: encCheck.algorithm,' +
+        'loadRejected' +
       '};' +
     '})()');
     console.log('✓ PDF Protect Output Generation:', protectRes);
-    if (!protectRes.success || !protectRes.valid || protectRes.title !== 'Protected Document') {
-      throw new Error('PDF protect output generation failed!');
+    if (!protectRes.success || !protectRes.isEncrypted || !protectRes.loadRejected) {
+      throw new Error('PDF protect output generation failed: document is not genuinely encrypted!');
     }
 
-    // Unlock
+    // Unlock: Test unlocking the genuinely encrypted PDF with real password
     const unlockRes = await evaluate('(async () => {' +
+      'const protectedBlob = lastDownloadedItem.blob;' +
       'lastDownloadedItem = null;' +
-      'const raw = atob("' + b64 + '");' +
-      'const arr = new Uint8Array(raw.length);' +
-      'for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);' +
-      'const f = new File([arr], "statement_unlock_input.pdf", { type: "application/pdf" });' +
-      'unlockFile = f;' +
+      'const protectedFile = new File([protectedBlob], "statement_locked.pdf", { type: "application/pdf" });' +
+      'unlockFile = protectedFile;' +
       'const pInput = document.getElementById("unlock-password-input");' +
-      'if (pInput) pInput.value = "";' +
+      'const errBox = document.getElementById("unlock-error-box");' +
+      'if (pInput) pInput.value = "WrongPass999";' +
       'await executeUnlockPdf();' +
       'await new Promise(r => setTimeout(r, 150));' +
-      'if (!lastDownloadedItem) return { success: false, error: "No unlock download" };' +
+      'const wrongPassFailed = !errBox.classList.contains("hidden") && errBox.innerText.includes("Incorrect password");' +
+      'if (pInput) pInput.value = "Pass1234";' +
+      'await executeUnlockPdf();' +
+      'await new Promise(r => setTimeout(r, 250));' +
+      'if (!lastDownloadedItem) return { success: false, error: "No unlock download on correct password" };' +
       'const outBuf = await lastDownloadedItem.blob.arrayBuffer();' +
+      'const encCheck = await PDFDecrypt.isEncrypted(outBuf);' +
       'const doc = await PDFLib.PDFDocument.load(outBuf);' +
       'return {' +
         'success: true,' +
         'filename: lastDownloadedItem.filename,' +
-        'valid: doc.getPageCount() > 0' +
+        'wrongPassFailed,' +
+        'isUnencrypted: !encCheck.encrypted,' +
+        'pageCount: doc.getPageCount()' +
       '};' +
     '})()');
     console.log('✓ PDF Unlock Output Generation:', unlockRes);
-    if (!unlockRes.success || !unlockRes.valid) {
-      throw new Error('PDF unlock output generation failed!');
+    if (!unlockRes.success || !unlockRes.wrongPassFailed || !unlockRes.isUnencrypted || unlockRes.pageCount < 1) {
+      throw new Error('PDF unlock output generation failed to decrypt encrypted document!');
     }
 
     // Sign
