@@ -4656,17 +4656,26 @@ setupPdfWorker();
               const y0 = typeof bbox.y0 === 'number' ? bbox.y0 : 0;
               const x1 = typeof bbox.x1 === 'number' ? bbox.x1 : 0;
               const y1 = typeof bbox.y1 === 'number' ? bbox.y1 : 0;
-              const h = Math.max(12, y1 - y0);
-              const fontSize = Math.max(9, Math.round(h * 0.75));
-              const lText = (l.text || '').trim();
+              const scale = 2.0;
+              const x = x0 / scale;
+              const y = y0 / scale;
+              const width = Math.max(10, (x1 - x0) / scale);
+              const height = Math.max(10, (y1 - y0) / scale);
+              const fontSize = Math.max(9, Math.round(height * 0.75));
+              let lText = (l.text || '').trim();
+              lText = lText
+                .replace(/\s+([.,;:!?%)\]}])/g, '$1')
+                .replace(/([(\[{])\s+/g, '$1')
+                .replace(/[ \t]{2,}/g, ' ')
+                .trim();
               return {
                 text: lText,
-                x: x0,
-                y: y0,
-                minX: x0,
-                maxX: x1,
-                width: Math.max(10, x1 - x0),
-                height: h,
+                x,
+                y,
+                minX: x,
+                maxX: x + width,
+                width,
+                height,
                 fontSize,
                 isBold: /bold|black/i.test(l.font_name || '') || (lText.length > 3 && lText.toUpperCase() === lText && !/\d/.test(lText)),
                 confidence: l.confidence
@@ -4734,7 +4743,7 @@ setupPdfWorker();
         pdf2wordState = {
           file,
           doc,
-          mode: 'ocr',
+          mode: 'text',
           pagesData: [],
           pageImages: [],
           ocrPagesData: [],
@@ -4829,24 +4838,24 @@ setupPdfWorker();
           });
         }
 
-        const isGarbledOrLowQuality = pdf2wordState.pagesData.some(pg => {
-          const allText = (pg.lines || []).map(l => l.text || '').join(' ');
-          if (allText.length < 80) return true;
-          const words = allText.split(/\s+/).filter(Boolean);
-          const noisyWords = words.filter(w => /[^a-zA-Z0-9\s]{2,}|\.[a-zA-Z]|\b[a-z]\b/i.test(w));
-          return (noisyWords.length / Math.max(1, words.length)) > 0.12;
+        let totalDigitalChars = 0;
+        pdf2wordState.pagesData.forEach(pg => {
+          (pg.lines || []).forEach(l => {
+            totalDigitalChars += (l.text || '').length;
+          });
         });
 
-        const isScannedDocument = totalParagraphs === 0 || isGarbledOrLowQuality || (totalParagraphs <= 2 && doc.numPages === 1 && pdf2wordState.pagesData.every(pg => (pg.lines || []).length <= 2));
+        // A PDF is only considered a scanned document if it contains virtually no digital text
+        const isScannedDocument = totalDigitalChars < 40 && totalParagraphs <= 1;
 
         if (isScannedDocument) {
           if (statsEl) {
-            statsEl.textContent = `${doc.numPages} page(s) • 📸 Scanned PDF Detected • AI OCR Mode Activated (Editable Word)`;
+            statsEl.textContent = `${doc.numPages} page(s) • 📸 Scanned PDF (Pure Image) • AI OCR Mode Activated`;
           }
           setPdf2WordMode('ocr');
         } else {
           if (statsEl) {
-            statsEl.textContent = `${doc.numPages} page(s) • Digital PDF • ${totalParagraphs} editable paragraphs & tables ready`;
+            statsEl.textContent = `${doc.numPages} page(s) • Digital PDF • ${totalParagraphs} flowing paragraphs, headings & tables`;
           }
           setPdf2WordMode('text');
         }
@@ -4867,27 +4876,29 @@ setupPdfWorker();
         let matchedLine = null;
         for (let i = lines.length - 1; i >= 0; i--) {
           const l = lines[i];
-          const vertTol = Math.max(3, Math.min(it.height, l.height) * 0.45);
+          const refFontSize = Math.max(8, it.fontSize || 10, l.fontSize || 10);
+          const vertTol = Math.max(5.5, refFontSize * 0.65);
           if (Math.abs(it.y - l.y) <= vertTol) {
             matchedLine = l;
             break;
           }
-          if (it.y - l.y > 30) break;
+          if (it.y - l.y > 35) break;
         }
 
         if (matchedLine) {
+          matchedLine.y = (matchedLine.y * matchedLine.items.length + it.y) / (matchedLine.items.length + 1);
           matchedLine.items.push(it);
           matchedLine.minX = Math.min(matchedLine.minX, it.x);
-          matchedLine.maxX = Math.max(matchedLine.maxX, it.x + it.width);
-          matchedLine.height = Math.max(matchedLine.height, it.height);
-          matchedLine.fontSize = Math.max(matchedLine.fontSize, it.fontSize);
+          matchedLine.maxX = Math.max(matchedLine.maxX, it.x + (it.width || 0));
+          matchedLine.height = Math.max(matchedLine.height, it.height || it.fontSize || 10);
+          matchedLine.fontSize = Math.max(matchedLine.fontSize, it.fontSize || 10);
         } else {
           lines.push({
             y: it.y,
             minX: it.x,
-            maxX: it.x + it.width,
-            height: it.height,
-            fontSize: it.fontSize,
+            maxX: it.x + (it.width || 0),
+            height: it.height || it.fontSize || 10,
+            fontSize: it.fontSize || 10,
             items: [it]
           });
         }
@@ -4903,13 +4914,15 @@ setupPdfWorker();
 
         for (let i = 0; i < l.items.length; i++) {
           const it = l.items[i];
-          let needSpace = false;
+          const cleanStr = it.str || '';
+          if (!cleanStr) continue;
 
+          let needSpace = false;
           if (i > 0) {
             const prev = l.items[i - 1];
             const gap = it.x - (prev.x + prev.width);
-            const spaceThreshold = Math.max(2, it.fontSize * 0.22);
-            if (gap > it.fontSize * 1.8) {
+            const spaceThreshold = Math.max(1.8, (it.fontSize || 10) * 0.2);
+            if (gap > (it.fontSize || 10) * 1.8) {
               gaps.push({ x: (prev.x + prev.width + it.x) / 2, width: gap });
               needSpace = true;
             } else if (gap > spaceThreshold) {
@@ -4917,47 +4930,118 @@ setupPdfWorker();
             }
           }
 
-          const lastRun = runs[runs.length - 1];
-          const cleanStr = it.str;
+          if (/^[.,;:!?%)\]}']/.test(cleanStr.trim())) {
+            needSpace = false;
+          }
+          if (/[(\[{]$/.test(fullText.trim())) {
+            needSpace = false;
+          }
+          if (fullText.endsWith(' ') || cleanStr.startsWith(' ')) {
+            needSpace = false;
+          }
 
-          if (lastRun && lastRun.isBold === it.isBold && lastRun.isItalic === it.isItalic && Math.abs(lastRun.fontSize - it.fontSize) < 1.0) {
-            if (needSpace && !lastRun.text.endsWith(' ') && !cleanStr.startsWith(' ')) {
+          const lastRun = runs[runs.length - 1];
+          const matchesLastRun = lastRun &&
+            lastRun.isBold === Boolean(it.isBold) &&
+            lastRun.isItalic === Boolean(it.isItalic) &&
+            Math.abs(lastRun.fontSize - (it.fontSize || 10)) < 1.0;
+
+          if (matchesLastRun) {
+            if (needSpace) {
               lastRun.text += ' ';
               fullText += ' ';
             }
             lastRun.text += cleanStr;
             fullText += cleanStr;
           } else {
-            if (needSpace && !fullText.endsWith(' ') && !cleanStr.startsWith(' ')) {
+            if (needSpace) {
               fullText += ' ';
             }
             runs.push({
               text: cleanStr,
-              isBold: it.isBold,
-              isItalic: it.isItalic,
-              fontSize: it.fontSize
+              isBold: Boolean(it.isBold),
+              isItalic: Boolean(it.isItalic),
+              fontSize: it.fontSize || 10
             });
             fullText += cleanStr;
           }
         }
 
+        fullText = fullText
+          .replace(/\s+([.,;:!?%)\]}])/g, '$1')
+          .replace(/([(\[{])\s+/g, '$1')
+          .replace(/[ \t]{2,}/g, ' ')
+          .trim();
+
+        runs.forEach(r => {
+          r.text = r.text
+            .replace(/\s+([.,;:!?%)\]}])/g, '$1')
+            .replace(/([(\[{])\s+/g, '$1')
+            .replace(/[ \t]{2,}/g, ' ');
+        });
+
         l.runs = runs;
-        l.text = fullText.trim();
+        l.text = fullText;
         l.gaps = gaps;
         l.gapCount = gaps.length;
       });
 
-      return lines;
+      return lines.filter(l => l.text && l.text.length > 0);
     }
 
     function detectContentBlocks(lines, pageWidth = 612) {
       if (!lines || !lines.length) return [];
       const blocks = [];
-      let i = 0;
 
+      const fontSizes = lines.map(l => (typeof l === 'object' && l.fontSize) ? l.fontSize : 11);
+      fontSizes.sort((a, b) => a - b);
+      const bodyFontSize = fontSizes[Math.floor(fontSizes.length / 2)] || 11;
+
+      const maxXs = lines.map(l => (typeof l === 'object' && l.maxX) ? l.maxX : 0).filter(x => x > 0);
+      const colRight = maxXs.length ? Math.max(...maxXs) : (pageWidth - 72);
+
+      function classifyLine(lineObj, idx) {
+        const text = (typeof lineObj === 'string' ? lineObj : lineObj.text || '').trim();
+        if (!text) return { type: 'empty' };
+
+        if (checkIsTableLine(lineObj)) {
+          return { type: 'table_candidate' };
+        }
+
+        // Running page number / header filter
+        if (/^(?:page\s*\d+(?:\s*(?:of|\/|\-)\s*\d+)?|\d+)$/i.test(text) && text.length < 20) {
+          return { type: 'page_number', text };
+        }
+
+        const fontSize = (typeof lineObj === 'object' && lineObj.fontSize) ? lineObj.fontSize : 11;
+        const isBold = typeof lineObj === 'object' ? (lineObj.items ? lineObj.items.some(it => it.isBold) : (lineObj.isBold || false)) : false;
+
+        // Numbered section heading: "1.1 Background", "1.2 Paraxial and Marginal Rays", "2. Theoretical Framework"
+        const isNumberedHeading = /^(?:\d+\.|\d+\.\d+|\d+\.\d+\.\d+|\d+\.\d+\.\d+\.\d+)\s+[A-Za-z0-9]/.test(text) && text.length < 90 && !/[.!?]$/.test(text.replace(/\s+/g, ' '));
+
+        // Named section: "Chapter 1", "Section 2", "Appendix A"
+        const isSectionPrefix = /^(?:chapter|section|part|appendix)\s+[0-9A-ZIVXLC]+/i.test(text) && text.length < 80;
+
+        // All-caps Title: "INTRODUCTION", "ABSTRACT", "METHODS", "DISCUSSION", "CONCLUSION"
+        const isAllCapsTitle = /^[A-Z0-9\s\-–—:,]{3,60}$/.test(text) && /[A-Z]{3,}/.test(text) && !/[.!?]$/.test(text) && text.length < 60;
+
+        const isLargeTitle = fontSize >= bodyFontSize + 2.5 && text.length < 90;
+        const isMediumHeading = (fontSize >= bodyFontSize + 0.8 || isBold) && text.length < 80 && !/[.!?]$/.test(text);
+
+        if (isAllCapsTitle || isLargeTitle) {
+          return { type: 'heading1', text };
+        }
+        if (isNumberedHeading || isSectionPrefix || isMediumHeading) {
+          return { type: 'heading2', text };
+        }
+
+        return { type: 'paragraph', text };
+      }
+
+      let i = 0;
       while (i < lines.length) {
         const line = lines[i];
-        const text = (typeof line === 'string' ? line : line.text).trim();
+        const text = (typeof line === 'string' ? line : line.text || '').trim();
 
         if (!text) {
           i++;
@@ -4969,11 +5053,10 @@ setupPdfWorker();
         let cur = i;
         while (cur < lines.length) {
           const l = lines[cur];
-          const lText = (typeof l === 'string' ? l : l.text).trim();
+          const lText = (typeof l === 'string' ? l : l.text || '').trim();
           if (!lText) break;
 
-          const isTableLine = checkIsTableLine(l);
-          if (isTableLine) {
+          if (checkIsTableLine(l)) {
             tableLines.push(l);
             cur++;
           } else {
@@ -4991,45 +5074,68 @@ setupPdfWorker();
           continue;
         }
 
-        // 2. Headings Detection
-        const isDocTitle = i === 0 && line.fontSize && line.fontSize >= 13;
-        const isHeading2 = !isDocTitle && line.fontSize && line.fontSize >= 11 && (line.items ? line.items.some(it => it.isBold) : (line.isBold || false));
+        // 2. Headings & Special Lines Detection
+        const classification = classifyLine(line, i);
+        if (classification.type === 'page_number') {
+          // Omit standalone page number header from body text flow
+          i++;
+          continue;
+        }
 
-        if (isDocTitle) {
+        if (classification.type === 'heading1') {
           blocks.push({
             type: 'title',
             text,
-            runs: line.runs || [{ text, fontSize: line.fontSize || 14, bold: true }]
+            runs: line.runs || [{ text, fontSize: Math.max(14, (line.fontSize || 12) + 2), bold: true }]
           });
           i++;
           continue;
         }
 
-        if (isHeading2) {
+        if (classification.type === 'heading2') {
           blocks.push({
             type: 'heading2',
             text,
-            runs: line.runs || [{ text, fontSize: line.fontSize || 12, bold: true }]
+            runs: line.runs || [{ text, fontSize: Math.max(12, (line.fontSize || 11) + 1), bold: true }]
           });
           i++;
           continue;
         }
 
-        // 3. Regular Paragraph Flow
+        // 3. Regular Flowing Paragraph Flow (De-fragmentation)
         const paraLines = [line];
         let pNext = i + 1;
         while (pNext < lines.length) {
           const nextL = lines[pNext];
-          const nextT = (typeof nextL === 'string' ? nextL : nextL.text).trim();
+          const nextT = (typeof nextL === 'string' ? nextL : nextL.text || '').trim();
           if (!nextT) break;
 
-          const nextIsTable = checkIsTableLine(nextL);
-          const nextIsHeading = nextL.fontSize && nextL.fontSize >= 11 && (nextL.items ? nextL.items.some(it => it.isBold) : (nextL.isBold || false));
+          if (checkIsTableLine(nextL)) break;
+          const nextClass = classifyLine(nextL, pNext);
+          if (nextClass.type === 'heading1' || nextClass.type === 'heading2' || nextClass.type === 'page_number') {
+            break;
+          }
 
-          if (nextIsTable || nextIsHeading) break;
+          const prevL = paraLines[paraLines.length - 1];
+          const prevT = (typeof prevL === 'string' ? prevL : prevL.text || '').trim();
 
-          const vertDistance = nextL.y - (paraLines[paraLines.length - 1].y + (paraLines[paraLines.length - 1].height || 12));
-          if (vertDistance > 16) break;
+          if (typeof prevL === 'object' && typeof nextL === 'object' && prevL.y !== undefined && nextL.y !== undefined) {
+            const baselineDelta = nextL.y - prevL.y;
+            const lineLeadingTol = Math.max(28, bodyFontSize * 2.5);
+            if (baselineDelta > lineLeadingTol) {
+              break;
+            }
+          }
+
+          const endsWithSentencePunctuation = /[.!?]$/.test(prevT);
+          if (endsWithSentencePunctuation) {
+            if (typeof prevL === 'object' && prevL.maxX !== undefined) {
+              const distToMargin = colRight - prevL.maxX;
+              if (distToMargin >= 70) {
+                break;
+              }
+            }
+          }
 
           paraLines.push(nextL);
           pNext++;
@@ -5049,36 +5155,65 @@ setupPdfWorker();
         }
 
         paraLines.forEach((pl, plIdx) => {
-          if (plIdx > 0 && combinedText.length && !combinedText.endsWith(' ') && !pl.text.startsWith(' ')) {
-            combinedText += ' ';
-            if (aggregatedRuns.length) aggregatedRuns[aggregatedRuns.length - 1].text += ' ';
+          const plText = (typeof pl === 'string' ? pl : pl.text || '').trim();
+          if (!plText) return;
+
+          if (plIdx > 0 && combinedText.length > 0) {
+            if (combinedText.endsWith('-') && /^[a-z]/i.test(plText)) {
+              combinedText = combinedText.slice(0, -1);
+              if (aggregatedRuns.length) {
+                const lastRun = aggregatedRuns[aggregatedRuns.length - 1];
+                if (lastRun.text.endsWith('-')) {
+                  lastRun.text = lastRun.text.slice(0, -1);
+                }
+              }
+            } else if (!combinedText.endsWith(' ') && !plText.startsWith(' ')) {
+              combinedText += ' ';
+              if (aggregatedRuns.length) {
+                const lastRun = aggregatedRuns[aggregatedRuns.length - 1];
+                if (!lastRun.text.endsWith(' ')) lastRun.text += ' ';
+              }
+            }
           }
 
           if (pl.runs && pl.runs.length) {
             pl.runs.forEach(r => {
               const lastAgg = aggregatedRuns[aggregatedRuns.length - 1];
-              if (lastAgg && lastAgg.bold === r.isBold && lastAgg.italic === r.isItalic && lastAgg.fontSize === r.fontSize) {
+              if (lastAgg && lastAgg.bold === Boolean(r.isBold) && lastAgg.italic === Boolean(r.isItalic) && Math.abs((lastAgg.fontSize || 11) - (r.fontSize || 11)) < 1.0) {
                 lastAgg.text += r.text;
               } else {
                 aggregatedRuns.push({
                   text: r.text,
                   bold: Boolean(r.isBold),
                   italic: Boolean(r.isItalic),
-                  fontSize: r.fontSize
+                  fontSize: r.fontSize || 11
                 });
               }
             });
           } else {
-            aggregatedRuns.push({ text: pl.text || '' });
+            aggregatedRuns.push({ text: plText, fontSize: 11 });
           }
 
-          combinedText += pl.text;
+          combinedText += plText;
+        });
+
+        combinedText = combinedText
+          .replace(/\s+([.,;:!?%)\]}])/g, '$1')
+          .replace(/([(\[{])\s+/g, '$1')
+          .replace(/[ \t]{2,}/g, ' ')
+          .trim();
+
+        aggregatedRuns.forEach(r => {
+          r.text = r.text
+            .replace(/\s+([.,;:!?%)\]}])/g, '$1')
+            .replace(/([(\[{])\s+/g, '$1')
+            .replace(/[ \t]{2,}/g, ' ');
         });
 
         blocks.push({
           type: 'paragraph',
-          text: combinedText.trim(),
-          runs: aggregatedRuns,
+          text: combinedText,
+          runs: aggregatedRuns.length ? aggregatedRuns : [{ text: combinedText, fontSize: 11 }],
           hasFirstLineIndent,
           firstLineIndentTwips
         });
@@ -5462,7 +5597,7 @@ setupPdfWorker();
             if (b.type === 'title') {
               docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading1"/><w:jc w:val="center"/><w:spacing w:before="240" w:after="140"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="28"/><w:szCs w:val="28"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
             } else if (b.type === 'heading2') {
-              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
+              docXmlBody += `<w:p><w:pPr><w:pStyle w:val="Heading2"/><w:jc w:val="left"/><w:spacing w:before="180" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="${docFontFamily}" w:hAnsi="${docFontFamily}"/><w:b/><w:sz w:val="26"/><w:szCs w:val="26"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">${escapeXml(b.text || '')}</w:t></w:r></w:p>`;
             } else if (b.type === 'table') {
               docXmlBody += formatOpenXmlTable(b.rows);
               docXmlBody += `<w:p><w:pPr><w:spacing w:after="140"/></w:pPr></w:p>`;
@@ -5590,6 +5725,8 @@ setupPdfWorker();
     <w:rPr>
       <w:rFonts w:ascii="${fontFamily}" w:hAnsi="${fontFamily}" w:cs="${fontFamily}"/>
       <w:b/>
+      <w:sz w:val="26"/>
+      <w:szCs w:val="26"/>
       <w:color w:val="000000"/>
     </w:rPr>
   </w:style>
