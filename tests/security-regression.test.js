@@ -1355,7 +1355,47 @@ async function runTests() {
       throw new Error('Scan to PDF execution failed');
     }
 
-    // 21. Multi-Language i18n & Arabic RTL Toggle (Full-Site Verification)
+    // 21. In-Place Studio Workspace Screen Transitions & Reset Across Tool Modules
+    const transitionCheck = await evaluate(`(() => {
+      const modulesToTest = ['split', 'markdown', 'watermark', 'pagenumber', 'compress', 'rotate', 'organize', 'pdf2word', 'crop', 'redact', 'extract-images', 'repair', 'editpdf', 'formfill', 'pptx2pdf', 'pdf2pptx'];
+      const results = {};
+      for (const m of modulesToTest) {
+        const up = document.getElementById(m + '-upload-screen');
+        const card = document.getElementById(m + '-controls-card') || document.getElementById(m + '-workspace-card') || document.getElementById(m + '-results-card');
+        const hasUpInitial = Boolean(up);
+        const hasCardHidden = Boolean(card && card.classList.contains('hidden'));
+        
+        // simulate intake transition: hide upload, show studio card
+        setToolScreenState(m, 'workspace');
+        const upAfterIntake = up.classList.contains('hidden');
+        const cardAfterIntake = !card.classList.contains('hidden');
+
+        // simulate reset: return to upload screen, hide studio card
+        setToolScreenState(m, 'upload');
+        const upAfterReset = !up.classList.contains('hidden');
+        const cardAfterReset = card.classList.contains('hidden');
+
+        // check if reset button exists
+        const resetBtn = card ? card.querySelector('[data-action^="reset-"]') : null;
+
+        results[m] = {
+          hasUploadScreen: hasUpInitial,
+          initialCardHidden: hasCardHidden,
+          workspaceTransitionOk: upAfterIntake && cardAfterIntake,
+          resetTransitionOk: upAfterReset && cardAfterReset,
+          hasResetBtn: Boolean(resetBtn)
+        };
+      }
+      return results;
+    })()`);
+    console.log('✓ In-Place Studio Workspace Screen Transitions & Resets:', transitionCheck);
+    for (const [mod, stat] of Object.entries(transitionCheck)) {
+      if (!stat.hasUploadScreen || !stat.workspaceTransitionOk || !stat.resetTransitionOk || !stat.hasResetBtn) {
+        throw new Error('Workspace transition failed for module: ' + mod);
+      }
+    }
+
+    // 22. Multi-Language i18n & Arabic RTL Toggle (Full-Site Verification)
     const i18nRtlRes = await evaluate(`(() => {
       // Test Italian
       applyLanguage('it');

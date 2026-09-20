@@ -503,6 +503,25 @@ setupPdfWorker();
       });
     }
 
+        function setToolScreenState(toolName, state) {
+      const uploadScreen = document.getElementById(`${toolName}-upload-screen`);
+      const card = document.getElementById(`${toolName}-controls-card`)
+        || document.getElementById(`${toolName}-workspace-card`)
+        || document.getElementById(`${toolName}-results-card`)
+        || document.getElementById(`${toolName}-files-container`);
+
+      if (state === 'workspace') {
+        if (uploadScreen) uploadScreen.classList.add('hidden');
+        if (card) card.classList.remove('hidden');
+      } else if (state === 'upload') {
+        if (uploadScreen) uploadScreen.classList.remove('hidden');
+        if (card) card.classList.add('hidden');
+        const input = document.getElementById(`${toolName}-file-input`)
+          || document.getElementById(`${toolName}-file-input-1`);
+        if (input) input.value = '';
+      }
+    }
+
     function switchPortalTool(toolName, options = {}) {
       const prevTool = currentPortalTool;
       const prevEl = getPortalViewElement(prevTool);
@@ -1251,6 +1270,7 @@ setupPdfWorker();
       }
 
       if (mergeItems.length > 0) {
+        setToolScreenState('merge', 'workspace');
         const container = document.getElementById('merge-files-container');
         if (container) container.classList.remove('hidden');
         renderMergeList();
@@ -1298,6 +1318,7 @@ setupPdfWorker();
       if (!container || !listEl) return;
 
       if (mergeItems.length === 0) {
+        setToolScreenState('merge', 'upload');
         container.classList.add('hidden');
         listEl.innerHTML = '';
         return;
@@ -1547,7 +1568,7 @@ setupPdfWorker();
 
       const card = document.getElementById('split-controls-card');
       const grid = document.getElementById('split-thumbnails-grid');
-      card.classList.remove('hidden');
+      setToolScreenState('split', 'workspace');
       document.getElementById('split-doc-name').innerText = file.name;
       grid.innerHTML = '<div class="col-span-full py-12 text-center text-xs text-slate-500 font-medium">Rendering high-resolution page thumbnails in browser memory...</div>';
 
@@ -1841,7 +1862,7 @@ setupPdfWorker();
 
       const card = document.getElementById('organize-workspace-card');
       const grid = document.getElementById('organize-thumbnails-grid');
-      card.classList.remove('hidden');
+      setToolScreenState('organize', 'workspace');
       document.getElementById('org-filename').innerText = file.name;
       grid.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-500 font-medium">Rendering high-resolution page thumbnails in browser memory...</div>';
 
@@ -2346,7 +2367,7 @@ setupPdfWorker();
       if (!await validateSinglePdfFile(file, 'Watermark')) return;
       watermarkFile = file;
       document.getElementById('watermark-doc-name').innerText = file.name;
-      document.getElementById('watermark-controls-card').classList.remove('hidden');
+      setToolScreenState('watermark', 'workspace');
     }
 
     async function executeWatermarkPdf() {
@@ -2429,7 +2450,7 @@ setupPdfWorker();
       const pagesCount = document.getElementById('pdf2img-pages-count');
       const gallery = document.getElementById('pdf2img-gallery-grid');
       
-      if (controls) controls.classList.remove('hidden');
+      setToolScreenState('pdf2img', 'workspace');
       if (docName) docName.innerText = file.name;
       if (pagesCount) pagesCount.innerText = 'Rendering pages...';
       if (gallery) gallery.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-slate-500">Rendering high-resolution images in browser memory...</div>';
@@ -2567,12 +2588,13 @@ setupPdfWorker();
       if (!controls || !countEl || !listEl) return;
 
       if (img2pdfSelectedFiles.length === 0) {
+        setToolScreenState('img2pdf', 'upload');
         controls.classList.add('hidden');
         listEl.innerHTML = '';
         return;
       }
 
-      controls.classList.remove('hidden');
+      setToolScreenState('img2pdf', 'workspace');
       countEl.innerText = img2pdfSelectedFiles.length;
       listEl.replaceChildren();
 
@@ -2681,7 +2703,7 @@ setupPdfWorker();
       if (!await validateSinglePdfFile(file, 'Page Number')) return;
       pageNumberFile = file;
       document.getElementById('pagenumber-doc-name').innerText = file.name;
-      document.getElementById('pagenumber-controls-card').classList.remove('hidden');
+      setToolScreenState('pagenumber', 'workspace');
     }
 
     async function executePageNumberingPdf() {
@@ -2918,7 +2940,7 @@ setupPdfWorker();
         const card = document.getElementById('compress-controls-card');
         const nameEl = document.getElementById('compress-doc-name');
         const sizeEl = document.getElementById('compress-doc-size');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('compress', 'workspace');
         if (nameEl) nameEl.textContent = file.name;
         if (sizeEl) sizeEl.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
       } catch (err) {
@@ -3080,7 +3102,7 @@ setupPdfWorker();
         signFileState.buffer = buffer;
         const card = document.getElementById('sign-controls-card');
         const nameEl = document.getElementById('sign-doc-name');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('sign', 'workspace');
         if (nameEl) nameEl.textContent = file.name;
       } catch (err) {
         console.error('Sign file load error:', err);
@@ -3471,7 +3493,7 @@ setupPdfWorker();
         const card = document.getElementById('markdown-controls-card');
         const nameEl = document.getElementById('markdown-doc-name');
         const textarea = document.getElementById('markdown-result-textarea');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('markdown', 'workspace');
         if (nameEl) nameEl.textContent = file.name;
         if (textarea) textarea.value = markdownOutput;
       } catch (err) {
@@ -3754,7 +3776,7 @@ setupPdfWorker();
         };
         const card = document.getElementById('crop-controls-card');
         const docName = document.getElementById('crop-doc-name');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('crop', 'workspace');
         if (docName) docName.textContent = file.name;
         await renderCropPage(1);
       } catch (err) {
@@ -3889,7 +3911,7 @@ setupPdfWorker();
         const statusText = document.getElementById('extract-images-status-text');
         const grid = document.getElementById('extracted-images-grid');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('extract-images', 'workspace');
         if (docName) docName.textContent = file.name;
         if (grid) grid.innerHTML = '';
         if (statusText) statusText.textContent = `Extracting images across ${pdf.numPages} pages...`;
@@ -4030,8 +4052,7 @@ setupPdfWorker();
         if (compareState.docA && compareState.docB) {
           compareState.maxPages = Math.max(compareState.docA.numPages, compareState.docB.numPages);
           compareState.page = 1;
-          const card = document.getElementById('compare-results-card');
-          if (card) card.classList.remove('hidden');
+          setToolScreenState('compare', 'workspace');
           renderComparePage(1);
         }
       } catch (err) {
@@ -4319,7 +4340,7 @@ setupPdfWorker();
         const docName = document.getElementById('rotate-doc-name');
         const grid = document.getElementById('rotate-thumbnails-grid');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('rotate', 'workspace');
         if (docName) docName.textContent = file.name;
         if (grid) grid.innerHTML = '';
 
@@ -4511,7 +4532,7 @@ setupPdfWorker();
         };
         const card = document.getElementById('redact-controls-card');
         const docName = document.getElementById('redact-doc-name');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('redact', 'workspace');
         if (docName) docName.textContent = file.name;
         await renderRedactPage(1);
       } catch (err) {
@@ -4866,7 +4887,7 @@ setupPdfWorker();
         const statsEl = document.getElementById('pdf2word-stats-text');
         const previewBox = document.getElementById('pdf2word-preview-box');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('pdf2word', 'workspace');
         if (docName) docName.textContent = file.name;
         if (statsEl) statsEl.textContent = `Rebuilding typography & semantic layout for ${doc.numPages} page(s)...`;
 
@@ -6009,7 +6030,7 @@ setupPdfWorker();
         const card = document.getElementById('office2pdf-controls-card');
         const docName = document.getElementById('office2pdf-doc-name');
         const preview = document.getElementById('office2pdf-preview-container');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('office2pdf', 'workspace');
         if (docName) docName.textContent = file.name;
 
         if (['xlsx', 'xls', 'csv', 'tsv'].includes(ext)) {
@@ -6138,7 +6159,7 @@ setupPdfWorker();
         pdfaState.pdfBytes = await file.arrayBuffer();
         const card = document.getElementById('pdfa-controls-card');
         const docName = document.getElementById('pdfa-doc-name');
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('pdfa', 'workspace');
         if (docName) docName.textContent = file.name;
       } catch (err) {
         console.error('PDF/A load error:', err);
@@ -6254,7 +6275,7 @@ setupPdfWorker();
         const docName = document.getElementById('digitalsign-doc-name');
         const hashPreview = document.getElementById('digitalsign-sha256-preview');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('digitalsign', 'workspace');
         if (docName) docName.textContent = file.name;
         if (hashPreview) hashPreview.textContent = `SHA-256 Digest: ${digitalSignState.sha256Hex.slice(0, 32)}...`;
       } catch (err) {
@@ -6474,7 +6495,7 @@ setupPdfWorker();
         const listEl = document.getElementById('summarize-highlights-list');
         const entEl = document.getElementById('summarize-entities-container');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('summarize', 'workspace');
         if (docName) docName.textContent = file.name;
         if (metrics) metrics.textContent = `Analyzed ${doc.numPages} pages, ~${fullText.split(/\s+/).length} words`;
 
@@ -6594,7 +6615,7 @@ setupPdfWorker();
         const pill = document.getElementById('repair-status-pill');
         const box = document.getElementById('repair-log-box');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('repair', 'workspace');
         if (docName) docName.textContent = file.name;
         if (docSize) docSize.textContent = formatBytes(file.size);
         if (pill) {
@@ -6883,7 +6904,7 @@ setupPdfWorker();
         const docName = document.getElementById('editpdf-doc-name');
         const docPages = document.getElementById('editpdf-doc-pages');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('editpdf', 'workspace');
         if (docName) docName.textContent = file.name;
         if (docPages) docPages.textContent = `${doc.numPages} Page(s)`;
 
@@ -7293,7 +7314,7 @@ setupPdfWorker();
         const badge = document.getElementById('formfill-field-badge');
         const emptyMsg = document.getElementById('formfill-empty-message');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('formfill', 'workspace');
         if (docName) docName.textContent = file.name;
         if (docSize) docSize.textContent = formatBytes(file.size);
         if (badge) badge.textContent = `${detectedFields.length} Fields Detected`;
@@ -7544,7 +7565,7 @@ setupPdfWorker();
         const summary = document.getElementById('pptx2pdf-doc-summary');
         const gallery = document.getElementById('pptx2pdf-slides-gallery');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('pptx2pdf', 'workspace');
         if (docName) docName.textContent = file.name;
         if (summary) summary.textContent = `${extractedSlides.length} Slide(s) Extracted`;
 
@@ -7726,7 +7747,7 @@ setupPdfWorker();
         const summary = document.getElementById('pdf2pptx-doc-summary');
         const previewContainer = document.getElementById('pdf2pptx-preview-container');
 
-        if (card) card.classList.remove('hidden');
+        setToolScreenState('pdf2pptx', 'workspace');
         if (docName) docName.textContent = file.name;
         if (summary) summary.textContent = `${doc.numPages} Page(s) to Convert`;
 
@@ -12751,7 +12772,172 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
     }
 
     function handleApplicationAction(action, el, event) {
-      switch (action) {
+      
+    // Tool Screen Transition & Reset Handlers
+    function resetMergeWorkspace() {
+      mergeItems = [];
+      renderMergeList();
+      setToolScreenState('merge', 'upload');
+    }
+
+    function resetSplitWorkspace() {
+      splitFile = null;
+      splitPagesState = [];
+      setToolScreenState('split', 'upload');
+      const grid = document.getElementById('split-thumbnails-grid');
+      if (grid) grid.innerHTML = '';
+    }
+
+    function resetOrganizeWorkspace() {
+      organizeFile = null;
+      organizePages = [];
+      setToolScreenState('organize', 'upload');
+      const grid = document.getElementById('organize-thumbnails-grid');
+      if (grid) grid.innerHTML = '';
+    }
+
+    function resetWatermarkWorkspace() {
+      watermarkFile = null;
+      setToolScreenState('watermark', 'upload');
+    }
+
+    function resetPageNumberWorkspace() {
+      pageNumberFile = null;
+      setToolScreenState('pagenumber', 'upload');
+    }
+
+    function resetPdf2ImgWorkspace() {
+      setToolScreenState('pdf2img', 'upload');
+      const gallery = document.getElementById('pdf2img-gallery-grid');
+      if (gallery) gallery.innerHTML = '';
+    }
+
+    function resetImg2PdfWorkspace() {
+      clearImg2PdfList();
+      setToolScreenState('img2pdf', 'upload');
+    }
+
+    function resetCompressWorkspace() {
+      compressFileState = { file: null, buffer: null, preset: 'recommended' };
+      batchCompressQueue = [];
+      setToolScreenState('compress', 'upload');
+    }
+
+    function resetSignWorkspace() {
+      signFileState.file = null;
+      signFileState.buffer = null;
+      clearSignatureCanvas();
+      setToolScreenState('sign', 'upload');
+    }
+
+    function resetMarkdownWorkspace() {
+      markdownState = { file: null, text: '' };
+      setToolScreenState('markdown', 'upload');
+      const ta = document.getElementById('markdown-result-textarea');
+      if (ta) ta.value = '';
+    }
+
+    function resetCropWorkspace() {
+      cropState = { file: null, doc: null, pdfBytes: null, currentPage: 1, totalPages: 1 };
+      setToolScreenState('crop', 'upload');
+    }
+
+    function resetExtractImagesWorkspace() {
+      extractImagesState = { file: null, images: [] };
+      setToolScreenState('extract-images', 'upload');
+      const grid = document.getElementById('extracted-images-grid');
+      if (grid) grid.innerHTML = '';
+    }
+
+    function resetCompareWorkspace() {
+      compareState = { docA: null, docB: null, nameA: '', nameB: '', page: 1, maxPages: 1 };
+      const d1 = document.getElementById('compare-name-1');
+      const d2 = document.getElementById('compare-name-2');
+      if (d1) d1.textContent = 'Upload Document A (Original)';
+      if (d2) d2.textContent = 'Upload Document B (Modified)';
+      setToolScreenState('compare', 'upload');
+    }
+
+    function resetRotateWorkspace() {
+      rotateState = { file: null, buffer: null, doc: null, pageRotations: {} };
+      batchRotateQueue = [];
+      setToolScreenState('rotate', 'upload');
+      const grid = document.getElementById('rotate-thumbnails-grid');
+      if (grid) grid.innerHTML = '';
+    }
+
+    function resetRedactWorkspace() {
+      redactState = { file: null, buffer: null, doc: null, currentPage: 1, totalPages: 1, redactions: {} };
+      setToolScreenState('redact', 'upload');
+    }
+
+    function resetPdf2WordWorkspace() {
+      pdf2wordState = { file: null, doc: null, mode: 'text', pagesData: [], pageImages: [] };
+      setToolScreenState('pdf2word', 'upload');
+      const pb = document.getElementById('pdf2word-preview-box');
+      if (pb) pb.innerHTML = '';
+    }
+
+    function resetOffice2PdfWorkspace() {
+      office2pdfState = { file: null, type: '', rows: [], textContent: '' };
+      setToolScreenState('office2pdf', 'upload');
+      const pc = document.getElementById('office2pdf-preview-container');
+      if (pc) pc.innerHTML = '';
+    }
+
+    function resetPdfaWorkspace() {
+      pdfaState = { file: null, pdfBytes: null };
+      setToolScreenState('pdfa', 'upload');
+    }
+
+    function resetDigitalSignWorkspace() {
+      digitalSignState = { file: null, pdfBytes: null, sha256Hex: '' };
+      setToolScreenState('digitalsign', 'upload');
+    }
+
+    function resetSummarizeWorkspace() {
+      summarizeState = { file: null, text: '', highlights: [], entities: [] };
+      setToolScreenState('summarize', 'upload');
+      const hl = document.getElementById('summarize-highlights-list');
+      if (hl) hl.innerHTML = '';
+      const ec = document.getElementById('summarize-entities-container');
+      if (ec) ec.innerHTML = '';
+    }
+
+    function resetRepairWorkspace() {
+      repairState = { file: null, arrayBuffer: null };
+      setToolScreenState('repair', 'upload');
+      const box = document.getElementById('repair-log-box');
+      if (box) box.innerHTML = '';
+    }
+
+    function resetEditPdfWorkspace() {
+      editPdfState = { file: null, pdfBytes: null, pdfJsDoc: null, annotations: {}, currentPage: 1, totalPages: 1 };
+      setToolScreenState('editpdf', 'upload');
+    }
+
+    function resetFormFillWorkspace() {
+      formFillState = { file: null, pdfBytes: null, fields: [] };
+      setToolScreenState('formfill', 'upload');
+      const iform = document.getElementById('formfill-interactive-form');
+      if (iform) iform.innerHTML = '';
+    }
+
+    function resetPptx2PdfWorkspace() {
+      pptx2PdfState = { file: null, slides: [] };
+      setToolScreenState('pptx2pdf', 'upload');
+      const sg = document.getElementById('pptx2pdf-slides-gallery');
+      if (sg) sg.innerHTML = '';
+    }
+
+    function resetPdf2PptxWorkspace() {
+      pdf2PptxState = { file: null, pdfBytes: null, pdfJsDoc: null, pageCount: 0 };
+      setToolScreenState('pdf2pptx', 'upload');
+      const ppc = document.getElementById('pdf2pptx-preview-container');
+      if (ppc) ppc.innerHTML = '';
+    }
+
+        switch (action) {
         case 'toggle-convert-dropdown':
           toggleConvertDropdown(event);
           break;
@@ -12808,6 +12994,81 @@ h2 { font-size: 14pt; color: #334155; margin-top: 18px; margin-bottom: 8px; bord
           break;
         case 'run-unlock':
           executeUnlockPdf();
+          break;
+                case 'reset-merge-file':
+          resetMergeWorkspace();
+          break;
+        case 'reset-split-file':
+          resetSplitWorkspace();
+          break;
+        case 'reset-organize-file':
+          resetOrganizeWorkspace();
+          break;
+        case 'reset-watermark-file':
+          resetWatermarkWorkspace();
+          break;
+        case 'reset-pagenumber-file':
+          resetPageNumberWorkspace();
+          break;
+        case 'reset-pdf2img-file':
+          resetPdf2ImgWorkspace();
+          break;
+        case 'reset-img2pdf-file':
+          resetImg2PdfWorkspace();
+          break;
+        case 'reset-compress-file':
+          resetCompressWorkspace();
+          break;
+        case 'reset-sign-file':
+          resetSignWorkspace();
+          break;
+        case 'reset-markdown-file':
+          resetMarkdownWorkspace();
+          break;
+        case 'reset-crop-file':
+          resetCropWorkspace();
+          break;
+        case 'reset-extract-images-file':
+          resetExtractImagesWorkspace();
+          break;
+        case 'reset-compare-file':
+          resetCompareWorkspace();
+          break;
+        case 'reset-rotate-file':
+          resetRotateWorkspace();
+          break;
+        case 'reset-redact-file':
+          resetRedactWorkspace();
+          break;
+        case 'reset-pdf2word-file':
+          resetPdf2WordWorkspace();
+          break;
+        case 'reset-office2pdf-file':
+          resetOffice2PdfWorkspace();
+          break;
+        case 'reset-pdfa-file':
+          resetPdfaWorkspace();
+          break;
+        case 'reset-digitalsign-file':
+          resetDigitalSignWorkspace();
+          break;
+        case 'reset-summarize-file':
+          resetSummarizeWorkspace();
+          break;
+        case 'reset-repair-file':
+          resetRepairWorkspace();
+          break;
+        case 'reset-editpdf-file':
+          resetEditPdfWorkspace();
+          break;
+        case 'reset-formfill-file':
+          resetFormFillWorkspace();
+          break;
+        case 'reset-pptx2pdf-file':
+          resetPptx2PdfWorkspace();
+          break;
+        case 'reset-pdf2pptx-file':
+          resetPdf2PptxWorkspace();
           break;
         case 'reset-unlock-file':
           resetUnlockWorkspace();

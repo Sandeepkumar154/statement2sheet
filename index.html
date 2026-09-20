@@ -691,6 +691,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Merge PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="merge-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Merge Multiple PDF Statements & Files</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Combine multiple monthly bank statements or documents. Visual cover & page previews ensure you combine in the exact order.</p>
@@ -708,6 +711,8 @@
         </button>
       </div>
 
+            </div>
+
       <div id="merge-files-container" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
           <div>
@@ -716,7 +721,8 @@
           </div>
           <div class="flex items-center gap-2">
             <button data-trigger-click="merge-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">+ Add More PDFs</button>
-            <button data-action="clear-merge-list" class="text-xs text-rose-500 hover:underline px-2 py-1">Clear All</button>
+            <button <button type="button" data-action="reset-merge-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose different files</span></button>
+            data-action="clear-merge-list" class="text-xs text-rose-500 hover:underline px-2 py-1">Clear All</button>
           </div>
         </div>
 
@@ -742,6 +748,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Split PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="split-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Visual PDF Split & Page Extractor</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Live high-resolution previews show all statement tables, dates, and balances. Inspect pages in full detail before extracting.</p>
@@ -759,6 +768,8 @@
         </button>
       </div>
 
+            </div>
+
       <div id="split-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <!-- Header with Doc details & Selection Summary -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
@@ -767,6 +778,7 @@
             <span class="text-xs text-slate-400 font-mono" id="split-doc-pages">- Pages</span>
           </div>
           <div class="flex items-center gap-2">
+            <button type="button" data-action="reset-split-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
             <span id="split-selected-summary" class="text-xs font-bold px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
               0 of 0 Pages Selected
             </span>
@@ -823,6 +835,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Organize & Rotate</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="organize-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Organize, Rotate & Delete Pages</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Full statement text preview allows you to verify orientation and content. Rotate 90° or remove unwanted pages directly in browser.</p>
@@ -840,9 +855,12 @@
         </button>
       </div>
 
+            </div>
+
       <div id="organize-workspace-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3 mb-6">
           <div class="flex items-center gap-3">
+            <button type="button" data-action="reset-organize-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
             <span class="text-xs font-bold text-slate-800 dark:text-slate-200" id="org-filename">-</span>
             <span class="text-xs text-slate-500 dark:text-slate-400 font-mono" id="org-active-count">-</span>
           </div>
@@ -1498,6 +1516,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Watermark & Stamp</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="watermark-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Watermark & Stamp PDF</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Stamp custom audit text across every page in local memory.</p>
@@ -1515,9 +1536,12 @@
         </button>
       </div>
 
+            </div>
+
       <div id="watermark-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="watermark-doc-name">-</span>
+          <button type="button" data-action="reset-watermark-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
         </div>
         
         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Watermark Text:</label>
@@ -1548,6 +1572,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Add Page Numbers</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="pagenumber-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Add Page Numbers to PDF</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Stamp clean, professional pagination across every page.</p>
@@ -1565,9 +1592,12 @@
         </button>
       </div>
 
+            </div>
+
       <div id="pagenumber-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="pagenumber-doc-name">-</span>
+          <button type="button" data-action="reset-pagenumber-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
         </div>
         
         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Numbering Format:</label>
@@ -1595,6 +1625,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to Image (JPG/PNG)</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="pdf2img-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Convert PDF Pages to Images</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Render PDF pages into 2x crisp high-resolution PNG or JPG images in browser memory.</p>
@@ -1612,10 +1645,14 @@
         </button>
       </div>
 
+            </div>
+
       <div id="pdf2img-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="pdf2img-doc-name">-</span>
           <span class="text-xs font-bold px-2 py-0.5 rounded bg-fuchsia-100 dark:bg-fuchsia-950 text-fuchsia-800 dark:text-fuchsia-300" id="pdf2img-pages-count">- Pages</span>
+        
+          <button type="button" data-action="reset-pdf2img-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
         </div>
         
         <div id="pdf2img-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto p-1"></div>
@@ -1630,6 +1667,9 @@
         </button>
         <span class="text-[11px] font-semibold text-slate-400">Tool: Image to PDF</span>
       </div>
+
+      <!-- Initial Upload Screen -->
+      <div id="img2pdf-upload-screen">
 
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Convert Images to Multi-Page PDF</h2>
@@ -1648,10 +1688,14 @@
         </button>
       </div>
 
+            </div>
+
       <div id="img2pdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Selected Images (<span id="img2pdf-count">0</span>)</span>
           <button data-action="clear-img2pdf-list" class="text-xs text-rose-500 hover:underline">Clear</button>
+        
+          <button type="button" data-action="reset-img2pdf-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose different images</span></button>
         </div>
         <div id="img2pdf-previews-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-60 overflow-y-auto mb-4"></div>
         <div class="flex justify-end">
@@ -1671,6 +1715,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Compress PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="compress-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Compress PDF File</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Reduce PDF file size while optimizing for maximal quality directly in local browser memory.</p>
@@ -1688,10 +1735,14 @@
         </button>
       </div>
 
+            </div>
+
       <div id="compress-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="compress-doc-name">-</span>
           <span class="text-xs font-mono text-slate-400" id="compress-doc-size">-</span>
+        
+          <button type="button" data-action="reset-compress-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
         </div>
 
         <!-- Multi-File Batch Queue Box -->
@@ -1748,6 +1799,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Sign PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="sign-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Sign PDF Document</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Draw, type, or upload your signature and stamp it onto contracts, receipts, or statements.</p>
@@ -1765,9 +1819,12 @@
         </button>
       </div>
 
+            </div>
+
       <div id="sign-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="sign-doc-name">-</span>
+          <button type="button" data-action="reset-sign-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
         </div>
 
         <!-- Signature Pad -->
@@ -1944,6 +2001,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to Markdown</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="markdown-upload-screen">
+
       <div class="text-center mb-6">
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">PDF to Structured Markdown</h2>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Extract clean text, section headings, and structured tables directly into Markdown for LLMs or Notion.</p>
@@ -1961,10 +2021,13 @@
         </button>
       </div>
 
+            </div>
+
       <div id="markdown-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="markdown-doc-name">-</span>
           <div class="flex items-center gap-2">
+            <button type="button" data-action="reset-markdown-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
             <button data-action="copy-markdown" id="btn-copy-md" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
               📋 Copy Markdown
             </button>
@@ -1986,6 +2049,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Crop PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="crop-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Crop PDF</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Trim margins or drag a visual crop box to eliminate unwanted margins and whitespace.</p>
@@ -2003,12 +2069,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="crop-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="crop-doc-name">-</span>
             <span class="text-[11px] text-slate-400" id="crop-page-indicator">Page 1 of 1</span>
-          </div>
+          
+          <button type="button" data-action="reset-crop-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <div class="flex items-center gap-2">
             <button data-action="crop-prev-page" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">Prev Page</button>
             <button data-action="crop-next-page" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">Next Page</button>
@@ -2105,6 +2175,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Extract Images</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="extract-images-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Extract Images from PDF</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Extract embedded photos, scanned checks, and graphics directly from PDF streams into high-res images.</p>
@@ -2122,12 +2195,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="extract-images-results-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="extract-images-doc-name">-</span>
             <span class="text-[11px] text-slate-400" id="extract-images-status-text">Scanning for images...</span>
-          </div>
+          
+          <button type="button" data-action="reset-extract-images-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <div class="flex items-center gap-2">
             <button data-action="download-all-extracted-images" id="btn-download-all-extracted" class="px-4 py-1.5 rounded-lg bg-lime-600 hover:bg-lime-700 text-white text-xs font-bold shadow-2xs transition">
               ⬇️ Download All Images
@@ -2146,6 +2223,9 @@
         </button>
         <span class="text-[11px] font-semibold text-slate-400">Tool: Compare PDF (Diff)</span>
       </div>
+
+      <!-- Initial Upload Screen -->
+      <div id="compare-upload-screen">
 
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Compare PDF Documents</h1>
@@ -2178,9 +2258,12 @@
         </div>
       </div>
 
+            </div>
+
       <div id="compare-results-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div class="flex items-center gap-2">
+            <button type="button" data-action="reset-compare-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose different files</span></button>
             <span class="text-xs font-bold text-slate-700 dark:text-slate-300" id="compare-page-indicator">Page 1</span>
             <button data-action="compare-prev-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&larr;</button>
             <button data-action="compare-next-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&rarr;</button>
@@ -2226,6 +2309,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Rotate PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="rotate-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Rotate PDF</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Rotate all or specific pages clockwise or counterclockwise with instant preview.</p>
@@ -2242,6 +2328,8 @@
           Select PDF File(s)
         </button>
       </div>
+
+            </div>
 
       <div id="rotate-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <!-- Multi-File Batch Queue Box -->
@@ -2260,6 +2348,7 @@
 
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div class="flex items-center gap-2">
+            <button type="button" data-action="reset-rotate-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="rotate-doc-name">-</span>
             <button data-action="rotate-all-right" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">Rotate All Right 90° ↻</button>
             <button data-action="rotate-all-left" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">Rotate All Left 90° ↺</button>
@@ -2282,6 +2371,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Permanent Redact</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="redact-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Redact PDF</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Irreversibly black out confidential data. Pages are rasterized at 300 DPI so underlying vector text cannot be recovered.</p>
@@ -2299,9 +2391,12 @@
         </button>
       </div>
 
+            </div>
+
       <div id="redact-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div class="flex items-center gap-2">
+            <button type="button" data-action="reset-redact-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate" id="redact-doc-name">-</span>
             <span class="text-[11px] text-slate-400" id="redact-page-indicator">Page 1 of 1</span>
             <button data-action="redact-prev-page" class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-700">&larr;</button>
@@ -2339,6 +2434,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to Word (.docx)</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="pdf2word-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">PDF to Word (.docx)</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert PDF documents into fully editable Microsoft Word (.docx) files with paragraphs and tables preserved.</p>
@@ -2356,10 +2454,13 @@
         </button>
       </div>
 
+            </div>
+
       <div id="pdf2word-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 mb-5 gap-4">
           <div>
             <div class="flex items-center gap-2">
+            <button type="button" data-action="reset-pdf2word-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
               <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
               <span class="text-sm font-bold text-slate-800 dark:text-white truncate block" id="pdf2word-doc-name">-</span>
             </div>
@@ -2437,6 +2538,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Office &amp; HTML to PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="office2pdf-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Office &amp; HTML to PDF</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert Excel spreadsheets (.xlsx, .xls, .csv), plain text, or HTML markup directly into clean, paginated PDF documents.</p>
@@ -2454,12 +2558,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="office2pdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="office2pdf-doc-name">-</span>
             <span class="text-[11px] text-slate-400" id="office2pdf-status-text">Parsed data ready for PDF compilation</span>
-          </div>
+          
+          <button type="button" data-action="reset-office2pdf-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <button data-action="run-office2pdf" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-2xs transition">
             📄 Convert &amp; Download PDF
           </button>
@@ -2503,6 +2611,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: PDF/A ISO 19005-1</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="pdfa-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Convert to PDF/A</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert documents into ISO 19005-1 standard PDF/A-1b format for legal long-term archival.</p>
@@ -2520,12 +2631,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="pdfa-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="pdfa-doc-name">-</span>
             <span class="text-[11px] text-teal-600 dark:text-teal-400 font-bold">Standard: PDF/A-1b (ISO 19005-1:2005)</span>
-          </div>
+          
+          <button type="button" data-action="reset-pdfa-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <button data-action="run-pdfa" class="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-2xs transition">
             🏛️ Convert to PDF/A &amp; Download
           </button>
@@ -2553,6 +2668,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Digital PKI Sign</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="digitalsign-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Cryptographic Digital Signatures</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Sign PDFs with browser native WebCrypto keys (SHA-256 / RSA). Embeds a tamper-evident visual verification seal and exports a cryptographic audit manifest.</p>
@@ -2570,12 +2688,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="digitalsign-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="digitalsign-doc-name">-</span>
             <span class="text-[11px] text-slate-400" id="digitalsign-sha256-preview">SHA-256 Digest: Computing...</span>
-          </div>
+          
+          <button type="button" data-action="reset-digitalsign-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <button data-action="run-digitalsign" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-2xs transition">
             🔐 Sign &amp; Stamp Document
           </button>
@@ -2607,6 +2729,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Document Summarizer</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="summarize-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">AI Document Summarizer</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">100% private local in-browser extractive NLP summarizer. Extracts key sentences, financial figures, and executive highlights without sending data to any cloud.</p>
@@ -2624,12 +2749,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="summarize-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4 gap-3">
           <div>
             <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" id="summarize-doc-name">-</span>
             <span class="text-[11px] text-slate-400" id="summarize-metrics-text">Analyzed tokens</span>
-          </div>
+          
+          <button type="button" data-action="reset-summarize-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <div class="flex items-center gap-2">
             <button data-action="copy-summary" id="btn-copy-summary" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
               📋 Copy Summary
@@ -2663,6 +2792,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Repair PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="repair-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight" data-i18n="repair_title">Repair PDF File</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1" data-i18n="repair_subtitle">Recover damaged, corrupt, or truncated PDF files directly in your browser. Reconstructs cross-references and recovers readable pages.</p>
@@ -2680,12 +2812,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="repair-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <div>
             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" id="repair-doc-name">-</h4>
             <span class="text-[11px] text-slate-400 font-mono" id="repair-doc-size">-</span>
-          </div>
+          
+          <button type="button" data-action="reset-repair-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <span id="repair-status-pill" class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">Ready to Analyze</span>
         </div>
 
@@ -2714,6 +2850,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Edit PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="editpdf-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Edit PDF (Text &amp; Annotations)</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Add text, draw shapes, insert notes, or sketch directly on your PDF pages. 100% private in browser memory.</p>
@@ -2731,13 +2870,17 @@
         </button>
       </div>
 
+            </div>
+
       <div id="editpdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
         <!-- Top bar with document info -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <div>
             <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="editpdf-doc-name">-</h4>
             <span class="text-[11px] text-slate-400 font-mono" id="editpdf-doc-pages">- Pages</span>
-          </div>
+          
+          <button type="button" data-action="reset-editpdf-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <div class="flex items-center gap-2">
             <button data-trigger-click="editpdf-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change PDF</button>
           </div>
@@ -2818,6 +2961,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: Fill PDF Forms</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="formfill-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Interactive PDF Form Filler</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Auto-detect and fill interactive AcroForm fields (text fields, checkboxes, dropdowns) directly in your browser.</p>
@@ -2835,12 +2981,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="formfill-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-5">
           <div>
             <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="formfill-doc-name">-</h4>
             <span class="text-xs text-slate-400 font-mono" id="formfill-doc-size">-</span>
-          </div>
+          
+          <button type="button" data-action="reset-formfill-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <div class="flex items-center gap-2">
             <span id="formfill-field-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300">0 Fields Detected</span>
             <button data-trigger-click="formfill-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change Form</button>
@@ -2877,6 +3027,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: PowerPoint to PDF</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="pptx2pdf-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Convert PowerPoint to PDF</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Transform PPTX presentations into crisp, perfectly paginated PDF documents with 100% in-browser privacy.</p>
@@ -2894,12 +3047,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="pptx2pdf-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
           <div>
             <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="pptx2pdf-doc-name">-</h4>
             <span class="text-xs text-slate-400 font-mono" id="pptx2pdf-doc-summary">- Slides Detected</span>
-          </div>
+          
+          <button type="button" data-action="reset-pptx2pdf-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <button data-trigger-click="pptx2pdf-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change File</button>
         </div>
 
@@ -2924,6 +3081,9 @@
         <span class="text-[11px] font-semibold text-slate-400">Tool: PDF to PowerPoint</span>
       </div>
 
+      <!-- Initial Upload Screen -->
+      <div id="pdf2pptx-upload-screen">
+
       <div class="text-center mb-6">
         <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Convert PDF to PowerPoint Presentation</h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Convert every page of your PDF into high-resolution PowerPoint (.pptx) presentation slides.</p>
@@ -2941,12 +3101,16 @@
         </button>
       </div>
 
+            </div>
+
       <div id="pdf2pptx-controls-card" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
           <div>
             <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-sm" id="pdf2pptx-doc-name">-</h4>
             <span class="text-xs text-slate-400 font-mono" id="pdf2pptx-doc-summary">- Pages</span>
-          </div>
+          
+          <button type="button" data-action="reset-pdf2pptx-file" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 shrink-0"><span>&larr;</span> <span>Choose another file</span></button>
+        </div>
           <button data-trigger-click="pdf2pptx-file-input" class="text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition border border-slate-200 dark:border-slate-700">Change PDF</button>
         </div>
 
